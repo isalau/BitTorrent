@@ -101,7 +101,22 @@ public class Client implements Runnable{
 				newPeer.bitfield = emptyArray;
 
 				//add to Linked lists 
-				PeerLinkedList.add(newPeer);			
+				PeerLinkedList.add(newPeer);
+
+
+            	Connection newConnection = new Connection();
+            	newConnection.sendersPeerID = peerID; 
+                newConnection.peerID = PI.PeerID;
+		        newConnection.numInPeerInfo = numInPeerInfo; 
+		        newConnection.my_portNumber = PI.Port;
+		        newConnection.hostname = PI.HostName;
+		        newConnection.fileSize = fileSize;
+		        newConnection.pieceSize = pieceSize;
+		        newConnection.hasFile = hasFile;
+		        newConnection.unchokingInterval = unchokingInterval;
+		        newConnection.optimisticUnchokingInterval = optimisticUnchokingInterval;
+				ConnectionLinkedList.add(newConnection);
+				up.connectionLinkedList = ConnectionLinkedList;
             }
         }
         else{
@@ -116,13 +131,13 @@ public class Client implements Runnable{
 
 		TimerTask unChoke = new TimerTask(){
 			public void run(){
-				//unChoke(unchokingInterval);
+				unChoke(unchokingInterval);
 			}
 		};
 
 		TimerTask optUnChoke = new TimerTask(){
 			public void run(){
-				//optimisticUnchoke(optimisticUnchokingInterval);
+				// optimisticUnchoke(optimisticUnchokingInterval);
 			}
 		};
 
@@ -141,7 +156,7 @@ public class Client implements Runnable{
 
 		TimerTask unChoke = new TimerTask(){
 			public void run(){
-				//unChoke(unchokingInterval);
+				unChoke(unchokingInterval);
 			}
 		};
 
@@ -156,7 +171,7 @@ public class Client implements Runnable{
 
 		TimerTask optUnChoke = new TimerTask(){
 			public void run(){
-				//optimisticUnchoke(optimisticUnchokingInterval);
+				// optimisticUnchoke(optimisticUnchokingInterval);
 			}
 		};
 
@@ -165,7 +180,19 @@ public class Client implements Runnable{
 		optUnChokeTimer.schedule(optUnChoke,miliOptUnChoke);
 	}
 
-	public void determinePrefferedNeighbors(){}
+	public void unChoke(int unchokingInterval){
+		updateChokeTimer();
+		System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
+	}
+
+	public void determinePrefferedNeighbors(){
+		//
+	}
+
+	public void optimisticUnchoke(int optimisticUnchokingInterval){
+		updateOptTimer();
+		System.out.println(optimisticUnchokingInterval + " seconds has passed for optimistic Choke/Unchoke");
+	}
 
 	public void pickRandomNeighbor(){
 
@@ -177,6 +204,8 @@ public class Client implements Runnable{
 
         //check that not already unchoked 
 	}
+
+
 
 	public void pickRandomOptNeighbor(){
 

@@ -55,20 +55,24 @@ public class Uploader implements Runnable{
 		if(sentHandshake == false && numInPeerInfo != 0 ){
 			for (int i = 0; i < peerLinkedList.size(); i++){
 				Connection newConnection = new Connection();
+				newConnection.notAlone = true;
 				newConnection.sendersPeerID = peerID;
 				System.out.println("Uploader: Trying to connect to peerID " + peerLinkedList.get(i).peerID);
 				newConnection.peerID = peerLinkedList.get(i).peerID;
 				newConnection.portNumber = peerLinkedList.get(i).port;
 				System.out.println("Uploader: Trying to connect to hostName " + peerLinkedList.get(i).hostName);
 				newConnection.hostname = peerLinkedList.get(i).hostName; 
-				newConnection.sendHandShake();
+				newConnection.connectionLinkedList = connectionLinkedList;
+				// newConnection.sendHandShake();
+
+      			Thread object = new Thread(newConnection);
+        		object.start();
 			}
 			sentHandshake = true;
 		}
 
     	try {
     		while(true) {
-    			System.out.println("Uploader: I sent handshakes if needed");
         		new Handler(listener.accept(),clientNum).start();
 				System.out.println("Client "  + clientNum + " is connected!");
 				clientNum++;
@@ -94,9 +98,22 @@ public class Uploader implements Runnable{
     	}
 
       	public void run() {
+      		System.out.println("Uploader: In handler run");
       		Connection newConnection = new Connection();
       		newConnection.connection = this.connection;
-      		newConnection.run();
+      		newConnection.sendersPeerID = peerID;
+      		newConnection.hasFile = hasFile;
+      		newConnection.connectionLinkedList = connectionLinkedList;
+      		// newConnection.run();
+
+      		String hostname2 = connection.getRemoteSocketAddress().toString();
+		
+			int portNumber2 = connection.getPort(); 
+
+			System.out.println("Uploader: Connection to port: "+ portNumber2 + "and hostname: "+ hostname2);
+
+      		Thread object = new Thread(newConnection);
+        	object.start();
 		}
 	}		
 }

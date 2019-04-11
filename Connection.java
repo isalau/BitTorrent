@@ -23,6 +23,11 @@ public class Connection implements Runnable{
 	public static int fileSize;
     public static int pieceSize;
     public static boolean hasFile;
+    public static int numInPeerInfo;
+    public static int my_portNumber;
+    public static int unchokingInterval;
+    public static int optimisticUnchokingInterval;
+    public static boolean notAlone = false; 
 
 	public static byte[] myBitfield;
 	private static byte[] message;  
@@ -49,6 +54,10 @@ public class Connection implements Runnable{
 	@Override
   	public void run() {
   		System.out.println("Connection: I am running");
+  		if (notAlone == true){
+  			sendHandShake();
+  		}
+  		else{
 			try{
 				InetAddress myID = InetAddress.getLocalHost();
 				String iP = myID.toString();
@@ -65,7 +74,7 @@ public class Connection implements Runnable{
 					
 					//show the message to the user
 				    String objectMessage = new String (myObjects);
-				    System.out.println("Message: " + objectMessage );
+				    System.out.println("Message: " + objectMessage);
 
 					//check what message you got
 					checkMessage(myObjects);
@@ -73,9 +82,11 @@ public class Connection implements Runnable{
 			}catch(ClassNotFoundException classnot){
 				System.err.println("Data received in unknown format");
 			}
-		}catch(IOException ioException){
-			System.out.println("Disconnect with Client " + no);
+			}catch(IOException ioException){
+				System.out.println("Disconnect with Client " + no);
+			}
 		}
+
 		// finally{
 		// 	//Close connections
 		// 	try{
@@ -96,7 +107,10 @@ public class Connection implements Runnable{
 
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
-		System.out.println("Connection: sending message: " + msg + " to Client " +no);
+		// hostname = connection.getRemoteSocketAddress().toString();
+		// portNumber = connection.getPort();
+		System.out.println("Connection: sending message: " + msg + " to Client " +no + " on port: "+ portNumber + " at addres: "+ hostname );
+ 
 		try{
 			out.writeObject(msg);
 			out.flush();
@@ -151,7 +165,7 @@ public class Connection implements Runnable{
 	           	System.out.println("Connection: received handshake message");
 	           	//check if we sent our handshake? 
 	           	if (sentHandshake == false){
-	           		sendHandShake(msg);
+	           		listenerSendHandshake();
 	           	}
 	           	sendBitfield();
 	            break;
@@ -162,7 +176,7 @@ public class Connection implements Runnable{
 			return;
 	}
 
-	public void sendHandShake(byte[] msg){				
+	public void getInfoForSendHandShake(byte[] msg){				
 		System.out.println("Connection: In sendHandShake function");
 		sentHandshake = true;
 		//get the connection you want to send the handshake too
@@ -170,33 +184,33 @@ public class Connection implements Runnable{
 		String handshakeString = new String (msg);
 		String connectionPeerID = handshakeString.substring(28);
 		int conPeerID = Integer.parseInt(connectionPeerID);
-		System.out.println("Connection: My PeerID: " + connectionPeerID);
 		for(int i = 0; i <  connectionLinkedList.size(); i++){
+			System.out.println("Connection: Their PeerID: " + connectionPeerID);
 			if(connectionLinkedList.get(i).peerID == conPeerID ){
-				// connectionLinkedList.get(i).sendHandShake();
+				hostname = connectionLinkedList.get(i).hostname;
+				portNumber = connectionLinkedList.get(i).portNumber;
 			}
 		}
+		listenerSendHandshake();
 	}
 
 	public void sendHandShake(){
-		//sentHandshake = true;
-
-		System.out.println("Connection: Sending Handshake from Connection");
+		//sentHandshake = true		
 		System.out.println("Connection: My peerID is " + sendersPeerID);
 
 		String handshake_zerobits = "0000000000";
 		String handshake_header = "P2PFILESHARINGPROJ";
 
 		try{
-			System.out.println("here 1: " + hostname + " "+ peerID);
+			System.out.println("here 1: " + hostname + " "+ portNumber);
 			connection = new Socket(hostname, portNumber);
-			System.out.println("here 2");
+			int localPort = connection.getLocalPort();
+			String localAd = connection.getLocalAddress().toString();
+			System.out.println("Connection: Sending Handshake from Connection with local port: " + localPort + " and address: " + localAd);
 			//streams
 			out = new ObjectOutputStream(connection.getOutputStream());
-			System.out.println("here 3");
 			// out.flush(); //TODO ::: Do we need this?
 			in = new ObjectInputStream(connection.getInputStream());
-			System.out.println("here 4");
 			
 			//handshake
 			message = new byte[32];
@@ -225,7 +239,7 @@ public class Connection implements Runnable{
 		         System.out.println("Unsupported character set");
 		    }
 			
-			String peerIDString = Integer.toString(peerID); 
+			String peerIDString = Integer.toString(sendersPeerID); 
 			System.arraycopy(peerIDString.getBytes(), 0, message, header_size+zerobits_size, peerID_size);
 			try {
 		         String Str4 = new String(peerIDString.getBytes( "UTF-8" ));
@@ -260,11 +274,71 @@ public class Connection implements Runnable{
 		// }
 	}
 
+	public void listenerSendHandshake(){
+		hostname = connection.getRemoteSocketAddress().toString();
+		portNumber = connection.getPort(); 
+		System.out.println("Connection: Sending Handshake from Listener");
+		// "Connection to port: "+ portNumber + "and hostname: "+ hostname);
+		
+		System.out.println("Connection: My peerID is " + sendersPeerID);
+
+		String handshake_zerobits = "0000000000";
+		String handshake_header = "P2PFILESHARINGPROJ";
+
+		// try{
+			System.out.println("here 1");
+			
+			message = new byte[32];
+			byte[] peerIDArray = ByteBuffer.allocate(4).putInt(sendersPeerID).array();
+			
+			System.arraycopy(handshake_header.getBytes(), 0, message,0, header_size);
+			// System.out.println("handshake_header: "+ handshake_header);
+			try {
+		         String Str2 = new String(handshake_header.getBytes( "UTF-8" ));
+		         // System.out.println("handshake_header Value: " + Str2 );
+		         Str2 = new String (message);
+		         // System.out.println("Message: " + Str2 );
+		    } catch ( UnsupportedEncodingException e) {
+		         System.out.println("Unsupported character set");
+		    }
+
+			
+			System.arraycopy(handshake_zerobits.getBytes(), 0, message,header_size, zerobits_size);
+			// System.out.println("handshake_zerobits: "+ handshake_zerobits);
+			try {
+		         String Str3 = new String(handshake_zerobits.getBytes( "UTF-8" ));
+		         // System.out.println("handshake_zerobits Value: " + Str3 );
+		         Str3 = new String (message);
+		         // System.out.println("Message " + Str3 );
+		    } catch ( UnsupportedEncodingException e) {
+		         System.out.println("Unsupported character set");
+		    }
+			
+			String peerIDString = Integer.toString(sendersPeerID); 
+			System.arraycopy(peerIDString.getBytes(), 0, message, header_size+zerobits_size, peerID_size);
+			try {
+		         String Str4 = new String(peerIDString.getBytes( "UTF-8" ));
+		         // System.out.println("peerIDString Value: " + Str4 );
+		         Str4 = new String (message);
+		         // System.out.println("Message: " + Str4 );
+		    } catch ( UnsupportedEncodingException e) {
+		        System.out.println("Unsupported character set");
+		    }
+
+		    sendMessage(message);
+		    //send our messages
+		    // out.writeObject(message);
+			// out.flush();
+		// }catch(IOException ioException){
+		// 	System.out.println("Could not send handshake 1: "+ ioException);
+		// }
+	}
+
 	public void sendBitfield(){
 		//create payload
 		//determine number of pieces from common.cfg
     	int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
-    	System.out.println("Uploader: Sending Bitfield with " + numOfPieces + " pieces.");
+    	System.out.println("Connection: Sending Bitfield with " + numOfPieces + " pieces.");
 
 		//determine what parts of the file I have 
 		int length = 4 + 1 + (numOfPieces/8); 
