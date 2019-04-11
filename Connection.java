@@ -33,9 +33,9 @@ public class Connection implements Runnable{
 	public static  LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
 
     public Socket connection;
-    public ObjectInputStream in;	//stream read from the socket
-    public ObjectOutputStream out;    //stream write to the socket
-	public int no;		//The index number of the client
+    private ObjectInputStream in;	//stream read from the socket
+    private ObjectOutputStream out;    //stream write to the socket
+	private int no;		//The index number of the client
 
 	/********************** constructor ***********************/
 
@@ -174,85 +174,6 @@ public class Connection implements Runnable{
 				// connectionLinkedList.get(i).sendHandShake();
 			}
 		}
-	}
-
-	public void sendHandShake(int sendersPeerID){
-		sentHandshake = true;
-
-		System.out.println("Sending Handshake from Connection");
-		System.out.println("My peerID is: " + sendersPeerID);
-
-		String handshake_zerobits = "0000000000";
-		String handshake_header = "P2PFILESHARINGPROJ";
-		System.out.println("here 1");
-		try{
-			//streams
-			System.out.println("here 2");
-			out = new ObjectOutputStream(connection.getOutputStream());
-			// out.flush(); //TODO ::: Do we need this?
-			System.out.println("here 3");
-			in = new ObjectInputStream(connection.getInputStream());
-			System.out.println("here 4");
-			//handshake
-			message = new byte[32];
-			byte[] peerIDArray = ByteBuffer.allocate(4).putInt(sendersPeerID).array();
-			
-			System.arraycopy(handshake_header.getBytes(), 0, message,0, header_size);
-			System.out.println("handshake_header: "+ handshake_header);
-			try {
-		         String Str2 = new String(handshake_header.getBytes( "UTF-8" ));
-		         System.out.println("handshake_header Value: " + Str2 );
-		         Str2 = new String (message);
-		         System.out.println("Message: " + Str2 );
-		    } catch ( UnsupportedEncodingException e) {
-		         System.out.println("Unsupported character set");
-		    }
-
-			
-			System.arraycopy(handshake_zerobits.getBytes(), 0, message,header_size, zerobits_size);
-			System.out.println("handshake_zerobits: "+ handshake_zerobits);
-			try {
-		         String Str3 = new String(handshake_zerobits.getBytes( "UTF-8" ));
-		         System.out.println("handshake_zerobits Value: " + Str3 );
-		         Str3 = new String (message);
-		         System.out.println("Message " + Str3 );
-		    } catch ( UnsupportedEncodingException e) {
-		         System.out.println("Unsupported character set");
-		    }
-			
-			String peerIDString = Integer.toString(peerID); 
-			System.arraycopy(peerIDString.getBytes(), 0, message, header_size+zerobits_size, peerID_size);
-			try {
-		         String Str4 = new String(peerIDString.getBytes( "UTF-8" ));
-		         System.out.println("peerIDString Value: " + Str4 );
-		         Str4 = new String (message);
-		         System.out.println("Message: " + Str4 );
-		    } catch ( UnsupportedEncodingException e) {
-		        System.out.println("Unsupported character set");
-		    }
-
-		    //send our messages
-		    out.writeObject(message);
-			out.flush();
-		}catch(IOException ioException){
-			System.out.println("Could not send handshake 1: "+ ioException);
-		}
-		// finally{
-		// 	//Close connections
-		// 	try{
-		// 		if(in != null){
-		// 			 in.close();
-		// 		}
-		// 		if(out != null){
-		// 			 out.close();
-		// 		}
-		// 		if (connection != null){
-		// 			 connection.close();
-		// 		}	
-		//  }catch(IOException ioException){
-		// 	System.out.println("Could not send handshake 2:"+ ioException);
-		// 	 }
-		// }
 	}
 
 	public void sendBitfield(){
