@@ -64,6 +64,7 @@ public class Client implements Runnable{
 		up.fileSize = fileSize;
 		up.pieceSize = pieceSize;
 		up.hasFile = hasFile;
+		up.numInPeerInfo = numInPeerInfo;
 		up.peerLinkedList = PeerLinkedList; 
 
 		Thread object = new Thread(up);

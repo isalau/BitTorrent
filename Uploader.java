@@ -9,6 +9,7 @@ import java.net.UnknownHostException; //for hostname
 public class Uploader implements Runnable{
 	public int portNumber;
 	public static int peerID;
+	public static int numInPeerInfo;
 
 	// handshake  variables
 	public static final int zerobits_size = 10;
@@ -47,6 +48,17 @@ public class Uploader implements Runnable{
 
         ServerSocket listener = new ServerSocket(portNumber);
 		int clientNum = 1;
+
+		//I have peers
+		if(numInPeerInfo != 0){
+			System.out.println("Uploader: I should send a handshake to my peers");
+			//for all of my peers send a handshake
+			for(int i = 0; i < peerLinkedList.size(); i++){
+				Connection newConnection = new Connection();
+				newConnection.sendHandShake(peerID);
+			}
+		}
+
     	try {
     		while(true) {
         		new Handler(listener.accept(),clientNum).start();
@@ -75,6 +87,7 @@ public class Uploader implements Runnable{
 
       	public void run() {
       		//pass connection to connection somehow
+      		Connection newConnection = new Connection();
 		}
 	}		
 }
