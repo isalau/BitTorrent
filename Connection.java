@@ -32,8 +32,7 @@ public class Connection implements Runnable{
 	public static  LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
 	public static  LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
 
-
-    private Socket connection;
+    public Socket connection;
     private ObjectInputStream in;	//stream read from the socket
     private ObjectOutputStream out;    //stream write to the socket
 	private int no;		//The index number of the client
@@ -43,6 +42,7 @@ public class Connection implements Runnable{
 	public void Connection (){}
 
 	/********************** functions ***********************/
+	
 	//run establishes individual connection
 	@Override
   	public void run() {
@@ -119,7 +119,7 @@ public class Connection implements Runnable{
 	           	//received an unchoke message
 	        	System.out.println("Connection: received unchoke message");
 	        	// create request 
-        		request();
+        		sendRequest();
 	            break;
 	        case 2:
 	        	System.out.println("Connection: received interested message");
@@ -171,7 +171,7 @@ public class Connection implements Runnable{
 		System.out.println("Connection: My PeerID: " + connectionPeerID);
 		for(int i = 0; i <  connectionLinkedList.size(); i++){
 			if(connectionLinkedList.get(i).peerID == conPeerID ){
-				connectionLinkedList.get(i).sendHandShake();
+				// connectionLinkedList.get(i).sendHandShake();
 			}
 		}
 	}
@@ -180,7 +180,7 @@ public class Connection implements Runnable{
 		//create payload
 		//determine number of pieces from common.cfg
     	int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
-    	System.out.println("Uploader: Sending Bitfield with " + numOfPieces " pieces.");
+    	System.out.println("Uploader: Sending Bitfield with " + numOfPieces + " pieces.");
 
 		//determine what parts of the file I have 
 		int length = 4 + 1 + (numOfPieces/8); 
