@@ -9,6 +9,8 @@ import java.net.UnknownHostException; //for hostname
 public class Uploader implements Runnable{
 	public int portNumber;
 	public static int peerID;
+	public static int numInPeerInfo;
+	public static String hostname;
 
 	// handshake  variables
 	public static final int zerobits_size = 10;
@@ -43,18 +45,36 @@ public class Uploader implements Runnable{
 	}
   	
   	public void start() throws Exception {
-    	System.out.println("Uploader: I am starting");
+    	System.out.println("Uploader: I am starting on port: "+ portNumber);
 
         ServerSocket listener = new ServerSocket(portNumber);
 		int clientNum = 1;
+
+		
+		//check if you need to send a handshake and I have peers before me
+		if(sentHandshake == false && numInPeerInfo != 0 ){
+			for (int i = 0; i < peerLinkedList.size(); i++){
+				Connection newConnection = new Connection();
+				newConnection.sendersPeerID = peerID;
+				System.out.println("Uploader: Trying to connect to peerID " + peerLinkedList.get(i).peerID);
+				newConnection.peerID = peerLinkedList.get(i).peerID;
+				newConnection.portNumber = peerLinkedList.get(i).port;
+				System.out.println("Uploader: Trying to connect to hostName " + peerLinkedList.get(i).hostName);
+				newConnection.hostname = peerLinkedList.get(i).hostName; 
+				newConnection.sendHandShake();
+			}
+			sentHandshake = true;
+		}
+
     	try {
     		while(true) {
+    			System.out.println("Uploader: I sent handshakes if needed");
         		new Handler(listener.accept(),clientNum).start();
 				System.out.println("Client "  + clientNum + " is connected!");
 				clientNum++;
     		}
     	} finally {
-        	listener.close();
+        	// listener.close();
     	}
 	}
 
@@ -74,7 +94,9 @@ public class Uploader implements Runnable{
     	}
 
       	public void run() {
-      		//pass connection to connection somehow
+      		Connection newConnection = new Connection();
+      		newConnection.connection = this.connection;
+      		newConnection.run();
 		}
 	}		
 }

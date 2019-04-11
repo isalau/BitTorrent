@@ -36,6 +36,7 @@ public class Client implements Runnable{
 
 
  	Uploader up = new Uploader();
+ 	public boolean sentHandshake = false;
 
 	//constructor
 	public void Client(){}
@@ -45,13 +46,15 @@ public class Client implements Runnable{
 		//start timers 
 		initalizeTimer();
 		
-		System.out.println("Run in client with peerID "+ this.peerID+ " with num in PeerInfo"+ numInPeerInfo);
+		System.out.println("Run in client with peerID "+ this.peerID+ " with num in PeerInfo "+ numInPeerInfo);
 		
+		//tracker initalization 
+		addPeers();
+
 		//start our listener/ uploader 
 		runUploader();
 
-        //tracker initalization 
-		addPeers();
+        
 	}
 
 	
@@ -64,6 +67,7 @@ public class Client implements Runnable{
 		up.fileSize = fileSize;
 		up.pieceSize = pieceSize;
 		up.hasFile = hasFile;
+		up.numInPeerInfo = numInPeerInfo;
 		up.peerLinkedList = PeerLinkedList; 
 
 		Thread object = new Thread(up);
