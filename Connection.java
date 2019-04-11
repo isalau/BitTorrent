@@ -199,9 +199,11 @@ public class Connection implements Runnable{
     	}
 	}
 
-	public void sendChokeMessage(){}
+	public void sendChokeMessage(){
+	}
 
-	public void sendUnchokeMessage(){}
+	public void sendUnchokeMessage(){
+	}
 
 	public void determineIfInterestedFromHave(){
 		System.out.println("Connection: Determining If Interested From Have");
@@ -317,5 +319,6 @@ public class Connection implements Runnable{
 		sendMessage(requestMessage);
 	}
 
-	public void sendPiece(){}
+	public void sendPiece(){
+	}
 }		
