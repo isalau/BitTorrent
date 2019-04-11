@@ -20,6 +20,7 @@ public class Connection implements Runnable{
 	public static final int total_length = 32;
 
 	public static boolean sentHandshake = false;
+	public static boolean notAlone = false; 
 	public static int fileSize;
     public static int pieceSize;
     public static boolean hasFile;
@@ -27,7 +28,7 @@ public class Connection implements Runnable{
     public static int my_portNumber;
     public static int unchokingInterval;
     public static int optimisticUnchokingInterval;
-    public static boolean notAlone = false; 
+    
 
 	public static byte[] myBitfield;
 	private static byte[] message;  
@@ -107,8 +108,6 @@ public class Connection implements Runnable{
 
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
-		// hostname = connection.getRemoteSocketAddress().toString();
-		// portNumber = connection.getPort();
 		System.out.println("Connection: sending message: " + msg + " to Client " +no + " on port: "+ portNumber + " at addres: "+ hostname );
  
 		try{
@@ -126,54 +125,56 @@ public class Connection implements Runnable{
 		byte messageValue = msg[4];
 		System.out.println("Connection: message type: " + messageValue + " received from client");
 
-		switch (messageValue) {
-	        case 0:
-	        	System.out.println("Connection: received choke message");
-	            
-	            break;
-	        case 1:
-	           	//received an unchoke message
-	        	System.out.println("Connection: received unchoke message");
-	        	// create request 
-        		sendRequest();
-	            break;
-	        case 2:
-	        	System.out.println("Connection: received interested message");
-	            break;
-	        case 3:
-	            System.out.println("Connection: received not interested message");
-	            break;
-	        case 4:
-	            System.out.println("Connection: received have message");
-				determineIfInterestedFromHave();
-	            break;
-	        case 5:
-	        	System.out.println("Connection: received bitfield message");
-	            determineIfInterestedFromBitfield(msg);
-	            break;
-	        case 6:
-	            //got a requestMessage
-	        	System.out.println("Connection: received request message");
-	        	//create piece
-	        	//sendPiece();
-	            break;
-	        case 7:
-	        	System.out.println("Connection: received piece message");
-	            //createRequestMessage();
-	            break;
-	       	case 73:
-	           	System.out.println("Connection: received handshake message");
-	           	//check if we sent our handshake? 
-	           	if (sentHandshake == false){
-	           		listenerSendHandshake();
-	           	}
-	           	sendBitfield();
-	            break;
-	        default:
-	            System.out.println("Connection: Not a valid type");
-	            break;
-	        }
-			return;
+		while(true){
+			switch (messageValue) {
+		        case 0:
+		        	System.out.println("Connection: received choke message");
+		            
+		            break;
+		        case 1:
+		           	//received an unchoke message
+		        	System.out.println("Connection: received unchoke message");
+		        	// create request 
+	        		sendRequest();
+		            break;
+		        case 2:
+		        	System.out.println("Connection: received interested message");
+		            break;
+		        case 3:
+		            System.out.println("Connection: received not interested message");
+		            break;
+		        case 4:
+		            System.out.println("Connection: received have message");
+					determineIfInterestedFromHave();
+		            break;
+		        case 5:
+		        	System.out.println("Connection: received bitfield message");
+		            determineIfInterestedFromBitfield(msg);
+		            break;
+		        case 6:
+		            //got a requestMessage
+		        	System.out.println("Connection: received request message");
+		        	//create piece
+		        	//sendPiece();
+		            break;
+		        case 7:
+		        	System.out.println("Connection: received piece message");
+		            //createRequestMessage();
+		            break;
+		       	case 73:
+		           	System.out.println("Connection: received handshake message");
+		           	//check if we sent our handshake? 
+		           	if (sentHandshake == false){
+		           		listenerSendHandshake();
+		           	}
+		           	sendBitfield();
+		            break;
+		        default:
+		            System.out.println("Connection: Not a valid type");
+		            break;
+		        }
+				return;
+		}
 	}
 
 	public void getInfoForSendHandShake(byte[] msg){				
@@ -278,60 +279,50 @@ public class Connection implements Runnable{
 		hostname = connection.getRemoteSocketAddress().toString();
 		portNumber = connection.getPort(); 
 		System.out.println("Connection: Sending Handshake from Listener");
-		// "Connection to port: "+ portNumber + "and hostname: "+ hostname);
-		
 		System.out.println("Connection: My peerID is " + sendersPeerID);
 
 		String handshake_zerobits = "0000000000";
 		String handshake_header = "P2PFILESHARINGPROJ";
-
-		// try{
-			System.out.println("here 1");
 			
-			message = new byte[32];
-			byte[] peerIDArray = ByteBuffer.allocate(4).putInt(sendersPeerID).array();
-			
-			System.arraycopy(handshake_header.getBytes(), 0, message,0, header_size);
-			// System.out.println("handshake_header: "+ handshake_header);
-			try {
-		         String Str2 = new String(handshake_header.getBytes( "UTF-8" ));
-		         // System.out.println("handshake_header Value: " + Str2 );
-		         Str2 = new String (message);
-		         // System.out.println("Message: " + Str2 );
-		    } catch ( UnsupportedEncodingException e) {
-		         System.out.println("Unsupported character set");
-		    }
+		message = new byte[32];
+		byte[] peerIDArray = ByteBuffer.allocate(4).putInt(sendersPeerID).array();
+		
+		System.arraycopy(handshake_header.getBytes(), 0, message,0, header_size);
+		// System.out.println("handshake_header: "+ handshake_header);
+		try {
+	         String Str2 = new String(handshake_header.getBytes( "UTF-8" ));
+	         // System.out.println("handshake_header Value: " + Str2 );
+	         Str2 = new String (message);
+	         // System.out.println("Message: " + Str2 );
+	    } catch ( UnsupportedEncodingException e) {
+	         System.out.println("Unsupported character set");
+	    }
 
 			
-			System.arraycopy(handshake_zerobits.getBytes(), 0, message,header_size, zerobits_size);
-			// System.out.println("handshake_zerobits: "+ handshake_zerobits);
-			try {
-		         String Str3 = new String(handshake_zerobits.getBytes( "UTF-8" ));
-		         // System.out.println("handshake_zerobits Value: " + Str3 );
-		         Str3 = new String (message);
-		         // System.out.println("Message " + Str3 );
-		    } catch ( UnsupportedEncodingException e) {
-		         System.out.println("Unsupported character set");
-		    }
+		System.arraycopy(handshake_zerobits.getBytes(), 0, message,header_size, zerobits_size);
+		// System.out.println("handshake_zerobits: "+ handshake_zerobits);
+		try {
+	         String Str3 = new String(handshake_zerobits.getBytes( "UTF-8" ));
+	         // System.out.println("handshake_zerobits Value: " + Str3 );
+	         Str3 = new String (message);
+	         // System.out.println("Message " + Str3 );
+	    } catch ( UnsupportedEncodingException e) {
+	         System.out.println("Unsupported character set");
+	    }
 			
-			String peerIDString = Integer.toString(sendersPeerID); 
-			System.arraycopy(peerIDString.getBytes(), 0, message, header_size+zerobits_size, peerID_size);
-			try {
-		         String Str4 = new String(peerIDString.getBytes( "UTF-8" ));
-		         // System.out.println("peerIDString Value: " + Str4 );
-		         Str4 = new String (message);
-		         // System.out.println("Message: " + Str4 );
-		    } catch ( UnsupportedEncodingException e) {
-		        System.out.println("Unsupported character set");
-		    }
+		String peerIDString = Integer.toString(sendersPeerID); 
+		System.arraycopy(peerIDString.getBytes(), 0, message, header_size+zerobits_size, peerID_size);
+		try {
+	         String Str4 = new String(peerIDString.getBytes( "UTF-8" ));
+	         // System.out.println("peerIDString Value: " + Str4 );
+	         Str4 = new String (message);
+	         // System.out.println("Message: " + Str4 );
+	    } catch ( UnsupportedEncodingException e) {
+	        System.out.println("Unsupported character set");
+	    }
 
-		    sendMessage(message);
-		    //send our messages
-		    // out.writeObject(message);
-			// out.flush();
-		// }catch(IOException ioException){
-		// 	System.out.println("Could not send handshake 1: "+ ioException);
-		// }
+	    
+	    sendMessage(message);
 	}
 
 	public void sendBitfield(){
