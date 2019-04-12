@@ -30,6 +30,7 @@ public class Connection implements Runnable{
     
 
 	public static byte[] myBitfield;
+	public static byte [] peerBitfield; 
 	private static byte[] message;  
 	private static byte[] interestedMessage;
 	private static byte[] notInterestedMessage;
@@ -138,6 +139,7 @@ public class Connection implements Runnable{
 		            break;
 		        case 2:
 		        	System.out.println("Connection: received interested message");
+		        	receivedInterseted();
 		            break;
 		        case 3:
 		            System.out.println("Connection: received not interested message");
@@ -189,6 +191,9 @@ public class Connection implements Runnable{
 				out = new ObjectOutputStream(connection.getOutputStream());
 				out.flush(); //TODO ::: Do we need this?
 				in = new ObjectInputStream(connection.getInputStream());
+			}else{
+				//need to add to peer and connection list
+				addPeers();
 			}
 
 			int localPort = connection.getLocalPort();
@@ -244,7 +249,7 @@ public class Connection implements Runnable{
 		}
 
 		sendBitfield();
-		
+
 		try{
 			while(true){
 				//receive the message sent from the client
@@ -278,6 +283,24 @@ public class Connection implements Runnable{
 		// 	System.out.println("Could not send handshake 2:"+ ioException);
 		// 	 }
 		// }
+	}
+
+	public void addPeers(){
+		//place all info in a peer object
+    	Peer newPeer = new Peer();
+        newPeer.peerID = sendersPeerID; 
+        newPeer.hostName = hostname; 
+        newPeer.port = portNumber;            
+        newPeer.hasFile =  false; //assume false until proven wrong by receiving bitfield or have message 
+        newPeer.interested = false; 
+		newPeer.prefferedNeighbor = false;
+		newPeer.optimisticNeighbor = false;
+
+		//assume empyty bitfield until proven wrong by receiving bitfield or have message 
+		byte[] emptyArray = new byte[32];
+		newPeer.bitfield = emptyArray;
+        
+        peerLinkedList.add(newPeer);
 	}
 
 	/*
@@ -354,6 +377,27 @@ public class Connection implements Runnable{
     		System.out.println("Connection: Sending Bitfield with " + numOfPieces + " pieces.");
     		sendMessage(myBitfield);
     	}
+	}
+
+	public void receivedInterseted(){
+		//update Peer to reflect that it is intersted in Peer List and Connection List
+		
+		//just to test
+		for (int i = 0; i < peerLinkedList.size(); i++){
+			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " is interested: "+ peerLinkedList.get(i).interested); 
+		}
+
+		//Peer List 
+		for (int i =0; i < peerLinkedList.size(); i++){
+			if( sendersPeerID == peerLinkedList.get(i).peerID){
+				peerLinkedList.get(i).interested = true; 
+			}
+		}
+
+		//just to test
+		for (int i =0; i < peerLinkedList.size(); i++){
+				System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " is interested: "+ peerLinkedList.get(i).interested); 
+		}
 	}
 
 	public void sendChokeMessage(){
