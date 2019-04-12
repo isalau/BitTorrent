@@ -46,6 +46,11 @@ public class Connection extends Uploader implements Runnable{
     private ObjectInputStream in;	//stream read from the socket
     private ObjectOutputStream out;    //stream write to the socket
 	public int no;		//The index number of the client
+	public int chunksDownloaded; 
+	public long connectionDownloadRate;
+	public long startDownloadTime;
+	public long stopDownloadTime;
+	
 
 	//handshake variables
 	public static final int zerobits_size = 10;
@@ -176,7 +181,8 @@ public class Connection extends Uploader implements Runnable{
 		            break;
 		        case 7:
 		        	System.out.println("Connection: received piece message");
-		            //createRequestMessage();
+		            //stop download timer
+					stopDownloadTime = System.currentTimeMillis();
 		            break;
 		       	case 73:
 		           	System.out.println("Connection: received handshake message");
@@ -565,8 +571,22 @@ public class Connection extends Uploader implements Runnable{
 		requestMessage[5] = (byte) requestPieceIndex;
 		
 		sendMessage(requestMessage);
+
+		//start timer 
+		startDownloadTime = System.currentTimeMillis();
 	}
 
 	public void sendPiece(){
+	}
+
+	public void downloadChunks(){
+		//download somehow....
+		//determine rate
+		DetermineRate();
+	}
+
+	public long DetermineRate(){
+		connectionDownloadRate =  connectionDownloadRate /(startDownloadTime - stopDownloadTime);
+		return connectionDownloadRate;
 	}
 }		

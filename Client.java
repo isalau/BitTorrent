@@ -33,6 +33,7 @@ public class Client implements Runnable{
     public int pieceSize;
 	public int unchokingInterval;
 	public int optimisticUnchokingInterval;
+	public int numOfPreferredNeighbors;
 
 
  	Uploader up = new Uploader();
@@ -145,7 +146,7 @@ public class Client implements Runnable{
 
 		TimerTask unChoke = new TimerTask(){
 			public void run(){
-				// unChoke(unchokingInterval);
+				unChoke(unchokingInterval);
 			}
 		};
 
@@ -182,23 +183,99 @@ public class Client implements Runnable{
 	public void unChoke(int unchokingInterval){
 		updateChokeTimer();
 		System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
-
-		System.out.println("Client: Unchoking peer list "+ peerLinkedList);
+		determinePreferredNeighbors();
 	}
 
-	public void determinePrefferedNeighbors(){
-		//
+	public void determinePreferredNeighbors(){
+		System.out.println("Client: Dtermining Preferred Neighbors "+ peerLinkedList);
+
+		//update my peer Linked List 
+		peerLinkedList = up.peerLinkedList;
+		connectionLinkedList = up.connectionLinkedList;
+
+
+		//check to see if k is greater than size of connection list 
+		if(numOfPreferredNeighbors > connectionLinkedList.size()){
+			//make all neighbors in connection and peer list preffereed neighbors and unchoke 
+			for(int i = 0; i < peerLinkedList.size(); i++){
+				peerLinkedList.get(i).prefferedNeighbor == true;
+			}
+			for(int i = 0; i < connectionLinkedList.size(); i++){
+				connectionLinkedList.get(i).sendUnchokeMessage();
+			}
+		//take the top k elements based on connectionLinkedList.get(i).connectionDownloadRate
+		}else{
+			//check if I have complete file if yes
+			if(hasFile == true){
+				//determines preferred neighbors randomly among those that are interested, not using download rates
+				pickRandomNeighbors();
+			}else{
+				//check to see that peer is interested 
+				//select preferred neighbors
+					//if neighbor is not unchoked send unchoke message
+					//if nighbor was preferred but now is not send choke message // unless it is an optimistically unchoken neighbor
+			}				
+		}
 	}
 
-	public void pickRandomNeighbor(){
+	public void pickRandomNeighbors(){
+		System.out.println("Client: I have the complete file. Picking Preferred Neighbors Randomly");
 
-		//get number of peers
-        int numOfPeers = peerLinkedList.size();
-        
-        //pick rand from range of peers use rand for that
-        int rand = new Random().nextInt(numOfPeers);
+		try{
+			//update my Linked Lists 
+			peerLinkedList = up.peerLinkedList;
+			connectionLinkedList = up.connectionLinkedList;
 
-        //check that not already unchoked 
+			//actually make a random decision 
+			if(numOfPreferredNeighbors < peerLinkedList.size()){
+				//make random assignment array 
+		        ArrayList<Integer> rand = new int[peerLinkedList.size()];
+		        for(int i = 0; i < rand.size(); i++){
+		        	rand.add(i);
+		        }  
+		        Collections.shuffle(rand);
+
+		        ArrayList<Integer> oldPreferreds = new int[peerLinkedList.size()];
+		        //make everyone not a preferred neighbor
+		       	for(int i = 0; i < peerLinkedList.size(); i++){
+		        	//check if preferred
+		        	if(peerLinkedList.get(i).prefferedNeighbor == true){
+			        	peerLinkedList.get(i).prefferedNeighbor = false;
+			        	oldPreferreds.add(i);
+			        }
+		        }	
+
+		        //pick numOfPreferredNeighbors new preferred neighbors
+		        for(int i = 0; i < numOfPreferredNeighbors; i++){
+		        	//pick rand from range of peers use rand for that
+		        	//check it's not an index you already picked
+		        	int newPrefferedIndex = rand.get(i);
+	        		//new preferred neighbor
+	        		peerLinkedList.get(newPrefferedIndex).prefferedNeighbor = true;
+		        }
+		        //send out choke message to people who are no longer preferred neighbors
+		        for(int i = 0; peerLinkedList.size(); i++ ){
+		        	if(oldPreferreds.contains(i)==true){
+		        		connectionLinkedList.get(i).sendChokeMessage();
+		        	}
+					if(peerLinkedList.get(i).prefferedNeighbor == true && oldPreferreds.contains(i)==false){
+	        			connectionLinkedList.get(i).sendUnchokeMessage();
+		        	}		        
+		        }
+			}else{
+				//make everyone a preferred neighbor
+		       	for(int i = 0; i < numOfPreferredNeighbors; i++){
+		        	//check if preffered. 
+		        	if(peerLinkedList.get(i).prefferedNeighbor == false){
+			        	peerLinkedList.get(i).prefferedNeighbor = true;
+			        	connectionLinkedList.get(i).sendUnchokeMessage();
+			        }
+				}
+			}
+		}catch(Exception e){
+			System.out.print("pickRandomNeighbors Error: "); 
+			e.printStackTrace();
+		}
 	}
 
 	//optimistically picked neighbor timer
