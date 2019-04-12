@@ -29,7 +29,7 @@ public class FileManager{
         	pieceSize = maxPieceSize - 1; //minus one because we want a buffer space
         }
 
-        windowSize = fileSize/100 ;
+        windowSize = fileSize/10 ;
 	}
 
 	public static void splitFile() throws IOException{		 
@@ -42,7 +42,7 @@ public class FileManager{
 		int lastByteRead = 0;
 		int start =0;
 		int i= 0; //where we are in bitfield map
-
+		byte[] fileChunkArray = new byte[windowSize];
 		//read in the file
 		try{
 			FileInputStream fileInputStream = new FileInputStream(file);
@@ -50,11 +50,11 @@ public class FileManager{
 				if (num <= 5){
 					windowSize = num;
 				}
-				byte[] fileChunkArray = new byte[fileSize];
-
-				lastByteRead = fileInputStream.read(fileChunkArray, start, windowSize);
+				// byte[] fileChunkArray = new byte[windowSize];
 				
-				start = start +windowSize;
+				lastByteRead = fileInputStream.read(fileChunkArray,0,windowSize);
+				
+				// start = start +windowSize;
 				
 				// String s1 = new String(fileChunkArray);
 				System.out.print("the chunkarray length is :" + fileChunkArray.length);
