@@ -167,7 +167,7 @@ public class Connection implements Runnable{
 		           		sendHandShake();
 		           		// listenerSendHandshake();
 		           	}
-		           	sendBitfield();
+		           	
 		            break;
 		        default:
 		            System.out.println("Connection: Not a valid type");
@@ -243,6 +243,8 @@ public class Connection implements Runnable{
 			System.out.println("Could not send handshake 1: "+ ioException);
 		}
 
+		sendBitfield();
+		
 		try{
 			while(true){
 				//receive the message sent from the client
