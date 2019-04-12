@@ -54,7 +54,6 @@ public class Client implements Runnable{
 		//start our listener/ uploader 
 		runUploader();
 	}
-
 	
 	public void runUploader(){
 		System.out.println("Client: Calling run uploader");
@@ -140,7 +139,7 @@ public class Client implements Runnable{
 
 		TimerTask optUnChoke = new TimerTask(){
 			public void run(){
-				// optimisticUnchoke(optimisticUnchokingInterval);
+				optimisticUnchoke(optimisticUnchokingInterval);
 			}
 		};
 
