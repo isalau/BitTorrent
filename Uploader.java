@@ -34,6 +34,8 @@ public class Uploader implements Runnable{
     public static int unchokingInterval;
     public static int optimisticUnchokingInterval;
 
+    public Handler handler;
+
 	@Override
 	public void run() {
 		try{
@@ -48,7 +50,6 @@ public class Uploader implements Runnable{
 
         ServerSocket listener = new ServerSocket(portNumber);
 		clientNum = 1;
-
 		
 		//check if you need to send a handshake and I have peers before me
 		if(sentHandshake == false && numInPeerInfo != 0 ){
@@ -56,34 +57,39 @@ public class Uploader implements Runnable{
 				System.out.println("Uploader: Trying to connect to peerID " + peerLinkedList.get(i).peerID);
 				System.out.println("Uploader: Trying to connect to hostName " + peerLinkedList.get(i).hostName);
 
-				Connection newConnection = new Connection();
-				//their info 
-				newConnection.peerID = peerLinkedList.get(i).peerID;
-				newConnection.hostname = peerLinkedList.get(i).hostName;
-				newConnection.portNumber = peerLinkedList.get(i).port;
-				newConnection.hasFile = peerLinkedList.get(i).hasFile;
+				for (int j =0; j < connectionLinkedList.size(); j++){
+					if(connectionLinkedList.get(j).peerID == peerLinkedList.get(i).peerID){
+						// Connection newConnection = new Connection();
+						//their info 
+						connectionLinkedList.get(j).peerID = peerLinkedList.get(j).peerID;
+						connectionLinkedList.get(j).hostname = peerLinkedList.get(j).hostName;
+						connectionLinkedList.get(j).portNumber = peerLinkedList.get(j).port;
+						connectionLinkedList.get(j).hasFile = peerLinkedList.get(j).hasFile;
 
-				//my info 
-				newConnection.sendersPeerID = peerID;
-				newConnection.sendersHostName = hostname;
-            	newConnection.sendersPort = portNumber; // this is currently listener will change
-            	newConnection.sendersHasFile = hasFile;  // this is currently listener will change
-            	
-            	newConnection.alone = false;
-            	newConnection.fileSize = fileSize;
-				newConnection.pieceSize = pieceSize;
-				newConnection.unchokingInterval = unchokingInterval;
-				newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
+						//my info 
+						connectionLinkedList.get(j).sendersPeerID = peerID;
+						connectionLinkedList.get(j).sendersHostName = hostname;
+		            	connectionLinkedList.get(j).sendersPort = portNumber; // this is currently listener will change
+		            	connectionLinkedList.get(j).sendersHasFile = hasFile;  // this is currently listener will change
+		            	
+		            	connectionLinkedList.get(j).alone = false;
+		            	connectionLinkedList.get(j).fileSize = fileSize;
+						connectionLinkedList.get(j).pieceSize = pieceSize;
+						connectionLinkedList.get(j).unchokingInterval = unchokingInterval;
+						connectionLinkedList.get(j).optimisticUnchokingInterval= optimisticUnchokingInterval;
 
-				newConnection.numInPeerInfo = numInPeerInfo;
-								
-				newConnection.peerLinkedList = peerLinkedList;
-				connectionLinkedList.add(newConnection);
-				newConnection.connectionLinkedList = connectionLinkedList;
+						connectionLinkedList.get(j).numInPeerInfo = numInPeerInfo;
+										
+						connectionLinkedList.get(j).peerLinkedList = peerLinkedList;
+						connectionLinkedList.add(connectionLinkedList.get(j));
+						connectionLinkedList.get(j).connectionLinkedList = connectionLinkedList;
 
-      			Thread object = new Thread(newConnection);
-        		object.start();
-        		System.out.println("Thread 1 state: " + object.getState()); 
+		      			Thread object = new Thread(connectionLinkedList.get(j));
+		        		object.start();
+		        		System.out.println("Thread 1 state: " + object.getState()); 
+					}
+				}
+				
 			}
 			sentHandshake = true;
 		}
@@ -91,12 +97,13 @@ public class Uploader implements Runnable{
     	try {
     		while(true) {
     			Socket peer = listener.accept();
-    			new Handler(peer,clientNum).start();
-
+    			handler = new Handler(peer,clientNum);
+    			handler.start();
+    			peerLinkedList = handler.newConnection.peerLinkedList;
+    			connectionLinkedList = handler.newConnection.connectionLinkedList;
     			
     			System.out.println("Client "  + clientNum + " is connected!");
     			System.out.println("Uploader accepted new connection from " + peer.getInetAddress() + " at port " + peer.getPort());
-        		
 				
 				clientNum++;
     		}
@@ -105,15 +112,17 @@ public class Uploader implements Runnable{
     	}
 	}
 
+
 	/**
  	* A handler thread class.  Handlers are spawned from the listening
  	* loop and are responsible for dealing with a single client's requests.
  	*/
-	private static class Handler extends Thread {
+	public static class Handler extends Thread {
 		private Socket connection;
         private ObjectInputStream in;	//stream read from the socket
         private ObjectOutputStream out;    //stream write to the socket
 		private int no;		//The index number of the client
+		public Connection newConnection; 
 
 		public Handler(Socket connection, int no) {
         	this.connection = connection;
@@ -122,7 +131,7 @@ public class Uploader implements Runnable{
 
       	public void run() {
       		System.out.println("Uploader: In handler run");
-      		Connection newConnection = new Connection();
+      		newConnection = new Connection();
       		newConnection.connection = this.connection;
       		
       		//their info 

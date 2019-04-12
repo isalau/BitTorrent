@@ -6,14 +6,14 @@ import java.util.*;
 import java.net.InetAddress; //for hostname
 import java.net.UnknownHostException; //for hostname
 
-public class Connection implements Runnable{
+public class Connection extends Uploader implements Runnable{
 	/**********************variables***********************/
 	
 	//If I am peer A this is peer B's info
-	public static int peerID;
-	public static String hostname;
-	public static int portNumber;
-	public static boolean hasFile;
+	public  int peerID;
+	public  String hostname;
+	public  int portNumber;
+	public  boolean hasFile;
 
 	//My Info 
 	public static int sendersPeerID;
@@ -35,7 +35,9 @@ public class Connection implements Runnable{
 	private static byte[] interestedMessage;
 	private static byte[] notInterestedMessage;
 	private static byte[] requestMessage;
-	private static byte[] haveMessage;       
+	private static byte[] haveMessage;    
+	private static byte[] chokeMessage;
+	private static byte[] unChokeMessage;    
 
 	public static  LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
 	public static  LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
@@ -207,7 +209,6 @@ public class Connection implements Runnable{
 	            // Catch unexpected Exceptions.
 	            System.out.println("Hanshake exception 2: " + exception);
 	        }
-
 	        if (alone == false){
 				out = new ObjectOutputStream(connection.getOutputStream());
 				out.flush(); //TODO ::: Do we need this?
@@ -309,7 +310,7 @@ public class Connection implements Runnable{
 	public void addPeers(){
 		//place all info in a peer object
     	Peer newPeer = new Peer();
-        newPeer.peerID = sendersPeerID; 
+        newPeer.peerID = peerID; 
         newPeer.hostName = hostname; 
         newPeer.port = portNumber;            
         newPeer.hasFile =  false; //assume false until proven wrong by receiving bitfield or have message 
@@ -322,59 +323,39 @@ public class Connection implements Runnable{
 		newPeer.bitfield = emptyArray;
         
         peerLinkedList.add(newPeer);
+
+     	System.out.println("Connection: Adding Peers " + peerLinkedList);
+
+     	Connection newConnection2 = new Connection();
+    	//their info 
+    	newConnection2.peerID = peerID;
+    	newConnection2.hostname = hostname;
+    	newConnection2.portNumber = portNumber;
+    	newConnection2.hasFile = hasFile;
+
+    	//my info 
+    	newConnection2.sendersPeerID = sendersPeerID;
+    	newConnection2.sendersHostName = sendersHostName;
+    	newConnection2.sendersPort = sendersPort; // this is currently listener will change
+    	newConnection2.sendersHasFile = sendersHasFile;  // this is currently listener will change
+
+    	newConnection2.alone = false;	
+        newConnection2.fileSize = fileSize;
+        newConnection2.pieceSize = pieceSize;
+        newConnection2.unchokingInterval = unchokingInterval;
+        newConnection2.optimisticUnchokingInterval = optimisticUnchokingInterval;
+
+        newConnection2.numInPeerInfo = numInPeerInfo; 
+        newConnection2.myBitfield = myBitfield;
+
+		connectionLinkedList.add(newConnection2);
+
+		newConnection2.peerLinkedList = peerLinkedList;
+		newConnection2.connectionLinkedList = connectionLinkedList;
+
+     	connectionLinkedList.add(newConnection2);
+     	System.out.println("Connection: Adding Connections " + connectionLinkedList);
 	}
-
-	/*
-	public void listenerSendHandshake(){
-		sentHandshake = true;	
-
-		hostname = connection.getRemoteSocketAddress().toString();
-		portNumber = connection.getPort(); 
-		int localPort = connection.getLocalPort();
-		String localAd = connection.getLocalAddress().toString();
-
-		System.out.println("Connection: Sending Handshake from Listener to : " + hostname + " with port number "+ portNumber);
-		System.out.println("My peerID is: " + sendersPeerID);
-		System.out.println("My port number is: " + localPort);
-		System.out.println("My hostname is: " + localAd);
-
-
-		String handshake_zerobits = "0000000000";
-		String handshake_header = "P2PFILESHARINGPROJ";
-			
-		message = new byte[32];
-		byte[] peerIDArray = ByteBuffer.allocate(4).putInt(sendersPeerID).array();
-		
-		System.arraycopy(handshake_header.getBytes(), 0, message,0, header_size);
-		try {
-	         String Str2 = new String(handshake_header.getBytes( "UTF-8" ));
-	         Str2 = new String (message);
-	    } catch ( UnsupportedEncodingException e) {
-	         System.out.println("Unsupported character set");
-	    }
-
-			
-		System.arraycopy(handshake_zerobits.getBytes(), 0, message,header_size, zerobits_size);
-		try {
-	         String Str3 = new String(handshake_zerobits.getBytes( "UTF-8" ));
-	         Str3 = new String (message);
-	    } catch ( UnsupportedEncodingException e) {
-	         System.out.println("Unsupported character set");
-	    }
-			
-		String peerIDString = Integer.toString(sendersPeerID); 
-		System.arraycopy(peerIDString.getBytes(), 0, message, header_size+zerobits_size, peerID_size);
-		try {
-	         String Str4 = new String(peerIDString.getBytes( "UTF-8" ));
-	         Str4 = new String (message);
-	         // System.out.println("Connection: Sending Handshake with value of " + Str4 );
-	    } catch ( UnsupportedEncodingException e) {
-	        System.out.println("Unsupported character set");
-	    }
-
-	    sendMessage(message);
-	}
-	*/
 
 	public void sendBitfield(){
 		//create payload
@@ -421,7 +402,7 @@ public class Connection implements Runnable{
 		}
 	}
 
-		public void receivedNotInterseted(){
+	public void receivedNotInterseted(){
 		//update Peer to reflect that it is intersted in Peer List and Connection List
 		
 		//just to test
@@ -443,9 +424,31 @@ public class Connection implements Runnable{
 	}
 
 	public void sendChokeMessage(){
+		System.out.println("Connection: Sending Choke Message");
+
+		//create new bitfield message
+		int length = 5;
+		chokeMessage = new byte[length];
+	
+	 	//initalize
+		chokeMessage = ByteBuffer.allocate(length).putInt(length).array();
+		chokeMessage[4] = 0;
+
+		sendMessage(chokeMessage);
 	}
 
 	public void sendUnchokeMessage(){
+		System.out.println("Connection: Sending Choke Message");
+
+		//create new bitfield message
+		int length = 5;
+		unChokeMessage = new byte[length];
+	
+	 	//initalize
+		unChokeMessage = ByteBuffer.allocate(length).putInt(length).array();
+		unChokeMessage[4] = 1;
+
+		sendMessage(unChokeMessage);
 	}
 
 	public void determineIfInterestedFromHave(){
