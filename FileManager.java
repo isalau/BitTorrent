@@ -14,6 +14,10 @@ public class FileManager{
 	public static int maxPieceSize; 
 	public static int windowSize; 
 	public static String fileName;
+	public static String workingDirectory;
+	public static String absoluteFilePath;
+	public static String dynamicName;
+	public static HashMap<Integer, byte[]> bitfieldMap = new HashMap<Integer, byte[]>();
 
 	public FileManager(){}
 
@@ -25,7 +29,7 @@ public class FileManager{
         	pieceSize = maxPieceSize - 1; //minus one because we want a buffer space
         }
 
-        windowSize = ;
+        windowSize = fileSize/100 ;
 	}
 
 	public static void splitFile() throws IOException{		 
@@ -36,7 +40,8 @@ public class FileManager{
 		//fileChunks are of size windowSize
 		int num = fileSize; 
 		int lastByteRead = 0;
-		int i= 0; //where we are in the array of bytes
+		int start =0;
+		int i= 0; //where we are in bitfield map
 
 		//read in the file
 		try{
@@ -46,14 +51,25 @@ public class FileManager{
 					windowSize = num;
 				}
 				byte[] fileChunkArray = new byte[windowSize];
-				lastByteRead = fileInputStream.read(fileChunkArray, 0, windowSize);
-				num = num - lastByteRead; 
+				lastByteRead = fileInputStream.read(fileChunkArray, start, windowSize);
+				
+				start = start +windowSize;
+				
+				// String s1 = new String(fileChunkArray);
+				System.out.print("the chunkarray length is :" + fileChunkArray.length);
+				System.out.print("the lastbyte read is :"+ lastByteRead);
+				// System.out.print("the fileChunk array is :"+ s1);
+				bitfieldMap.put(lastByteRead,fileChunkArray);
 				i++;
-				String name = file.getParent()+file.getName()+ i;
-				FileOutputStream newFile  = new FileOutputStream(new File(name));
+				dynamicName = fileName+ i;
+				workingDirectory = System.getProperty("user.dir");
+				absoluteFilePath = workingDirectory + File.separator + dynamicName;
+				num = num - windowSize; 
+				FileOutputStream newFile  = new FileOutputStream(absoluteFilePath);
 				newFile.write(fileChunkArray);
 				newFile.flush();
 				newFile.close();
+
 			}
 			fileInputStream.close();	
 		}catch(IOException ioe){
