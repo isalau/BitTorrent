@@ -7,16 +7,11 @@ import java.net.InetAddress; //for hostname
 import java.net.UnknownHostException; //for hostname
 
 public class Uploader implements Runnable{
-	public int portNumber;
+	
 	public static int peerID;
-	public static int numInPeerInfo;
 	public static String hostname;
-
-	// handshake  variables
-	public static final int zerobits_size = 10;
-	public static final int peerID_size = 4;
-	public static final int header_size = 18;
-	public static final int total_length = 32;
+	public int portNumber;
+	public static boolean hasFile;
 
 	private static byte[] message;  //message send to the server
 	private static byte interestedMessage[];
@@ -27,13 +22,13 @@ public class Uploader implements Runnable{
 
 	public void Uploader (){}
 
-	//private static final int sPort = Port;   //The server will be listening on this port number
 	public static byte myBitfield[];
 
 	public static boolean sentHandshake = false;
 	public static int fileSize;
     public static int pieceSize;
-    public static boolean hasFile;
+    public static int numInPeerInfo;
+   
 
     public static int clientNum;
     public static int unchokingInterval;
@@ -62,19 +57,29 @@ public class Uploader implements Runnable{
 				System.out.println("Uploader: Trying to connect to hostName " + peerLinkedList.get(i).hostName);
 
 				Connection newConnection = new Connection();
-				newConnection.alone = false;
-				newConnection.sendersPeerID = peerID;
+				//their info 
 				newConnection.peerID = peerLinkedList.get(i).peerID;
-				newConnection.portNumber = peerLinkedList.get(i).port;				
-				newConnection.hostname = peerLinkedList.get(i).hostName; 
-				newConnection.connectionLinkedList = connectionLinkedList;
-				newConnection.hasFile = hasFile;
-				newConnection.fileSize = fileSize;
+				newConnection.hostname = peerLinkedList.get(i).hostName;
+				newConnection.portNumber = peerLinkedList.get(i).port;
+				newConnection.hasFile = peerLinkedList.get(i).hasFile;
+
+				//my info 
+				newConnection.sendersPeerID = peerID;
+				newConnection.sendersHostName = hostname;
+            	newConnection.sendersPort = portNumber; // this is currently listener will change
+            	newConnection.sendersHasFile = hasFile;  // this is currently listener will change
+            	
+            	newConnection.alone = false;
+            	newConnection.fileSize = fileSize;
 				newConnection.pieceSize = pieceSize;
-				newConnection.numInPeerInfo = numInPeerInfo;
 				newConnection.unchokingInterval = unchokingInterval;
 				newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
+
+				newConnection.numInPeerInfo = numInPeerInfo;
+								
 				newConnection.peerLinkedList = peerLinkedList;
+				connectionLinkedList.add(newConnection);
+				newConnection.connectionLinkedList = connectionLinkedList;
 
       			Thread object = new Thread(newConnection);
         		object.start();
@@ -119,17 +124,23 @@ public class Uploader implements Runnable{
       		System.out.println("Uploader: In handler run");
       		Connection newConnection = new Connection();
       		newConnection.connection = this.connection;
+      		
+      		//their info 
       		newConnection.hostname = connection.getRemoteSocketAddress().toString();
       		newConnection.portNumber = connection.getPort();
+
+      		//my info 
       		newConnection.sendersPeerID = peerID;
-      		newConnection.hasFile = hasFile;
-      		newConnection.connectionLinkedList = connectionLinkedList;
+      		newConnection.sendersPort = connection.getLocalPort();
+      		newConnection.sendersHostName = connection.getLocalAddress().toString();
+      		newConnection.sendersHasFile = hasFile;
 			newConnection.hasFile = hasFile;
 			newConnection.fileSize = fileSize;
 			newConnection.pieceSize = pieceSize;
 			newConnection.numInPeerInfo = numInPeerInfo;
 			newConnection.unchokingInterval = unchokingInterval;
 			newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
+			newConnection.connectionLinkedList = connectionLinkedList;
 			newConnection.peerLinkedList = peerLinkedList;
 			newConnection.no = this.no;
 

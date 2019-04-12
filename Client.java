@@ -23,8 +23,8 @@ public class Client implements Runnable{
 
 	//client's info 
 	public byte bitfield[];
-	public LinkedList<Peer> PeerLinkedList = new LinkedList<Peer>();
-	public LinkedList<Connection> ConnectionLinkedList = new LinkedList<Connection>();
+	public LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
+	public LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
 	public Socket connection; 
 	
 	//from commmon.pg
@@ -58,19 +58,17 @@ public class Client implements Runnable{
 	public void runUploader(){
 		System.out.println("Client: Calling run uploader");
 		
-		
-		up.hostname = hostName;
 		up.peerID = peerID;
 		up.portNumber = port;
 		up.hasFile = hasFile;
-		up.myBitfield = bitfield;
-		up.peerLinkedList = PeerLinkedList;
-		up.connectionLinkedList = ConnectionLinkedList;
-		up.numInPeerInfo = numInPeerInfo;
+		up.myBitfield = bitfield;		
 		up.fileSize = fileSize;
 		up.pieceSize = pieceSize;
 		up.unchokingInterval = unchokingInterval;
 		up.optimisticUnchokingInterval = optimisticUnchokingInterval;
+		up.numInPeerInfo = numInPeerInfo;
+		up.peerLinkedList = peerLinkedList;
+		up.connectionLinkedList = connectionLinkedList;
 		
 		
 		Thread object = new Thread(up);
@@ -104,21 +102,36 @@ public class Client implements Runnable{
 				newPeer.bitfield = emptyArray;
 
 				//add to Linked lists 
-				PeerLinkedList.add(newPeer);
+				peerLinkedList.add(newPeer);
 
+				/*
             	Connection newConnection = new Connection();
+            	//their info 
+            	newConnection.peerID = PI.PeerID;
+            	newConnection.hostname = PI.HostName;
             	newConnection.portNumber = PI.Port;
-            	newConnection.sendersPeerID = peerID; 
-                newConnection.peerID = PI.PeerID;
-		        newConnection.numInPeerInfo = numInPeerInfo; 
-		        newConnection.hostname = PI.HostName;
+            	newConnection.hasFile = PI.HasFile;
+
+            	//my info 
+            	newConnection.sendersPeerID = peerID;
+            	newConnection.sendersHostName = hostName;
+            	newConnection.sendersPort = port; // this is currently listener will change
+            	newConnection.sendersHasFile = hasFile;  // this is currently listener will change
+
+            	newConnection.alone = false;	
 		        newConnection.fileSize = fileSize;
 		        newConnection.pieceSize = pieceSize;
-		        newConnection.hasFile = hasFile;
 		        newConnection.unchokingInterval = unchokingInterval;
 		        newConnection.optimisticUnchokingInterval = optimisticUnchokingInterval;
-		        newConnection.myBitfield = emptyArray;
-				ConnectionLinkedList.add(newConnection);
+
+		        newConnection.numInPeerInfo = numInPeerInfo; 
+		        newConnection.myBitfield = bitfield;
+
+				connectionLinkedList.add(newConnection);
+
+				newConnection.peerLinkedList = peerLinkedList;
+				newConnection.connectionLinkedList = connectionLinkedList;
+				*/
             }
         }
         else{
@@ -199,7 +212,7 @@ public class Client implements Runnable{
 	public void pickRandomNeighbor(){
 
 		//get number of peers
-        int numOfPeers = PeerLinkedList.size();
+        int numOfPeers = peerLinkedList.size();
         
         //pick rand from range of peers use rand for that
         int rand = new Random().nextInt(numOfPeers);
@@ -207,20 +220,18 @@ public class Client implements Runnable{
         //check that not already unchoked 
 	}
 
-
-
 	public void pickRandomOptNeighbor(){
 
 		//get number of peers
-        int numOfPeers = PeerLinkedList.size();
+        int numOfPeers = peerLinkedList.size();
         
         if(numOfPeers !=0){
 	        //pick rand from range of peers use rand for that
 	        int rand = new Random().nextInt(numOfPeers);
 
 	        //check that not already unchoked
-	        if(PeerLinkedList.get(rand).prefferedNeighbor == false && PeerLinkedList.get(rand).optimisticNeighbor == false){
-	        	PeerLinkedList.get(rand).optimisticNeighbor = true;	
+	        if(peerLinkedList.get(rand).prefferedNeighbor == false && peerLinkedList.get(rand).optimisticNeighbor == false){
+	        	peerLinkedList.get(rand).optimisticNeighbor = true;	
 	        }else{
 	        	pickRandomOptNeighbor();
 	        }

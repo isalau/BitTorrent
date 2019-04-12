@@ -9,21 +9,21 @@ import java.net.UnknownHostException; //for hostname
 public class Connection implements Runnable{
 	/**********************variables***********************/
 	
-	public static int portNumber;
+	//If I am peer A this is peer B's info
 	public static int peerID;
-	public static int sendersPeerID;
 	public static String hostname;
+	public static int portNumber;
+	public static boolean hasFile;
 
-	public static final int zerobits_size = 10;
-	public static final int peerID_size = 4;
-	public static final int header_size = 18;
-	public static final int total_length = 32;
+	//My Info 
+	public static int sendersPeerID;
+	public static String sendersHostName;
+	public static int sendersPort;
+	public static boolean sendersHasFile;
 
-	public static boolean sentHandshake = false;
 	public static boolean alone = true; 
 	public static int fileSize;
     public static int pieceSize;
-    public static boolean hasFile;
     public static int numInPeerInfo;
     public static int unchokingInterval;
     public static int optimisticUnchokingInterval;
@@ -44,6 +44,13 @@ public class Connection implements Runnable{
     private ObjectInputStream in;	//stream read from the socket
     private ObjectOutputStream out;    //stream write to the socket
 	public int no;		//The index number of the client
+
+	//handshake variables
+	public static final int zerobits_size = 10;
+	public static final int peerID_size = 4;
+	public static final int header_size = 18;
+	public static final int total_length = 32;
+	public static boolean sentHandshake = false;
 
 	/********************** constructor ***********************/
 
@@ -181,7 +188,8 @@ public class Connection implements Runnable{
 	}
 
 	public void sendHandShake(){
-		sentHandshake = true;		 
+		sentHandshake = true;	
+			 
 		String handshake_zerobits = "0000000000";
 		String handshake_header = "P2PFILESHARINGPROJ";
 
@@ -197,12 +205,12 @@ public class Connection implements Runnable{
 				addPeers();
 			}
 
-			int localPort = connection.getLocalPort();
-			String localAd = connection.getLocalAddress().toString();
+			sendersPort = connection.getLocalPort();
+			sendersHostName = connection.getLocalAddress().toString();
 			System.out.println("Connection: Sending Handshake from Connection to : " + hostname + " with port number "+ portNumber);
 			System.out.println("My peerID is: " + sendersPeerID);
-			System.out.println("My port number is: " + localPort);
-			System.out.println("My hostname is: " + localAd);
+			System.out.println("My port number is: " + sendersPort);
+			System.out.println("My hostname is: " + sendersHostName);
 		
 			//handshake
 			message = new byte[32];
@@ -370,7 +378,7 @@ public class Connection implements Runnable{
 		myBitfield = ByteBuffer.allocate(length).putInt(length).array();
 		myBitfield[4] = 5;
 
-    	if(hasFile == true){
+    	if(sendersHasFile == true){
     		for (int i = 5; i< length; i++){
     			myBitfield[i] =  1;
     			//send message to B
