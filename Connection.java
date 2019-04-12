@@ -143,6 +143,7 @@ public class Connection implements Runnable{
 		            break;
 		        case 3:
 		            System.out.println("Connection: received not interested message");
+		            receivedNotInterseted();
 		            break;
 		        case 4:
 		            System.out.println("Connection: received have message");
@@ -391,6 +392,27 @@ public class Connection implements Runnable{
 		for (int i =0; i < peerLinkedList.size(); i++){
 			if( sendersPeerID == peerLinkedList.get(i).peerID){
 				peerLinkedList.get(i).interested = true; 
+			}
+		}
+
+		//just to test
+		for (int i =0; i < peerLinkedList.size(); i++){
+				System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " is interested: "+ peerLinkedList.get(i).interested); 
+		}
+	}
+
+		public void receivedNotInterseted(){
+		//update Peer to reflect that it is intersted in Peer List and Connection List
+		
+		//just to test
+		for (int i = 0; i < peerLinkedList.size(); i++){
+			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " is interested: "+ peerLinkedList.get(i).interested); 
+		}
+
+		//Peer List 
+		for (int i =0; i < peerLinkedList.size(); i++){
+			if( sendersPeerID == peerLinkedList.get(i).peerID){
+				peerLinkedList.get(i).interested = false; 
 			}
 		}
 
