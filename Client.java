@@ -70,7 +70,6 @@ public class Client implements Runnable{
 		up.peerLinkedList = peerLinkedList;
 		up.connectionLinkedList = connectionLinkedList;
 		
-		
 		Thread object = new Thread(up);
 		try{		
 			object.start();

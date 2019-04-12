@@ -84,8 +84,8 @@ public class Connection extends Uploader implements Runnable{
 					byte[] myObjects = (byte[])in.readObject();
 					
 					//show the message to the user
-				    String objectMessage = new String (myObjects);
-				    System.out.println("Message: " + objectMessage);
+				    // String objectMessage = new String (myObjects);
+				    // System.out.println("Message: " + objectMessage);
 
 					//check what message you got
 					checkMessage(myObjects);
@@ -134,6 +134,8 @@ public class Connection extends Uploader implements Runnable{
 	public void checkMessage(byte[] msg){
 		byte messageValue = msg[4];
 		System.out.println("Connection: message type: " + messageValue + " received from client");
+		String message = new String (msg);
+		System.out.println("Connection: message: " +  message + " received from client");
 
 		while(true){
 			switch (messageValue) {
@@ -353,7 +355,7 @@ public class Connection extends Uploader implements Runnable{
 		newConnection2.peerLinkedList = peerLinkedList;
 		newConnection2.connectionLinkedList = connectionLinkedList;
 
-     	connectionLinkedList.add(newConnection2);
+     	// connectionLinkedList.add(newConnection2);
      	System.out.println("Connection: Adding Connections " + connectionLinkedList);
 	}
 
