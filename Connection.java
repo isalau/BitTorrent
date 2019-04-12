@@ -27,6 +27,7 @@ public class Connection extends Uploader implements Runnable{
     public static int numInPeerInfo;
     public static int unchokingInterval;
     public static int optimisticUnchokingInterval;
+    public static ArrayList<byte[]> DataChunks;
     
 
 	public static byte[] myBitfield;
@@ -37,7 +38,8 @@ public class Connection extends Uploader implements Runnable{
 	private static byte[] requestMessage;
 	private static byte[] haveMessage;    
 	private static byte[] chokeMessage;
-	private static byte[] unChokeMessage;    
+	private static byte[] unChokeMessage;
+
 
 	public static  LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
 	public static  LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
@@ -119,7 +121,11 @@ public class Connection extends Uploader implements Runnable{
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
 		System.out.println("Connection: sending message: " + msg + " to Client " +no + " on port: "+ portNumber + " at addres: "+ hostname );
- 
+ 		if(DataChunks != null){
+ 			System.out.println("My data chunks are of size:"+ DataChunks.size());
+ 		}
+ 		
+ 		
 		try{
 			//initialize Input and Output streams
 				// out = new ObjectOutputStream(connection.getOutputStream());

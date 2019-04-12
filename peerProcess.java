@@ -13,6 +13,7 @@ public class peerProcess{
     public static int unchokingInterval;
     public static int optimisticUnchokingInterval;
     public static String fileName;
+    public static ArrayList<byte[]> DataChunks;
 
 
 	public static void main(String args[] ){
@@ -29,7 +30,7 @@ public class peerProcess{
         } 
         else
             System.out.println("No peerID provided"); 
-
+        boolean readFile = false;
         //read in files
         CommonParser CP = new CommonParser();
         if(CP.Parse("Common.cfg")){
@@ -50,6 +51,8 @@ public class peerProcess{
             System.out.println("Could not read Common.cfg file!");
         }
 
+
+        
         // separate file into chunks
         // FileManager fileManager = new FileManager();
         // fileManager.fileSize = fileSize;
@@ -64,7 +67,7 @@ public class peerProcess{
         
 
         //read tracker 
-        boolean readFile = false;
+        
         PeerParser PP = new PeerParser();
         numInPeerInfo = 0;
         int i = 0; 
@@ -88,7 +91,17 @@ public class peerProcess{
             System.out.println("Could not read PeerInfo.cfg!");
         }
 
-        
+        if(readFile){
+            DataFile DF = new DataFile(CP.PieceSize);
+            if(DF.ReadFileIntoChunks(CP.DataFileName)){
+                DataChunks = DF.DataInChunks;
+                // System.out.println("the data chunks size is :"+DF.DataInChunks.size());
+                // System.out.println(DF.DataInChunks.get(DF.DataInChunks.size() - 1).length);
+            }
+            else{
+                System.out.println("Failed to load the data file!");
+            }
+        }
         int peerID = Integer.parseInt(peerIDString);
         
         Client client = new Client();
@@ -100,6 +113,11 @@ public class peerProcess{
         client.hasFile = hasFile;
         client.unchokingInterval = unchokingInterval;
         client.optimisticUnchokingInterval = optimisticUnchokingInterval;
+        if(DataChunks!= null){
+            client.DataChunks = DataChunks; 
+        }
+        
+
 
         Thread object = new Thread(client);
         object.start();

@@ -33,6 +33,7 @@ public class Client implements Runnable{
     public int pieceSize;
 	public int unchokingInterval;
 	public int optimisticUnchokingInterval;
+	public ArrayList<byte[]> DataChunks;
 
 
  	Uploader up = new Uploader();
@@ -70,6 +71,11 @@ public class Client implements Runnable{
 		up.numInPeerInfo = numInPeerInfo;
 		up.peerLinkedList = peerLinkedList;
 		up.connectionLinkedList = connectionLinkedList;
+		if(DataChunks != null ){
+			up.DataChunks = DataChunks;
+			System.out.println("the data chunks size is :"+DataChunks.size());
+		}
+		
 		
 		Thread object = new Thread(up);
 		try{		
