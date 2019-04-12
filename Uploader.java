@@ -11,7 +11,6 @@ public class Uploader implements Runnable{
 	public static int peerID;
 	public static int numInPeerInfo;
 	public static String hostname;
-	public static int staticPortNumber;
 
 	// handshake  variables
 	public static final int zerobits_size = 10;
@@ -63,7 +62,7 @@ public class Uploader implements Runnable{
 				System.out.println("Uploader: Trying to connect to hostName " + peerLinkedList.get(i).hostName);
 
 				Connection newConnection = new Connection();
-				newConnection.notAlone = true;
+				newConnection.alone = false;
 				newConnection.sendersPeerID = peerID;
 				newConnection.peerID = peerLinkedList.get(i).peerID;
 				newConnection.portNumber = peerLinkedList.get(i).port;				
@@ -73,21 +72,27 @@ public class Uploader implements Runnable{
 				newConnection.fileSize = fileSize;
 				newConnection.pieceSize = pieceSize;
 				newConnection.numInPeerInfo = numInPeerInfo;
-				newConnection.my_portNumber = portNumber;
 				newConnection.unchokingInterval = unchokingInterval;
 				newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
 				newConnection.peerLinkedList = peerLinkedList;
 
       			Thread object = new Thread(newConnection);
         		object.start();
+        		System.out.println("Thread 1 state: " + object.getState()); 
 			}
 			sentHandshake = true;
 		}
 
     	try {
     		while(true) {
-        		new Handler(listener.accept(),clientNum).start();
-				System.out.println("Client "  + clientNum + " is connected!");
+    			Socket peer = listener.accept();
+    			new Handler(peer,clientNum).start();
+
+    			
+    			System.out.println("Client "  + clientNum + " is connected!");
+    			System.out.println("Uploader accepted new connection from " + peer.getInetAddress() + " at port " + peer.getPort());
+        		
+				
 				clientNum++;
     		}
     	} finally {
@@ -107,13 +112,15 @@ public class Uploader implements Runnable{
 
 		public Handler(Socket connection, int no) {
         	this.connection = connection;
-    		this.no = clientNum;
+    		this.no = no;
     	}
 
       	public void run() {
       		System.out.println("Uploader: In handler run");
       		Connection newConnection = new Connection();
       		newConnection.connection = this.connection;
+      		newConnection.hostname = connection.getRemoteSocketAddress().toString();
+      		newConnection.portNumber = connection.getPort();
       		newConnection.sendersPeerID = peerID;
       		newConnection.hasFile = hasFile;
       		newConnection.connectionLinkedList = connectionLinkedList;
@@ -121,20 +128,14 @@ public class Uploader implements Runnable{
 			newConnection.fileSize = fileSize;
 			newConnection.pieceSize = pieceSize;
 			newConnection.numInPeerInfo = numInPeerInfo;
-			newConnection.my_portNumber = staticPortNumber;
 			newConnection.unchokingInterval = unchokingInterval;
 			newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
 			newConnection.peerLinkedList = peerLinkedList;
 			newConnection.no = this.no;
 
-      		String hostname2 = connection.getRemoteSocketAddress().toString();
-		
-			int portNumber2 = connection.getPort(); 
-
-			System.out.println("Uploader: Connection to port: "+ portNumber2 + "and hostname: "+ hostname2);
-
       		Thread object = new Thread(newConnection);
         	object.start();
+        	System.out.println("Thread 2 state: " + object.getState()); 
 		}
 	}		
 }

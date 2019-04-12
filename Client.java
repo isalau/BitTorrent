@@ -53,23 +53,27 @@ public class Client implements Runnable{
 
 		//start our listener/ uploader 
 		runUploader();
-
-        
 	}
 
 	
 	public void runUploader(){
 		System.out.println("Client: Calling run uploader");
 		
-		up.portNumber = port;
+		
+		up.hostname = hostName;
 		up.peerID = peerID;
+		up.portNumber = port;
+		up.hasFile = hasFile;
 		up.myBitfield = bitfield;
+		up.peerLinkedList = PeerLinkedList;
+		up.connectionLinkedList = ConnectionLinkedList;
+		up.numInPeerInfo = numInPeerInfo;
 		up.fileSize = fileSize;
 		up.pieceSize = pieceSize;
-		up.hasFile = hasFile;
-		up.numInPeerInfo = numInPeerInfo;
-		up.peerLinkedList = PeerLinkedList; 
-
+		up.unchokingInterval = unchokingInterval;
+		up.optimisticUnchokingInterval = optimisticUnchokingInterval;
+		
+		
 		Thread object = new Thread(up);
 		try{		
 			object.start();
@@ -103,20 +107,19 @@ public class Client implements Runnable{
 				//add to Linked lists 
 				PeerLinkedList.add(newPeer);
 
-
             	Connection newConnection = new Connection();
+            	newConnection.portNumber = PI.Port;
             	newConnection.sendersPeerID = peerID; 
                 newConnection.peerID = PI.PeerID;
 		        newConnection.numInPeerInfo = numInPeerInfo; 
-		        newConnection.my_portNumber = PI.Port;
 		        newConnection.hostname = PI.HostName;
 		        newConnection.fileSize = fileSize;
 		        newConnection.pieceSize = pieceSize;
 		        newConnection.hasFile = hasFile;
 		        newConnection.unchokingInterval = unchokingInterval;
 		        newConnection.optimisticUnchokingInterval = optimisticUnchokingInterval;
+		        newConnection.myBitfield = emptyArray;
 				ConnectionLinkedList.add(newConnection);
-				up.connectionLinkedList = ConnectionLinkedList;
             }
         }
         else{
