@@ -51,6 +51,7 @@ public class Connection implements Runnable{
 	public static final int header_size = 18;
 	public static final int total_length = 32;
 	public static boolean sentHandshake = false;
+	public static boolean receivedHandshake = false;
 
 	/********************** constructor ***********************/
 
@@ -174,6 +175,7 @@ public class Connection implements Runnable{
 		           	System.out.println("Connection: received handshake message");
 		           	//check if we sent our handshake? 
 		           	if (sentHandshake == false){
+		           		receivedHandshake = true;
 		           		sendHandShake();
 		           		// listenerSendHandshake();
 		           	}
@@ -189,14 +191,24 @@ public class Connection implements Runnable{
 
 	public void sendHandShake(){
 		sentHandshake = true;	
-			 
+
 		String handshake_zerobits = "0000000000";
 		String handshake_header = "P2PFILESHARINGPROJ";
 
 		try{
-			if (alone == false){
-				connection = new Socket(hostname, portNumber);
-				//streams
+			try{
+				if (alone == false && receivedHandshake == false){
+					connection = new Socket(hostname, portNumber);
+				}
+			}  catch (IllegalArgumentException exception) {
+	            // Catch expected IllegalArgumentExceptions.
+	            System.out.println("Hanshake exception 1: " + exception);
+	        } catch (Exception exception) {
+	            // Catch unexpected Exceptions.
+	            System.out.println("Hanshake exception 2: " + exception);
+	        }
+
+	        if (alone == false){
 				out = new ObjectOutputStream(connection.getOutputStream());
 				out.flush(); //TODO ::: Do we need this?
 				in = new ObjectInputStream(connection.getInputStream());
@@ -204,7 +216,7 @@ public class Connection implements Runnable{
 				//need to add to peer and connection list
 				addPeers();
 			}
-
+			
 			sendersPort = connection.getLocalPort();
 			sendersHostName = connection.getLocalAddress().toString();
 			System.out.println("Connection: Sending Handshake from Connection to : " + hostname + " with port number "+ portNumber);

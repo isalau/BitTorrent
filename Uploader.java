@@ -126,8 +126,8 @@ public class Uploader implements Runnable{
       		newConnection.connection = this.connection;
       		
       		//their info 
-      		newConnection.hostname = connection.getRemoteSocketAddress().toString();
-      		newConnection.portNumber = connection.getPort();
+      		newConnection.hostname = this.connection.getRemoteSocketAddress().toString();
+      		newConnection.portNumber = this.connection.getPort();
 
       		//my info 
       		newConnection.sendersPeerID = peerID;
