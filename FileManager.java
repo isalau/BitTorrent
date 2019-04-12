@@ -50,7 +50,8 @@ public class FileManager{
 				if (num <= 5){
 					windowSize = num;
 				}
-				byte[] fileChunkArray = new byte[windowSize];
+				byte[] fileChunkArray = new byte[fileSize];
+
 				lastByteRead = fileInputStream.read(fileChunkArray, start, windowSize);
 				
 				start = start +windowSize;
