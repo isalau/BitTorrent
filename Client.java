@@ -37,6 +37,7 @@ public class Client implements Runnable{
 
  	Uploader up = new Uploader();
  	public boolean sentHandshake = false;
+ 	public boolean theBoolean = false;
 
 	//constructor
 	public void Client(){}
@@ -144,7 +145,7 @@ public class Client implements Runnable{
 
 		TimerTask unChoke = new TimerTask(){
 			public void run(){
-				unChoke(unchokingInterval);
+				// unChoke(unchokingInterval);
 			}
 		};
 
@@ -178,6 +179,28 @@ public class Client implements Runnable{
 		unChokeTimer.schedule(unChoke, miliUnChoke);
 	}
 
+	public void unChoke(int unchokingInterval){
+		updateChokeTimer();
+		System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
+
+		System.out.println("Client: Unchoking peer list "+ peerLinkedList);
+	}
+
+	public void determinePrefferedNeighbors(){
+		//
+	}
+
+	public void pickRandomNeighbor(){
+
+		//get number of peers
+        int numOfPeers = peerLinkedList.size();
+        
+        //pick rand from range of peers use rand for that
+        int rand = new Random().nextInt(numOfPeers);
+
+        //check that not already unchoked 
+	}
+
 	//optimistically picked neighbor timer
 	public void updateOptTimer(){
 		Timer optUnChokeTimer = new Timer();
@@ -193,20 +216,9 @@ public class Client implements Runnable{
 		optUnChokeTimer.schedule(optUnChoke,miliOptUnChoke);
 	}
 
-	public void unChoke(int unchokingInterval){
-		updateChokeTimer();
-		System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
-
-		System.out.println("Client: Unchoking peer list "+ peerLinkedList);
-	}
-
-	public void determinePrefferedNeighbors(){
-		//
-	}
-
 	public void optimisticUnchoke(int optimisticUnchokingInterval){
 		updateOptTimer();
-		System.out.println(optimisticUnchokingInterval + " seconds has passed for optimistic Choke/Unchoke");
+		System.out.println("Client: " + optimisticUnchokingInterval + " seconds has passed for optimistic Choke/Unchoke");
 
 		try{
 			//update my peer Linked List 
@@ -214,6 +226,7 @@ public class Client implements Runnable{
 			connectionLinkedList = up.connectionLinkedList;
 			System.out.println("Client: Opt unchoking peer list "+ peerLinkedList);
 			System.out.println("Client: Opt unchoking connection list "+ connectionLinkedList);
+			
 			//if I am not alone
 			if(peerLinkedList.size() != 0){
 				//get current optimistic neighbor to change later 
@@ -224,32 +237,41 @@ public class Client implements Runnable{
 					}
 				}
 
-				//select my peer to unchoke --> must be currently choked and interested 
-				int optNeighborIndex =  pickRandomOptNeighbor();
+				if(peerLinkedList.size() == 1){
+					//you only have one neighbor and should just keep as preffered unchoked neighbor
+					//send choke message to old opt neighbor 
+					peerLinkedList.get(0).prefferedNeighbor = true;
 
-				//send unchoke message using connection from connection list 
-				connectionLinkedList.get(optNeighborIndex).sendUnchokeMessage();
-				
-				//send choke message to old opt neighbor 
-				connectionLinkedList.get(oldNeighbor).sendChokeMessage();
+					//make old optimistic neighbor false 
+					peerLinkedList.get(0).optimisticNeighbor = true;
 
-				//make old optimistic neighbor false 
-				peerLinkedList.get(oldNeighbor).optimisticNeighbor = false;
+					//send unchoke message using connection from connection list 
+					connectionLinkedList.get(0).sendUnchokeMessage();
+				}else{
+
+					//select my peer to unchoke --> must be currently choked and interested 
+					int optNeighborIndex =  pickRandomOptNeighbor();
+					System.out.println("Client: Opt unchoking peer: "+ optNeighborIndex);
+					System.out.println("Client: Opt choking connection: "+ oldNeighbor);
+
+					//send unchoke message using connection from connection list 
+					connectionLinkedList.get(optNeighborIndex).sendUnchokeMessage();
+					
+					//send choke message to old opt neighbor 
+					connectionLinkedList.get(oldNeighbor).sendChokeMessage();
+
+					//make old optimistic neighbor false 
+					peerLinkedList.get(oldNeighbor).optimisticNeighbor = false;
+
+					//propogate changes down stream too
+					up.peerLinkedList = peerLinkedList;
+					up.connectionLinkedList = connectionLinkedList;
+				}
 			}
 		}catch(Exception e){
-			System.out.println("optimisticUnchoke: " + e);
+			System.out.print("optimisticUnchoke: "); 
+			e.printStackTrace();
 		}
-	}
-
-	public void pickRandomNeighbor(){
-
-		//get number of peers
-        int numOfPeers = peerLinkedList.size();
-        
-        //pick rand from range of peers use rand for that
-        int rand = new Random().nextInt(numOfPeers);
-
-        //check that not already unchoked 
 	}
 
 	public int pickRandomOptNeighbor(){

@@ -51,16 +51,16 @@ public class peerProcess{
         }
 
         // separate file into chunks
-        FileManager fileManager = new FileManager();
-        fileManager.fileSize = fileSize;
-        fileManager.pieceSize = pieceSize; 
-        fileManager.fileName = fileName;
-        fileManager.determineSizes();
-        try{
-        	fileManager.splitFile();
-        }catch(IOException ioe){
-        	System.out.print(" Could not split file from peer process: " + ioe);
-        }
+        // FileManager fileManager = new FileManager();
+        // fileManager.fileSize = fileSize;
+        // fileManager.pieceSize = pieceSize; 
+        // fileManager.fileName = fileName;
+        // fileManager.determineSizes();
+        // try{
+        // 	fileManager.splitFile();
+        // }catch(IOException ioe){
+        // 	System.out.print(" Could not split file from peer process: " + ioe);
+        // }
         
 
         //read tracker 

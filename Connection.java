@@ -121,6 +121,9 @@ public class Connection extends Uploader implements Runnable{
 		System.out.println("Connection: sending message: " + msg + " to Client " +no + " on port: "+ portNumber + " at addres: "+ hostname );
  
 		try{
+			//initialize Input and Output streams
+				// out = new ObjectOutputStream(connection.getOutputStream());
+				// out.flush();				
 			out.writeObject(msg);
 			out.flush();
 			System.out.println("Connection: message sent");
@@ -135,8 +138,7 @@ public class Connection extends Uploader implements Runnable{
 		byte messageValue = msg[4];
 		System.out.println("Connection: message type: " + messageValue + " received from client");
 		String message = new String (msg);
-		System.out.println("Connection: message: " +  message + " received from client");
-
+		
 		while(true){
 			switch (messageValue) {
 		        case 0:
@@ -163,6 +165,7 @@ public class Connection extends Uploader implements Runnable{
 		            break;
 		        case 5:
 		        	System.out.println("Connection: received bitfield message");
+		        	System.out.println("Connection: bitfield: " +  message + " received from client");
 		            determineIfInterestedFromBitfield(msg);
 		            break;
 		        case 6:
@@ -279,9 +282,6 @@ public class Connection extends Uploader implements Runnable{
 				//receive the message sent from the client
 				byte[] myObjects = (byte[])in.readObject();
 				
-				//show the message to the user
-			    String objectMessage = new String (myObjects);
-			    System.out.println("Message: " + objectMessage);
 
 				//check what message you got
 				checkMessage(myObjects);
@@ -350,7 +350,7 @@ public class Connection extends Uploader implements Runnable{
         newConnection2.numInPeerInfo = numInPeerInfo; 
         newConnection2.myBitfield = myBitfield;
 
-		connectionLinkedList.add(newConnection2);
+		// connectionLinkedList.add(newConnection2);
 
 		newConnection2.peerLinkedList = peerLinkedList;
 		newConnection2.connectionLinkedList = connectionLinkedList;
@@ -440,7 +440,7 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void sendUnchokeMessage(){
-		System.out.println("Connection: Sending Choke Message");
+		System.out.println("Connection: Sending UnChoke Message");
 
 		//create new bitfield message
 		int length = 5;

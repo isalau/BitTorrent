@@ -149,9 +149,10 @@ public class Uploader implements Runnable{
 			newConnection.numInPeerInfo = numInPeerInfo;
 			newConnection.unchokingInterval = unchokingInterval;
 			newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
-			newConnection.connectionLinkedList = connectionLinkedList;
 			newConnection.peerLinkedList = peerLinkedList;
 			newConnection.no = this.no;
+			connectionLinkedList.add(newConnection);
+			newConnection.connectionLinkedList = connectionLinkedList;
 
       		Thread object = new Thread(newConnection);
         	object.start();
