@@ -18,7 +18,7 @@ public class Connection extends Uploader implements Runnable{
 	public boolean interested;
 	public boolean preferredNeighbor;
 	public boolean optimisticNeighbor;
-	public byte [] peerBitfield; 
+	public byte[] peerBitfield; 
 
 	//My Info 
 	public static int sendersPeerID;
@@ -37,16 +37,16 @@ public class Connection extends Uploader implements Runnable{
     public static ArrayList<byte[]> DataChunks;
     
 
-	private static byte[] message; 
-	public byte[] bitfieldMessage; 
-	private static byte[] interestedMessage;
-	private static byte[] notInterestedMessage;
-	private static byte[] requestMessage;
-	private static byte[] haveMessage;    
-	private static byte[] chokeMessage;
-	private static byte[] unChokeMessage;
-	private static byte[] pieceMessage;
-	private static int PieceIndex;
+	private byte[] message; 
+	private byte[] bitfieldMessage; 
+	private byte[] interestedMessage;
+	private byte[] notInterestedMessage;
+	private byte[] requestMessage;
+	private byte[] haveMessage;    
+	private byte[] chokeMessage;
+	private byte[] unChokeMessage;
+	private byte[] pieceMessage;
+	private int PieceIndex;
 
 	public static  LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
 	public static  LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
@@ -61,7 +61,6 @@ public class Connection extends Uploader implements Runnable{
 	public long stopDownloadTime;
 
 	
-
 	//handshake variables
 	public static final int zerobits_size = 10;
 	public static final int peerID_size = 4;
@@ -347,49 +346,17 @@ public class Connection extends Uploader implements Runnable{
 		newPeer.optimisticNeighbor = false;
 
 		//assume empyty bitfield until proven wrong by receiving bitfield or have message 
-		int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
 		byte[] emptyArray = new byte[numOfPieces];
 		newPeer.bitfield = emptyArray;
         
         peerLinkedList.add(newPeer);
 
      	System.out.println("Connection: Adding Peers " + peerLinkedList);
-
-  //    	Connection newConnection2 = new Connection();
-  //   	//their info 
-  //   	newConnection2.peerID = peerID;
-  //   	newConnection2.hostname = hostname;
-  //   	newConnection2.portNumber = portNumber;
-  //   	newConnection2.hasFile = hasFile;
-
-  //   	//my info 
-  //   	newConnection2.sendersPeerID = sendersPeerID;
-  //   	newConnection2.sendersHostName = sendersHostName;
-  //   	newConnection2.sendersPort = sendersPort; // this is currently listener will change
-  //   	newConnection2.sendersHasFile = sendersHasFile;  // this is currently listener will change
-
-  //   	newConnection2.alone = false;	
-  //       newConnection2.fileSize = fileSize;
-  //       newConnection2.pieceSize = pieceSize;
-  //       newConnection2.unchokingInterval = unchokingInterval;
-  //       newConnection2.optimisticUnchokingInterval = optimisticUnchokingInterval;
-
-  //       newConnection2.numInPeerInfo = numInPeerInfo; 
-  //       newConnection2.myBitfield = myBitfield;
-
-		// // connectionLinkedList.add(newConnection2);
-
-		// newConnection2.peerLinkedList = peerLinkedList;
-		// newConnection2.connectionLinkedList = connectionLinkedList;
-
-     	// connectionLinkedList.add(newConnection2);
-     	System.out.println("Connection: Adding Connections " + connectionLinkedList);
 	}
 
 	public void sendBitfield(){
 		//create payload
 		//determine number of pieces from common.cfg
-    	int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
     	System.out.println("Connection: In sendBitfield.");
 
 		//determine what parts of the file I have 
@@ -592,8 +559,7 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public int selectRandom(){
-		numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
-		// System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
+		System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
 		int r = new Random().nextInt(numOfPieces-1);
 		if(myBitfield[r] == 0 && peerBitfield[r] == 1){
 			return r;

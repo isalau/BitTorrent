@@ -30,6 +30,7 @@ public class Client implements Runnable{
   	public int pieceSize;
 	public int unchokingInterval;
 	public int optimisticUnchokingInterval;
+	
 	public static int numOfPieces;
 	public static byte myBitfield[];
 
@@ -201,7 +202,7 @@ public class Client implements Runnable{
 
 	public void unChoke(int unchokingInterval){
 		updateChokeTimer();
-		System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
+		// System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
 		determinePreferredNeighbors();
 	}
 
@@ -343,7 +344,7 @@ public class Client implements Runnable{
 
 	public void optimisticUnchoke(int optimisticUnchokingInterval){
 		updateOptTimer();
-		System.out.println("Client: " + optimisticUnchokingInterval + " seconds has passed for optimistic Choke/Unchoke");
+		// System.out.println("Client: " + optimisticUnchokingInterval + " seconds has passed for optimistic Choke/Unchoke");
 
 		try{
 			//update my peer Linked List
