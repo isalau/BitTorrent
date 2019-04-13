@@ -197,7 +197,12 @@ public class Connection extends Uploader implements Runnable{
 		            break;
 		        case 7:
 		        	System.out.println("Connection: received piece message");
-		            //stop download timer
+		            receivedPiece();
+		            for(int i =0; i < connectionLinkedList.size(); i++){
+		            	if(connectionLinkedList.get(i).preferredNeighbor == true){
+		            		sendHave();
+		            	}
+		            }
 					stopDownloadTime = System.currentTimeMillis();
 		            break;
 		       	case 73:
@@ -548,20 +553,6 @@ public class Connection extends Uploader implements Runnable{
 		sendMessage(notInterestedMessage);
 	}
 
-	public void sendHave(){
-		System.out.println("Connection: Sending Have Message");
-
-		//create new bitfield message
-		int length = 5;
-		haveMessage = new byte[length];
-	
-	 	//initalize
-		haveMessage = ByteBuffer.allocate(length).putInt(length).array();
-		haveMessage[4] = 3;
-
-		sendMessage(haveMessage);
-	}
-
 	public void sendRequest(){
 		System.out.println("Connection: Sending Request Message");
 		if(hasFile == false){
@@ -645,6 +636,22 @@ public class Connection extends Uploader implements Runnable{
 
 		//Peer List 
 		myBitfield[PieceIndex] = 1;
+	}
+	public void sendHave(){
+		System.out.println("Connection: Sending Have Message");
+
+		//create new bitfield message
+		int length = 4 + 1+ 4;
+		haveMessage = new byte[length];
+
+	 	//initalize
+		haveMessage = ByteBuffer.allocate(length).putInt(length).array();
+		haveMessage[4] = 4;
+
+		haveMessage[5] = (byte) PieceIndex;
+		System.out.println("I have the piece at index "+ PieceIndex );
+
+		sendMessage(haveMessage);
 	}
 
 	public void downloadChunks(){
