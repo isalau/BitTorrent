@@ -149,10 +149,8 @@ public class Uploader implements Runnable{
             newConnection.preferredNeighbor = false;
             newConnection.optimisticNeighbor = false;
 
-            int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
 			byte[] emptyArray = new byte[numOfPieces];
 			newConnection.peerBitfield = emptyArray;
-
 
       		//my info 
       		newConnection.sendersPeerID = peerID;
