@@ -30,9 +30,9 @@ public class peerProcess{
         } 
         else
             System.out.println("No peerID provided"); 
-        boolean readFile = false;
-        //read in files
-        CommonParser CP = new CommonParser();
+            boolean readFile = false;
+            //read in files
+            CommonParser CP = new CommonParser();
         if(CP.Parse("Common.cfg")){
             System.out.println(CP.NumberOfPreferredNeighbors);
             System.out.println(CP.UnchokingInterval);
@@ -113,12 +113,11 @@ public class peerProcess{
         client.hasFile = hasFile;
         client.unchokingInterval = unchokingInterval;
         client.optimisticUnchokingInterval = optimisticUnchokingInterval;
+
         if(DataChunks!= null){
             client.DataChunks = DataChunks; 
         }
         
-
-
         Thread object = new Thread(client);
         object.start();
     }

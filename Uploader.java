@@ -62,36 +62,36 @@ public class Uploader implements Runnable{
 					if(connectionLinkedList.get(j).peerID == peerLinkedList.get(i).peerID){
 						// Connection newConnection = new Connection();
 						//their info 
-						connectionLinkedList.get(j).peerID = peerLinkedList.get(j).peerID;
-						connectionLinkedList.get(j).hostname = peerLinkedList.get(j).hostName;
-						connectionLinkedList.get(j).portNumber = peerLinkedList.get(j).port;
-						connectionLinkedList.get(j).hasFile = peerLinkedList.get(j).hasFile;
+						// connectionLinkedList.get(j).peerID = peerLinkedList.get(j).peerID;
+						// connectionLinkedList.get(j).hostname = peerLinkedList.get(j).hostName;
+						// connectionLinkedList.get(j).portNumber = peerLinkedList.get(j).port;
+						// connectionLinkedList.get(j).hasFile = peerLinkedList.get(j).hasFile;
 
-						//my info 
-						connectionLinkedList.get(j).sendersPeerID = peerID;
-						connectionLinkedList.get(j).sendersHostName = hostname;
-		            	connectionLinkedList.get(j).sendersPort = portNumber; // this is currently listener will change
-		            	connectionLinkedList.get(j).sendersHasFile = hasFile;  // this is currently listener will change
+						// //my info 
+						// connectionLinkedList.get(j).sendersPeerID = peerID;
+						// connectionLinkedList.get(j).sendersHostName = hostname;
+		    //         	connectionLinkedList.get(j).sendersPort = portNumber; // this is currently listener will change
+		    //         	connectionLinkedList.get(j).sendersHasFile = hasFile;  // this is currently listener will change
 		            	
-		            	connectionLinkedList.get(j).alone = false;
-		            	connectionLinkedList.get(j).fileSize = fileSize;
-						connectionLinkedList.get(j).pieceSize = pieceSize;
-						connectionLinkedList.get(j).unchokingInterval = unchokingInterval;
-						connectionLinkedList.get(j).optimisticUnchokingInterval= optimisticUnchokingInterval;
+		    //         	connectionLinkedList.get(j).alone = false;
+		    //         	connectionLinkedList.get(j).fileSize = fileSize;
+						// connectionLinkedList.get(j).pieceSize = pieceSize;
+						// connectionLinkedList.get(j).unchokingInterval = unchokingInterval;
+						// connectionLinkedList.get(j).optimisticUnchokingInterval= optimisticUnchokingInterval;
 
-						connectionLinkedList.get(j).numInPeerInfo = numInPeerInfo;
+						// connectionLinkedList.get(j).numInPeerInfo = numInPeerInfo;
 										
-						connectionLinkedList.get(j).peerLinkedList = peerLinkedList;
-						connectionLinkedList.add(connectionLinkedList.get(j));
-						connectionLinkedList.get(j).connectionLinkedList = connectionLinkedList;
+						// connectionLinkedList.get(j).peerLinkedList = peerLinkedList;
+						// connectionLinkedList.add(connectionLinkedList.get(j));
+						// connectionLinkedList.get(j).connectionLinkedList = connectionLinkedList;
 						if(DataChunks != null){
 							connectionLinkedList.get(j).DataChunks = DataChunks;
-							System.out.println("the data chunks size is :"+DataChunks.size());
+							System.out.println("Uploader: the data chunks size is :"+DataChunks.size());
 						}
 						
 		      			Thread object = new Thread(connectionLinkedList.get(j));
 		        		object.start();
-		        		System.out.println("Thread 1 state: " + object.getState()); 
+		        		// System.out.println("Thread 1 state: " + object.getState()); 
 					}
 				}
 				
@@ -107,8 +107,8 @@ public class Uploader implements Runnable{
     			peerLinkedList = handler.newConnection.peerLinkedList;
     			connectionLinkedList = handler.newConnection.connectionLinkedList;
     			
-    			System.out.println("Client "  + clientNum + " is connected!");
-    			System.out.println("Uploader accepted new connection from " + peer.getInetAddress() + " at port " + peer.getPort());
+    			System.out.println("Uploader: Client "  + clientNum + " is connected!");
+    			System.out.println("Uploader: Accepted new connection from " + peer.getInetAddress() + " at port " + peer.getPort());
 				
 				clientNum++;
     		}
@@ -136,12 +136,18 @@ public class Uploader implements Runnable{
 
       	public void run() {
       		System.out.println("Uploader: In handler run");
+
+      		//making this connection if I am first in tracker 
       		newConnection = new Connection();
       		newConnection.connection = this.connection;
       		
       		//their info 
       		newConnection.hostname = this.connection.getRemoteSocketAddress().toString();
       		newConnection.portNumber = this.connection.getPort();
+      		newConnection.interested = false;
+            newConnection.preferredNeighbor = false;
+            newConnection.optimisticNeighbor = false;
+
 
       		//my info 
       		newConnection.sendersPeerID = peerID;
@@ -161,7 +167,7 @@ public class Uploader implements Runnable{
 
       		Thread object = new Thread(newConnection);
         	object.start();
-        	System.out.println("Thread 2 state: " + object.getState()); 
+        	// System.out.println("Thread 2 state: " + object.getState()); 
 		}
 	}		
 }
