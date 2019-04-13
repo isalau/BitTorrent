@@ -48,11 +48,6 @@ public class Connection extends Uploader implements Runnable{
     private ObjectInputStream in;	//stream read from the socket
     private ObjectOutputStream out;    //stream write to the socket
 	public int no;		//The index number of the client
-	public int chunksDownloaded; 
-	public long connectionDownloadRate;
-	public long startDownloadTime;
-	public long stopDownloadTime;
-	
 
 	//handshake variables
 	public static final int zerobits_size = 10;
@@ -187,8 +182,7 @@ public class Connection extends Uploader implements Runnable{
 		            break;
 		        case 7:
 		        	System.out.println("Connection: received piece message");
-		            //stop download timer
-					stopDownloadTime = System.currentTimeMillis();
+		            //createRequestMessage();
 		            break;
 		       	case 73:
 		           	System.out.println("Connection: received handshake message");
@@ -577,22 +571,34 @@ public class Connection extends Uploader implements Runnable{
 		requestMessage[5] = (byte) requestPieceIndex;
 		
 		sendMessage(requestMessage);
-
-		//start timer 
-		startDownloadTime = System.currentTimeMillis();
 	}
 
 	public void sendPiece(){
-	}
+		System.out.println("Connection: Sending Piece Message");
 
-	public void downloadChunks(){
-		//download somehow....
-		//determine rate
-		DetermineRate();
-	}
+		//create new piece message
+		int length = 4+1 +pieceSize; //4 for length, 1 for type, 4 for payload
+		pieceMessage = new byte[length];
+	
+	 	//initalize
+		pieceMessage = ByteBuffer.allocate(length).putInt(length).array();
+		pieceMessage[4] = 7; //type six
 
-	public long DetermineRate(){
-		connectionDownloadRate =  connectionDownloadRate /(startDownloadTime - stopDownloadTime);
-		return connectionDownloadRate;
+		//create payload 
+		//check for 0's in myBitfield array 1 means we have it and 2 means we sent a request to another neighbor for it
+
+		int requestPieceIndex = 0; 
+		for (int i = 0 ; i < myBitfield.length; i++){
+			if(myBitfield[i] == 0){
+				//we should check that they have the piece too 
+				requestPieceIndex = i;
+				myBitfield[i] = 2; 
+				break;
+			}
+		}
+
+		requestMessage[5] = (byte) requestPieceIndex;
+		
+		sendMessage(requestMessage);
 	}
 }		
