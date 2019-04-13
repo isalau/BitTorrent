@@ -612,7 +612,7 @@ public class Connection extends Uploader implements Runnable{
 	public void sendPiece(){
 		System.out.println("Connection: Sending Piece Message");
 
-		//create new request message
+		//create new piece message
 		int length = 4 + 1 + pieceSize; //4 for length, 1 for type, rest for piece content
 		pieceMessage = new byte[length];
 		byte[] data = new byte[pieceSize];
@@ -621,7 +621,7 @@ public class Connection extends Uploader implements Runnable{
 		pieceMessage[4] = 7; //type seven
 
 		
-		if((DataChunks != null ) && (myBitfield[PieceIndex] != 0)){
+		if((DataChunks != null ) && (myBitfield[PieceIndex] !=0)){
 			data = DataChunks.get(PieceIndex);
 		}
 			
@@ -631,6 +631,17 @@ public class Connection extends Uploader implements Runnable{
 
 		// //start timer 
 		// startDownloadTime = System.currentTimeMillis();
+	}
+	public void receivedPiece(){
+		//update Peer to reflect that they get the piece 
+		
+		//just to test
+		for (int i = 0; i < peerLinkedList.size(); i++){
+			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " recieved the piece message : "); 
+		}
+
+		//Peer List 
+		myBitfield[PieceIndex] = 1;
 	}
 
 	public void downloadChunks(){
