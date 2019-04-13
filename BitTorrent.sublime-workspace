@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"connec",
+				"connectionLinkedList"
+			],
+			[
+				"conn",
+				"connectionLinkedList"
+			],
+			[
 				"emp",
 				"emptyArray"
 			],
@@ -18,14 +26,6 @@
 			[
 				"ol",
 				"oldPreferreds"
-			],
-			[
-				"connec",
-				"connectionDownloadRate"
-			],
-			[
-				"conn",
-				"connectionDownloadRate"
 			],
 			[
 				"start",
@@ -375,6 +375,42 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "peerProcess.java",
+			"settings":
+			{
+				"buffer_size": 4500,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Client.java",
+			"settings":
+			{
+				"buffer_size": 14987,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Uploader.java",
+			"settings":
+			{
+				"buffer_size": 6170,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Connection.java",
+			"settings":
+			{
+				"buffer_size": 19877,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -479,6 +515,21 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"connection.get",
+			"interested",
+			"peerLinkedList",
+			"Connection: Number of pieces",
+			"interested",
+			"receivedHandshake",
+			"interested",
+			"Deter",
+			"add",
+			"the data chunks are",
+			"the data chunks is",
+			"the data chunks are",
+			"the data chunks is",
+			"My data chunks are of size",
+			"the rand"
 		],
 		"highlight": false,
 		"in_selection": false,
@@ -496,8 +547,125 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "peerProcess.java",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4500,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3640,
+								3640
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Java/Java.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2194.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Client.java",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14987,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								14151,
+								14151
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Java/Java.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3055.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "Uploader.java",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6170,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4710,
+								4720
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Java/Java.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2728.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "Connection.java",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 19877,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4089,
+								4089
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Java/Java.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2705.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
 			]
 		}
 	],

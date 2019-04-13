@@ -114,6 +114,24 @@ public class Uploader implements Runnable{
       	public void run() {
       		System.out.println("Uploader: In handler run");
 
+
+      		//place all info in a peer object
+        	Peer newPeer = new Peer();
+            newPeer.peerID = 0; // 0 means unknown 
+            newPeer.hostName = this.connection.getRemoteSocketAddress().toString();
+            newPeer.port = this.connection.getPort();
+            newPeer.hasFile =  false; //assume false until receive bitfield
+            newPeer.interested = false;
+			newPeer.preferredNeighbor = false;
+			newPeer.optimisticNeighbor = false;
+
+			int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
+			byte[] emptyArray = new byte[numOfPieces];
+			newPeer.bitfield = emptyArray;
+
+			//add to Peer Linked List
+			peerLinkedList.add(newPeer);
+
       		//making this connection if I am first in tracker 
       		newConnection = new Connection();
       		newConnection.connection = this.connection;
@@ -125,7 +143,7 @@ public class Uploader implements Runnable{
             newConnection.preferredNeighbor = false;
             newConnection.optimisticNeighbor = false;
 
-			byte[] emptyArray = new byte[numOfPieces];
+			// byte[] emptyArray = new byte[numOfPieces];
 			newConnection.peerBitfield = emptyArray;
 
       		//my info 

@@ -66,8 +66,8 @@ public class Connection extends Uploader implements Runnable{
 	public static final int peerID_size = 4;
 	public static final int header_size = 18;
 	public static final int total_length = 32;
-	public static boolean sentHandshake = false;
-	public static boolean receivedHandshake = false;
+	public boolean sentHandshake = false;
+	public boolean receivedHandshake = false;
 
 	/********************** constructor ***********************/
 
@@ -133,7 +133,7 @@ public class Connection extends Uploader implements Runnable{
 
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
-		System.out.println("Connection: sending message: " + msg + " to Client " +no + " on port: "+ portNumber + " at addres: "+ hostname );
+		System.out.println("Connection: sending message: " + msg + " to Client " +no + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString() );
  		if(DataChunks != null){
  			System.out.println("Connection: My data chunks are of size: "+ DataChunks.size());
  		}
@@ -154,7 +154,7 @@ public class Connection extends Uploader implements Runnable{
 	//check message type
 	public void checkMessage(byte[] msg){
 		byte messageValue = msg[4];
-		System.out.println("Connection: message type: " + messageValue + " received from client");
+		System.out.println("Connection: message type: " + messageValue + " received from client: " + peerID);
 		String message = new String (msg);
 		
 		while(true){
@@ -170,7 +170,7 @@ public class Connection extends Uploader implements Runnable{
 	        		sendRequest();
 		            break;
 		        case 2:
-		        	System.out.println("Connection: received interested message");
+		        	System.out.println("Connection: received interested message from peer: "+ peerID);
 		        	receivedInterseted();
 		            break;
 		        case 3:
@@ -381,16 +381,17 @@ public class Connection extends Uploader implements Runnable{
 
 	public void receivedInterseted(){
 		//update Peer to reflect that it is intersted in Peer List and Connection List
-		
-		//just to test
-		for (int i = 0; i < peerLinkedList.size(); i++){
-			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " is interested: "+ peerLinkedList.get(i).interested); 
-		}
 
 		//Peer List 
-		for (int i =0; i < peerLinkedList.size(); i++){
+		for (int i = 0; i < peerLinkedList.size(); i++){
 			if(peerID == peerLinkedList.get(i).peerID){
-				peerLinkedList.get(i).interested = true; 
+				peerLinkedList.get(i).interested = true;
+			}
+		}
+
+		for (int i = 0; i < connectionLinkedList.size(); i++){
+			if(peerID == connectionLinkedList.get(i).peerID){
+				connectionLinkedList.get(i).interested = true; 
 			}
 		}
 
@@ -409,12 +410,17 @@ public class Connection extends Uploader implements Runnable{
 		}
 
 		//Peer List 
-		for (int i =0; i < peerLinkedList.size(); i++){
-			if( sendersPeerID == peerLinkedList.get(i).peerID){
-				peerLinkedList.get(i).interested = false; 
+		for (int i = 0; i < peerLinkedList.size(); i++){
+			if(peerID == peerLinkedList.get(i).peerID){
+				peerLinkedList.get(i).interested = false;
 			}
 		}
 
+		for (int i = 0; i < connectionLinkedList.size(); i++){
+			if(peerID == connectionLinkedList.get(i).peerID){
+				connectionLinkedList.get(i).interested = false; 
+			}
+		}
 		//just to test
 		for (int i =0; i < peerLinkedList.size(); i++){
 				System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " is interested: "+ peerLinkedList.get(i).interested); 
@@ -546,7 +552,7 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public int selectRandom(){
-		System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
+		// System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
 		int r = new Random().nextInt(numOfPieces-1);
 		if(myBitfield[r] == 0 && peerBitfield[r] == 1){
 			return r;

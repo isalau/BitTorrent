@@ -216,11 +216,11 @@ public class Client implements Runnable{
 	}
 
 	public void determinePreferredNeighbors(){
-		System.out.println("Client: Determining Preferred Neighbors "+ peerLinkedList);
-
 		//update my peer Linked List
 		peerLinkedList = up.peerLinkedList;
 		connectionLinkedList = up.connectionLinkedList;
+
+		System.out.println("Client: Determining Preferred Neighbors "+ peerLinkedList);
 
 		//check to see if k is greater than size of connection list
 		if(numOfPreferredNeighbors > connectionLinkedList.size()){
@@ -312,7 +312,7 @@ public class Client implements Runnable{
 	        		peerLinkedList.get(newPrefferedIndex).preferredNeighbor = true;
 		        }
 		        //send out choke message to people who are no longer preferred neighbors
-		        for(int i = 0; i < peerLinkedList.size(); i++ ){
+		        for(int i = 0; i < connectionLinkedList.size(); i++ ){
 		        	if(oldPreferreds.contains(i)==true){
 		        		connectionLinkedList.get(i).sendChokeMessage();
 		        	}
@@ -363,22 +363,22 @@ public class Client implements Runnable{
 			System.out.println("Client: Opt unchoking connection list "+ connectionLinkedList);
 
 			//if I am not alone
-			if(peerLinkedList.size() != 0){
+			if(connectionLinkedList.size() != 0){
 				//get current optimistic neighbor to change later
 				int oldNeighbor = 0;
-				for(int i = 0; i < peerLinkedList.size(); i++){
-					if(peerLinkedList.get(i).preferredNeighbor == true){
+				for(int i = 0; i < connectionLinkedList.size(); i++){
+					if(connectionLinkedList.get(i).preferredNeighbor == true){
 						oldNeighbor = i;
 					}
 				}
 
-				if(peerLinkedList.size() == 1){
+				if(connectionLinkedList.size() == 1){
 					//you only have one neighbor and should just keep as preferred unchoked neighbor
 					//send choke message to old opt neighbor
 					peerLinkedList.get(0).preferredNeighbor = true;
 
-					//make old optimistic neighbor false
-					peerLinkedList.get(0).optimisticNeighbor = true;
+					//make optimistic neighbor false
+					peerLinkedList.get(0).optimisticNeighbor = false;
 
 					//send unchoke message using connection from connection list
 					connectionLinkedList.get(0).sendUnchokeMessage();
@@ -411,20 +411,20 @@ public class Client implements Runnable{
 
 	public int pickRandomOptNeighbor(){
 		//get number of peers
-        int numOfPeers = peerLinkedList.size();
+        int numOfPeers = connectionLinkedList.size();
 
         if(numOfPeers != 0 && numOfPeers!= 1){
 	        //pick rand from range of peers use rand for that
 	        int rand = new Random().nextInt(numOfPeers);
 	        System.out.println("Client: Test random neighbor: " + rand);
 	        //check that not already unchoked & that it is interested
-	        if(peerLinkedList.get(rand).preferredNeighbor == false && peerLinkedList.get(rand).optimisticNeighbor == false && peerLinkedList.get(rand).interested == true){
-	        	peerLinkedList.get(rand).optimisticNeighbor = true;
+	        if(connectionLinkedList.get(rand).preferredNeighbor == false && connectionLinkedList.get(rand).optimisticNeighbor == false && connectionLinkedList.get(rand).interested == true){
+	        	connectionLinkedList.get(rand).optimisticNeighbor = true;
 	        	return rand;
 	        }
 	    }else if(numOfPeers == 1){
-	        	if(peerLinkedList.get(0).preferredNeighbor == false && peerLinkedList.get(0).optimisticNeighbor == false && peerLinkedList.get(0).interested == true){
-	        	peerLinkedList.get(0).optimisticNeighbor = true;
+	        	if(connectionLinkedList.get(0).preferredNeighbor == false && connectionLinkedList.get(0).optimisticNeighbor == false && connectionLinkedList.get(0).interested == true){
+	        	connectionLinkedList.get(0).optimisticNeighbor = true;
 					return 0;
 		    	}
 		}else{
