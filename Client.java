@@ -20,9 +20,6 @@ public class Client implements Runnable{
 	public String hostName;
 	public int port;
 	public boolean hasFile;
-
-	
-	public byte bitfield[];
 	public LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
 	public LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
 	public Socket connection;
@@ -33,6 +30,8 @@ public class Client implements Runnable{
   	public int pieceSize;
 	public int unchokingInterval;
 	public int optimisticUnchokingInterval;
+	public static int numOfPieces;
+	public static byte myBitfield[];
 
 	public ArrayList<byte[]> DataChunks;
 
@@ -50,6 +49,11 @@ public class Client implements Runnable{
 		//start timers
 		initalizeTimer();
 
+		//set bitfield to correct size
+		numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
+		byte[] emptyArray = new byte[numOfPieces];
+		myBitfield = emptyArray;
+
 		System.out.println("Client: Run in client with peerID "+ this.peerID+ " with num in PeerInfo "+ numInPeerInfo);
 
 		//tracker initalization
@@ -61,11 +65,11 @@ public class Client implements Runnable{
 
 	public void runUploader(){
 		System.out.println("Client: Calling run uploader");
-
+		 
 		up.peerID = peerID;
 		up.portNumber = port;
 		up.hasFile = hasFile;
-		up.myBitfield = bitfield;
+		up.myBitfield = myBitfield;
 		up.fileSize = fileSize;
 		up.pieceSize = pieceSize;
 		up.unchokingInterval = unchokingInterval;
@@ -73,6 +77,7 @@ public class Client implements Runnable{
 		up.numInPeerInfo = numInPeerInfo;
 		up.peerLinkedList = peerLinkedList;
 		up.connectionLinkedList = connectionLinkedList;
+		up.numOfPieces = numOfPieces; 
 
 		if(DataChunks != null ){
 			up.DataChunks = DataChunks;
@@ -107,7 +112,8 @@ public class Client implements Runnable{
 				newPeer.preferredNeighbor = false;
 				newPeer.optimisticNeighbor = false;
 
-				byte[] emptyArray = new byte[32];
+				int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
+				byte[] emptyArray = new byte[numOfPieces];
 				newPeer.bitfield = emptyArray;
 
 				//add to Peer Linked List
@@ -123,6 +129,7 @@ public class Client implements Runnable{
             	newConnection.interested = false;
             	newConnection.preferredNeighbor = false;
             	newConnection.optimisticNeighbor = false;
+				newConnection.peerBitfield = emptyArray;
 
             	//my info
             	newConnection.sendersPeerID = peerID;
@@ -133,11 +140,12 @@ public class Client implements Runnable{
             	newConnection.alone = false;
 		        newConnection.fileSize = fileSize;
 		        newConnection.pieceSize = pieceSize;
+		        newConnection.numOfPieces = numOfPieces;
 		        newConnection.unchokingInterval = unchokingInterval;
 		        newConnection.optimisticUnchokingInterval = optimisticUnchokingInterval;
 
 		        newConnection.numInPeerInfo = numInPeerInfo;
-		        newConnection.myBitfield = bitfield;
+		        newConnection.myBitfield = myBitfield;
 
 				connectionLinkedList.add(newConnection);
 
@@ -403,19 +411,15 @@ public class Client implements Runnable{
 	        if(peerLinkedList.get(rand).preferredNeighbor == false && peerLinkedList.get(rand).optimisticNeighbor == false && peerLinkedList.get(rand).interested == true){
 	        	peerLinkedList.get(rand).optimisticNeighbor = true;
 	        	return rand;
-	        }else if(numOfPeers ==1){
+	        }
+	    }else if(numOfPeers == 1){
 	        	if(peerLinkedList.get(0).preferredNeighbor == false && peerLinkedList.get(0).optimisticNeighbor == false && peerLinkedList.get(0).interested == true){
 	        	peerLinkedList.get(0).optimisticNeighbor = true;
-				return 0;
+					return 0;
 		    	}
-		    }
-	        else{
-	        	//try again with new random number ---> does not work
-	        	// pickRandomOptNeighbor();
-	        }
-	    }else{
-	    	//we have no peers
-	    }
-	    return 0;
+		}else{
+	    	//we have no peers	
+		}
+		return 0;
 	}
 }
