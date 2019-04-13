@@ -113,12 +113,11 @@ public class peerProcess{
         client.hasFile = hasFile;
         client.unchokingInterval = unchokingInterval;
         client.optimisticUnchokingInterval = optimisticUnchokingInterval;
+
         if(DataChunks!= null){
             client.DataChunks = DataChunks; 
         }
         
-
-
         Thread object = new Thread(client);
         object.start();
     }

@@ -15,15 +15,15 @@ public class Connection extends Uploader implements Runnable{
 	public  int portNumber;
 	public  boolean hasFile;
 
+	public boolean interested;
+	public boolean preferredNeighbor;
+	public boolean optimisticNeighbor;
+
 	//My Info 
 	public static int sendersPeerID;
 	public static String sendersHostName;
 	public static int sendersPort;
 	public static boolean sendersHasFile;
-
-	public boolean interested;
-	public boolean preferredNeighbor;
-	public boolean optimisticNeighbor;
 
 	public static boolean alone = true; 
 	public static int fileSize;
@@ -77,6 +77,7 @@ public class Connection extends Uploader implements Runnable{
   	public void run() {
   		System.out.println("Connection: I am running");
   		if (alone == false){
+  			System.out.println("Connection: I am not alone");
   			sendHandShake();
   		}
   		else{
@@ -225,10 +226,10 @@ public class Connection extends Uploader implements Runnable{
 				}
 			}  catch (IllegalArgumentException exception) {
 	            // Catch expected IllegalArgumentExceptions.
-	            System.out.println("Hanshake exception 1: " + exception);
+	            System.out.println("Connection: Hanshake exception 1: " + exception);
 	        } catch (Exception exception) {
 	            // Catch unexpected Exceptions.
-	            System.out.println("Hanshake exception 2: " + exception);
+	            System.out.println("Connection: Hanshake exception 2: " + exception);
 	        }
 	        if (alone == false){
 				out = new ObjectOutputStream(connection.getOutputStream());
@@ -242,9 +243,9 @@ public class Connection extends Uploader implements Runnable{
 			sendersPort = connection.getLocalPort();
 			sendersHostName = connection.getLocalAddress().toString();
 			System.out.println("Connection: Sending Handshake from Connection to : " + hostname + " with port number "+ portNumber);
-			System.out.println("My peerID is: " + sendersPeerID);
-			System.out.println("My port number is: " + sendersPort);
-			System.out.println("My hostname is: " + sendersHostName);
+			System.out.println("Connection: My peerID is: " + sendersPeerID);
+			System.out.println("Connection: My port number is: " + sendersPort);
+			System.out.println("Connection: My hostname is: " + sendersHostName);
 		
 			//handshake
 			message = new byte[32];
@@ -298,14 +299,13 @@ public class Connection extends Uploader implements Runnable{
 				//receive the message sent from the client
 				byte[] myObjects = (byte[])in.readObject();
 				
-
 				//check what message you got
 				checkMessage(myObjects);
 			}
 		}catch(ClassNotFoundException classnot){
-				System.err.println("Data received in unknown format");
+				System.err.println("Connection: Data received in unknown format");
 			}catch(IOException ioException){
-				System.out.println("Disconnect with Client " + no);
+				System.out.println("Connection: Disconnect with Client " + no);
 			}
 		// finally{
 		// 	//Close connections

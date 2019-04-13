@@ -12,16 +12,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Random;
 
-//Client is yourself. You as a client have an uploader , file handler and peerList
+//Client is yourself. You as a client have an uploader, file handler, peerLinkedList, and connectionLinkedList
 public class Client implements Runnable{
 
-	//base information
+	//My information
 	public int peerID;
 	public String hostName;
 	public int port;
 	public boolean hasFile;
 
-	//client's info
+	
 	public byte bitfield[];
 	public LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
 	public LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
@@ -50,7 +50,7 @@ public class Client implements Runnable{
 		//start timers
 		initalizeTimer();
 
-		System.out.println("Run in client with peerID "+ this.peerID+ " with num in PeerInfo "+ numInPeerInfo);
+		System.out.println("Client: Run in client with peerID "+ this.peerID+ " with num in PeerInfo "+ numInPeerInfo);
 
 		//tracker initalization
 		addPeers();
@@ -73,6 +73,7 @@ public class Client implements Runnable{
 		up.numInPeerInfo = numInPeerInfo;
 		up.peerLinkedList = peerLinkedList;
 		up.connectionLinkedList = connectionLinkedList;
+
 		if(DataChunks != null ){
 			up.DataChunks = DataChunks;
 			System.out.println("the data chunks size is :"+DataChunks.size());
@@ -88,9 +89,9 @@ public class Client implements Runnable{
 	}
 
 	public void addPeers(){
-		System.out.println("Client: In Adding to Peer Lists");
+		System.out.println("Client: In addPeers()");
 
-		//get info for tracker
+		//get info for peer and connection List
 		PeerParser PP = new PeerParser();
         if(PP.Parse("PeerInfo.cfg")){
         	for(int i = 0; i < numInPeerInfo; i++){
@@ -109,7 +110,7 @@ public class Client implements Runnable{
 				byte[] emptyArray = new byte[32];
 				newPeer.bitfield = emptyArray;
 
-				//add to Linked lists
+				//add to Peer Linked List
 				peerLinkedList.add(newPeer);
 
 
@@ -119,6 +120,9 @@ public class Client implements Runnable{
             	newConnection.hostname = PI.HostName;
             	newConnection.portNumber = PI.Port;
             	newConnection.hasFile = PI.HasFile;
+            	newConnection.interested = false;
+            	newConnection.preferredNeighbor = false;
+            	newConnection.optimisticNeighbor = false;
 
             	//my info
             	newConnection.sendersPeerID = peerID;
@@ -194,7 +198,7 @@ public class Client implements Runnable{
 	}
 
 	public void determinePreferredNeighbors(){
-		System.out.println("Client: Dtermining Preferred Neighbors "+ peerLinkedList);
+		System.out.println("Client: Determining Preferred Neighbors "+ peerLinkedList);
 
 		//update my peer Linked List
 		peerLinkedList = up.peerLinkedList;
@@ -408,7 +412,7 @@ public class Client implements Runnable{
 		    }
 	        else{
 	        	//try again with new random number
-	        	pickRandomOptNeighbor();
+	        	// pickRandomOptNeighbor();
 	        }
 	    }else{
 	    	//we have no peers
