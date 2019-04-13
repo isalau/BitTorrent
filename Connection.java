@@ -181,7 +181,7 @@ public class Connection extends Uploader implements Runnable{
 		            break;
 		        case 4:
 		            System.out.println("Connection: received have message");
-					determineIfInterestedFromHave();
+					determineIfInterestedFromHave(msg);
 		            break;
 		        case 5:
 		        	System.out.println("Connection: received bitfield message");
@@ -475,17 +475,18 @@ public class Connection extends Uploader implements Runnable{
 		sendMessage(unChokeMessage);
 	}
 
-	public void determineIfInterestedFromHave(){
+	public void determineIfInterestedFromHave(byte[] msg){
 		System.out.println("Connection: Determining If Interested From Have");
-		//determine if a neighbor has an interesting piece
-		//compare our bitfields
-		boolean interested = false;
+		
+		byte index = msg[5];
+		boolean sendIntMes = false;
+		
 		//my bitfield 
-		if(myBitfield[5] == 0){
-			interested = true;  
+		if(myBitfield[index] != 1){
+			sendIntMes = true;  
 		}
 		//if B has 1 where I have 0 sendInterestedMessage()
-		if(interested == true){
+		if(sendIntMes == true){
 			//if B has 1 where I have 0 sendInterestedMessage()
 			sendInterestedMessage();
 		}else{
@@ -563,8 +564,8 @@ public class Connection extends Uploader implements Runnable{
 
 	public void sendRequest(){
 		System.out.println("Connection: Sending Request Message");
-
-		//create new request message
+		if(hasFile == false){
+			//create new request message
 		int length = 9; //4 for length, 1 for type, 4 for payload
 		requestMessage = new byte[length];
 	
@@ -586,6 +587,7 @@ public class Connection extends Uploader implements Runnable{
 			}
 		}*/ 
 
+
 		int rand = selectRandom(); 
 
 		myBitfield[rand] = 2; 
@@ -595,11 +597,12 @@ public class Connection extends Uploader implements Runnable{
 
 		//start timer 
 		startDownloadTime = System.currentTimeMillis();
+		}
 	}
 
 	public int selectRandom(){
 		numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
-		System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
+		// System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
 		int r = new Random().nextInt(numOfPieces-1);
 		if(myBitfield[r] == 0 && peerBitfield[r] == 1){
 			return r;
