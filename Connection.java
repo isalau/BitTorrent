@@ -43,6 +43,7 @@ public class Connection extends Uploader implements Runnable{
 	private static byte[] haveMessage;    
 	private static byte[] chokeMessage;
 	private static byte[] unChokeMessage;
+	private byte[] pieceMessage;
 
 
 	public static  LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
