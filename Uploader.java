@@ -28,6 +28,7 @@ public class Uploader implements Runnable{
 	public static int fileSize;
     public static int pieceSize;
     public static int numInPeerInfo;
+    public static ArrayList<byte[]> DataChunks;
    
 
     public static int clientNum;
@@ -83,7 +84,11 @@ public class Uploader implements Runnable{
 						connectionLinkedList.get(j).peerLinkedList = peerLinkedList;
 						connectionLinkedList.add(connectionLinkedList.get(j));
 						connectionLinkedList.get(j).connectionLinkedList = connectionLinkedList;
-
+						if(DataChunks != null){
+							connectionLinkedList.get(j).DataChunks = DataChunks;
+							System.out.println("the data chunks size is :"+DataChunks.size());
+						}
+						
 		      			Thread object = new Thread(connectionLinkedList.get(j));
 		        		object.start();
 		        		System.out.println("Thread 1 state: " + object.getState()); 
