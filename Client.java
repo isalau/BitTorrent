@@ -392,6 +392,7 @@ public class Client implements Runnable{
 	}
 
 	public int pickRandomOptNeighbor(){
+
 		//get number of peers
         int numOfPeers = peerLinkedList.size();
 
@@ -410,7 +411,7 @@ public class Client implements Runnable{
 		    	}
 		    }
 	        else{
-	        	//try again with new random number ---> does not work
+	        	//try again with new random number
 	        	// pickRandomOptNeighbor();
 	        }
 	    }else{
