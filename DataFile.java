@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import static java.util.Arrays.copyOf;
 
 public class DataFile {
-    ArrayList<byte[]> DataInChunks;
+    ArrayList<byte[]> DataInChunks = new ArrayList<>();
 
     int PieceSize;
     int FileSize;
@@ -20,9 +20,7 @@ public class DataFile {
 
     boolean ReadFileIntoChunks(String fileName){
         try {
-
             InputStream IS = new FileInputStream(fileName);
-            DataInChunks = new ArrayList<>();
             int readBytes = 0;
             do{
                 byte[] b = new byte[PieceSize];

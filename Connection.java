@@ -595,7 +595,10 @@ public class Connection extends Uploader implements Runnable{
 
 		//Peer List 
 		myBitfield[msg[5]] = 1;
+		System.out.println("the msg is: "+ msg);
+
 		System.arraycopy(msg, 5, data,0, pieceSize);
+		System.out.println("the data is :"+ data);
 		DataChunks.add(msg[5],data);
 	}
 	public void sendHave(){

@@ -61,10 +61,10 @@ public class Uploader implements Runnable{
 
 				for (int j =0; j < connectionLinkedList.size(); j++){
 					if(connectionLinkedList.get(j).peerID == peerLinkedList.get(i).peerID){
-						if(DataChunks != null){
-							connectionLinkedList.get(j).DataChunks = DataChunks;
-							System.out.println("Uploader: the data chunks size is :"+DataChunks.size());
-						}
+						// if(DataChunks != null){
+							// connectionLinkedList.get(j).DataChunks = DataChunks;
+							// System.out.println("Uploader: the data chunks size is :"+DataChunks.size());
+						// }
 						
 		      			Thread object = new Thread(connectionLinkedList.get(j));
 		        		object.start();
@@ -142,9 +142,7 @@ public class Uploader implements Runnable{
 			newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
 			newConnection.peerLinkedList = peerLinkedList;
 			newConnection.no = this.no;
-			if(DataChunks != null){
-				newConnection.DataChunks = DataChunks;
-			}
+			newConnection.DataChunks = DataChunks;
 			connectionLinkedList.add(newConnection);
 			newConnection.connectionLinkedList = connectionLinkedList;
 			if(newConnection.sendersHasFile == true){

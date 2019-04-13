@@ -79,11 +79,9 @@ public class Client implements Runnable{
 		up.peerLinkedList = peerLinkedList;
 		up.connectionLinkedList = connectionLinkedList;
 		up.numOfPieces = numOfPieces; 
-
-		if(DataChunks != null ){
-			up.DataChunks = DataChunks;
-			System.out.println("the data chunks size is :"+DataChunks.size());
-		}
+		up.DataChunks = DataChunks;
+		// System.out.println("the data chunks size is :"+DataChunks.size());
+		
 
 
 		Thread object = new Thread(up);
@@ -144,10 +142,9 @@ public class Client implements Runnable{
 		        newConnection.numOfPieces = numOfPieces;
 		        newConnection.unchokingInterval = unchokingInterval;
 		        newConnection.optimisticUnchokingInterval = optimisticUnchokingInterval;
-		        if(DataChunks != null){
-					newConnection.DataChunks = DataChunks;
-				}
-		        
+		  
+				newConnection.DataChunks = DataChunks;
+
 
 		        newConnection.numInPeerInfo = numInPeerInfo;
 		        

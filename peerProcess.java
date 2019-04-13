@@ -122,6 +122,9 @@ public class peerProcess{
             for(int j=0; j <  numOfPieces;j++){
                 System.out.println("the data chunks are:"+DataChunks.get(j));
             }
+        }else{
+            DataFile df = new DataFile(pieceSize,fileSize);
+            client.DataChunks = df.DataInChunks;
         }
         
         Thread object = new Thread(client);
