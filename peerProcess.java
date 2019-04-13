@@ -117,10 +117,10 @@ public class peerProcess{
 
 
         if(DataChunks!= null){
-            System.out.println("the data chunks is :"+DataChunks);
+            // System.out.println("the data chunks is :"+DataChunks);
             client.DataChunks = DataChunks; 
             for(int j=0; j <  numOfPieces;j++){
-                System.out.println("the data chunks are:"+DataChunks.get(j));
+                // System.out.println("the data chunks are:"+DataChunks.get(j));
             }
         }else{
             DataFile df = new DataFile(pieceSize,fileSize);

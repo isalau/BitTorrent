@@ -135,9 +135,8 @@ public class Connection extends Uploader implements Runnable{
 	public void sendMessage(byte[] msg){
 		System.out.println("Connection: sending message: " + msg + " to Client " +no + " on port: "+ portNumber + " at addres: "+ hostname );
  		if(DataChunks != null){
- 			System.out.println("My data chunks are of size:"+ DataChunks.size());
+ 			System.out.println("Connection: My data chunks are of size: "+ DataChunks.size());
  		}
- 		
  		
 		try{
 			//initialize Input and Output streams
@@ -200,7 +199,7 @@ public class Connection extends Uploader implements Runnable{
 		        	System.out.println("Connection: received piece message");
 		            receivedPiece(msg);
 		            for(int i =0; i < connectionLinkedList.size(); i++){
-		            	if(connectionLinkedList.get(i).preferredNeighbor == true){
+		            	if(connectionLinkedList.get(i).interested == true){
 		            		sendHave();
 		            	}
 		            }
@@ -552,9 +551,8 @@ public class Connection extends Uploader implements Runnable{
 		if(myBitfield[r] == 0 && peerBitfield[r] == 1){
 			return r;
 		}else{
-			selectRandom(); //keep calling until you find one you don't have 
+			return selectRandom(); //keep calling until you find one you don't have 
 		}
-		return 0; 
 	}
 
 	public void sendPiece(byte[] msg){
@@ -585,12 +583,13 @@ public class Connection extends Uploader implements Runnable{
 		// //start timer 
 		// startDownloadTime = System.currentTimeMillis();
 	}
+
 	public void receivedPiece(byte[] msg){
 		//update Peer to reflect that they get the piece 
 		byte[] data = new byte[pieceSize];
 		//just to test
 		for (int i = 0; i < peerLinkedList.size(); i++){
-			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " recieved the piece message "); 
+			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " recieved the piece message"); 
 		}
 
 		//Peer List 
@@ -601,6 +600,7 @@ public class Connection extends Uploader implements Runnable{
 		System.out.println("the data is :"+ data);
 		DataChunks.add(msg[5],data);
 	}
+
 	public void sendHave(){
 		System.out.println("Connection: Sending Have Message");
 
