@@ -18,25 +18,27 @@ public class Connection extends Uploader implements Runnable{
 	public boolean interested;
 	public boolean preferredNeighbor;
 	public boolean optimisticNeighbor;
+	public byte [] peerBitfield; 
 
 	//My Info 
 	public static int sendersPeerID;
 	public static String sendersHostName;
 	public static int sendersPort;
 	public static boolean sendersHasFile;
+	public static byte[] myBitfield;
 
 	public static boolean alone = true; 
 	public static int fileSize;
     public static int pieceSize;
+    public static int numOfPieces; 
     public static int numInPeerInfo;
     public static int unchokingInterval;
     public static int optimisticUnchokingInterval;
     public static ArrayList<byte[]> DataChunks;
     
 
-	public static byte[] myBitfield;
-	public static byte [] peerBitfield; 
-	private static byte[] message;  
+	private static byte[] message; 
+	public byte[] bitfieldMessage; 
 	private static byte[] interestedMessage;
 	private static byte[] notInterestedMessage;
 	private static byte[] requestMessage;
@@ -340,39 +342,40 @@ public class Connection extends Uploader implements Runnable{
 		newPeer.optimisticNeighbor = false;
 
 		//assume empyty bitfield until proven wrong by receiving bitfield or have message 
-		byte[] emptyArray = new byte[32];
+		int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
+		byte[] emptyArray = new byte[numOfPieces];
 		newPeer.bitfield = emptyArray;
         
         peerLinkedList.add(newPeer);
 
      	System.out.println("Connection: Adding Peers " + peerLinkedList);
 
-     	Connection newConnection2 = new Connection();
-    	//their info 
-    	newConnection2.peerID = peerID;
-    	newConnection2.hostname = hostname;
-    	newConnection2.portNumber = portNumber;
-    	newConnection2.hasFile = hasFile;
+  //    	Connection newConnection2 = new Connection();
+  //   	//their info 
+  //   	newConnection2.peerID = peerID;
+  //   	newConnection2.hostname = hostname;
+  //   	newConnection2.portNumber = portNumber;
+  //   	newConnection2.hasFile = hasFile;
 
-    	//my info 
-    	newConnection2.sendersPeerID = sendersPeerID;
-    	newConnection2.sendersHostName = sendersHostName;
-    	newConnection2.sendersPort = sendersPort; // this is currently listener will change
-    	newConnection2.sendersHasFile = sendersHasFile;  // this is currently listener will change
+  //   	//my info 
+  //   	newConnection2.sendersPeerID = sendersPeerID;
+  //   	newConnection2.sendersHostName = sendersHostName;
+  //   	newConnection2.sendersPort = sendersPort; // this is currently listener will change
+  //   	newConnection2.sendersHasFile = sendersHasFile;  // this is currently listener will change
 
-    	newConnection2.alone = false;	
-        newConnection2.fileSize = fileSize;
-        newConnection2.pieceSize = pieceSize;
-        newConnection2.unchokingInterval = unchokingInterval;
-        newConnection2.optimisticUnchokingInterval = optimisticUnchokingInterval;
+  //   	newConnection2.alone = false;	
+  //       newConnection2.fileSize = fileSize;
+  //       newConnection2.pieceSize = pieceSize;
+  //       newConnection2.unchokingInterval = unchokingInterval;
+  //       newConnection2.optimisticUnchokingInterval = optimisticUnchokingInterval;
 
-        newConnection2.numInPeerInfo = numInPeerInfo; 
-        newConnection2.myBitfield = myBitfield;
+  //       newConnection2.numInPeerInfo = numInPeerInfo; 
+  //       newConnection2.myBitfield = myBitfield;
 
-		// connectionLinkedList.add(newConnection2);
+		// // connectionLinkedList.add(newConnection2);
 
-		newConnection2.peerLinkedList = peerLinkedList;
-		newConnection2.connectionLinkedList = connectionLinkedList;
+		// newConnection2.peerLinkedList = peerLinkedList;
+		// newConnection2.connectionLinkedList = connectionLinkedList;
 
      	// connectionLinkedList.add(newConnection2);
      	System.out.println("Connection: Adding Connections " + connectionLinkedList);
@@ -386,19 +389,19 @@ public class Connection extends Uploader implements Runnable{
 
 		//determine what parts of the file I have 
 		int length = 4 + 1 + (numOfPieces/8); 
-    	myBitfield = new byte[length];
+    	bitfieldMessage = new byte[length];
     	
 		//create new bitfield message
-		myBitfield = ByteBuffer.allocate(length).putInt(length).array();
-		myBitfield[4] = 5;
+		bitfieldMessage = ByteBuffer.allocate(length).putInt(length).array();
+		bitfieldMessage[4] = 5;
 
     	if(sendersHasFile == true){
     		for (int i = 5; i< length; i++){
-    			myBitfield[i] =  1;
+    			bitfieldMessage[i] =  1;
     			//send message to B
     		}
     		System.out.println("Connection: Sending Bitfield with " + numOfPieces + " pieces.");
-    		sendMessage(myBitfield);
+    		sendMessage(bitfieldMessage);
     	}
 	}
 
@@ -494,14 +497,15 @@ public class Connection extends Uploader implements Runnable{
 	public void determineIfInterestedFromBitfield(byte[] msg){
 		System.out.println("Connection: Determining If Interested From Bitfield");
 		//determine if a neighbor has an interesting piece
-		//compare our bitfields
 		boolean interested = false;
-		//my bitfield 
+		//compare our bitfields
 		//msg will contain the other peer's bitfield
-		for (int i = 0; i< msg.length; i++){
-			System.out.println("Bitfield: " + msg[i] + " from client " + no);
+		for (int i = 5; i< msg.length; i++){
+			// System.out.println("Bitfield: " + msg[i] + " from client " + no);
 			//if my bitfield index == 0 && msg == 1
-			if(myBitfield[i] == 0 && msg[i] == 1){
+			int bitIndex=i-5; 
+			peerBitfield[bitIndex] = msg[i];
+			if(myBitfield[bitIndex] == 0 && msg[i] == 1){
 				interested = true;  
 			}
 		}
@@ -571,7 +575,8 @@ public class Connection extends Uploader implements Runnable{
 		//create payload 
 		//check for 0's in myBitfield array 1 means we have it and 2 means we sent a request to another neighbor for it
 
-		int requestPieceIndex = 0; 
+		// int requestPieceIndex = 0; 
+		/*
 		for (int i = 0 ; i < myBitfield.length; i++){
 			if(myBitfield[i] == 0){
 				//we should check that they have the piece too 
@@ -579,14 +584,29 @@ public class Connection extends Uploader implements Runnable{
 				myBitfield[i] = 2; 
 				break;
 			}
-		}
+		}*/ 
 
-		requestMessage[5] = (byte) requestPieceIndex;
+		int rand = selectRandom(); 
+
+		myBitfield[rand] = 2; 
+		requestMessage[5] = (byte) rand;
 		
 		sendMessage(requestMessage);
 
 		//start timer 
 		startDownloadTime = System.currentTimeMillis();
+	}
+
+	public int selectRandom(){
+		numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
+		System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
+		int r = new Random().nextInt(numOfPieces-1);
+		if(myBitfield[r] == 0 && peerBitfield[r] == 1){
+			return r;
+		}else{
+			selectRandom(); //keep calling until you find one you don't have 
+		}
+		return 0; 
 	}
 
 	public void sendPiece(){

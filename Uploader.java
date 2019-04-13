@@ -27,6 +27,7 @@ public class Uploader implements Runnable{
 	public static boolean sentHandshake = false;
 	public static int fileSize;
     public static int pieceSize;
+    public static int numOfPieces; 
     public static int numInPeerInfo;
     public static ArrayList<byte[]> DataChunks;
    
@@ -148,15 +149,21 @@ public class Uploader implements Runnable{
             newConnection.preferredNeighbor = false;
             newConnection.optimisticNeighbor = false;
 
+            int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
+			byte[] emptyArray = new byte[numOfPieces];
+			newConnection.peerBitfield = emptyArray;
+
 
       		//my info 
       		newConnection.sendersPeerID = peerID;
       		newConnection.sendersPort = connection.getLocalPort();
       		newConnection.sendersHostName = connection.getLocalAddress().toString();
       		newConnection.sendersHasFile = hasFile;
+      		newConnection.myBitfield = myBitfield;
 			newConnection.hasFile = hasFile;
 			newConnection.fileSize = fileSize;
 			newConnection.pieceSize = pieceSize;
+			newConnection.numOfPieces = numOfPieces; 
 			newConnection.numInPeerInfo = numInPeerInfo;
 			newConnection.unchokingInterval = unchokingInterval;
 			newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
