@@ -43,7 +43,8 @@ public class Connection extends Uploader implements Runnable{
 	private static byte[] haveMessage;    
 	private static byte[] chokeMessage;
 	private static byte[] unChokeMessage;
-
+	private static byte[] pieceMessage;
+	private static int PieceIndex;
 
 	public static  LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
 	public static  LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
@@ -56,6 +57,7 @@ public class Connection extends Uploader implements Runnable{
 	public long connectionDownloadRate;
 	public long startDownloadTime;
 	public long stopDownloadTime;
+
 	
 
 	//handshake variables
@@ -188,7 +190,8 @@ public class Connection extends Uploader implements Runnable{
 		            //got a requestMessage
 		        	System.out.println("Connection: received request message");
 		        	//create piece
-		        	//sendPiece();
+		        	PieceIndex = (int) msg[5];
+		        	sendPiece();
 		            break;
 		        case 7:
 		        	System.out.println("Connection: received piece message");
@@ -587,6 +590,27 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void sendPiece(){
+		System.out.println("Connection: Sending Piece Message");
+
+		//create new request message
+		int length = 4 + 1 + pieceSize; //4 for length, 1 for type, rest for piece content
+		pieceMessage = new byte[length];
+		byte[] data = new byte[pieceSize];
+	 	//initalize
+		pieceMessage = ByteBuffer.allocate(length).putInt(length).array();
+		pieceMessage[4] = 7; //type seven
+
+		
+		if((DataChunks != null ) && (myBitfield[PieceIndex] != 0)){
+			data = DataChunks.get(PieceIndex);
+		}
+			
+		System.arraycopy(data, 0, pieceMessage,0, data.length);
+		
+		sendMessage(pieceMessage);
+
+		// //start timer 
+		// startDownloadTime = System.currentTimeMillis();
 	}
 
 	public void downloadChunks(){
