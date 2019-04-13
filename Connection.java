@@ -387,7 +387,7 @@ public class Connection extends Uploader implements Runnable{
 
 		//Peer List 
 		for (int i =0; i < peerLinkedList.size(); i++){
-			if( sendersPeerID == peerLinkedList.get(i).peerID){
+			if(peerID == peerLinkedList.get(i).peerID){
 				peerLinkedList.get(i).interested = true; 
 			}
 		}
@@ -521,7 +521,7 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void sendRequest(){
-		if(hasFile == false){
+		if(sendersHasFile == false){
 			System.out.println("Connection: Sending Request Message");
 			//create new request message
 			int length = 9; //4 for length, 1 for type, 4 for payload
