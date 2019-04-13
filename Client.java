@@ -21,6 +21,7 @@ public class Client implements Runnable{
 	public int port;
 	public boolean hasFile;
 
+
 	
 	public byte bitfield[];
 	public LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
