@@ -530,40 +530,25 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void sendRequest(){
-		System.out.println("Connection: Sending Request Message");
 		if(hasFile == false){
+			System.out.println("Connection: Sending Request Message");
 			//create new request message
-		int length = 9; //4 for length, 1 for type, 4 for payload
-		requestMessage = new byte[length];
-	
-	 	//initalize
-		requestMessage = ByteBuffer.allocate(length).putInt(length).array();
-		requestMessage[4] = 6; //type six
-
-		//create payload 
-		//check for 0's in myBitfield array 1 means we have it and 2 means we sent a request to another neighbor for it
-
-		// int requestPieceIndex = 0; 
-		/*
-		for (int i = 0 ; i < myBitfield.length; i++){
-			if(myBitfield[i] == 0){
-				//we should check that they have the piece too 
-				requestPieceIndex = i;
-				myBitfield[i] = 2; 
-				break;
-			}
-		}*/ 
-
-
-		int rand = selectRandom(); 
-
-		myBitfield[rand] = 2; 
-		requestMessage[5] = (byte) rand;
+			int length = 9; //4 for length, 1 for type, 4 for payload
+			requestMessage = new byte[length];
 		
-		sendMessage(requestMessage);
+		 	//initalize
+			requestMessage = ByteBuffer.allocate(length).putInt(length).array();
+			requestMessage[4] = 6; //type six
 
-		//start timer 
-		startDownloadTime = System.currentTimeMillis();
+			int rand = selectRandom(); 
+
+			myBitfield[rand] = 2; 
+			requestMessage[5] = (byte) rand;
+			
+			sendMessage(requestMessage);
+
+			//start timer 
+			startDownloadTime = System.currentTimeMillis();
 		}
 	}
 
