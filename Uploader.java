@@ -61,30 +61,6 @@ public class Uploader implements Runnable{
 
 				for (int j =0; j < connectionLinkedList.size(); j++){
 					if(connectionLinkedList.get(j).peerID == peerLinkedList.get(i).peerID){
-						// Connection newConnection = new Connection();
-						//their info 
-						// connectionLinkedList.get(j).peerID = peerLinkedList.get(j).peerID;
-						// connectionLinkedList.get(j).hostname = peerLinkedList.get(j).hostName;
-						// connectionLinkedList.get(j).portNumber = peerLinkedList.get(j).port;
-						// connectionLinkedList.get(j).hasFile = peerLinkedList.get(j).hasFile;
-
-						// //my info 
-						// connectionLinkedList.get(j).sendersPeerID = peerID;
-						// connectionLinkedList.get(j).sendersHostName = hostname;
-		    //         	connectionLinkedList.get(j).sendersPort = portNumber; // this is currently listener will change
-		    //         	connectionLinkedList.get(j).sendersHasFile = hasFile;  // this is currently listener will change
-		            	
-		    //         	connectionLinkedList.get(j).alone = false;
-		    //         	connectionLinkedList.get(j).fileSize = fileSize;
-						// connectionLinkedList.get(j).pieceSize = pieceSize;
-						// connectionLinkedList.get(j).unchokingInterval = unchokingInterval;
-						// connectionLinkedList.get(j).optimisticUnchokingInterval= optimisticUnchokingInterval;
-
-						// connectionLinkedList.get(j).numInPeerInfo = numInPeerInfo;
-										
-						// connectionLinkedList.get(j).peerLinkedList = peerLinkedList;
-						// connectionLinkedList.add(connectionLinkedList.get(j));
-						// connectionLinkedList.get(j).connectionLinkedList = connectionLinkedList;
 						if(DataChunks != null){
 							connectionLinkedList.get(j).DataChunks = DataChunks;
 							System.out.println("Uploader: the data chunks size is :"+DataChunks.size());
