@@ -92,7 +92,7 @@ public class peerProcess{
         }
 
         if(readFile){
-            DataFile DF = new DataFile(CP.PieceSize);
+            DataFile DF = new DataFile(CP.PieceSize, CP.FileSize);
             if(DF.ReadFileIntoChunks(CP.DataFileName)){
                 DataChunks = DF.DataInChunks;
                 // System.out.println("the data chunks size is :"+DF.DataInChunks.size());
@@ -103,7 +103,7 @@ public class peerProcess{
             }
         }
         int peerID = Integer.parseInt(peerIDString);
-        
+        int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
         Client client = new Client();
         client.peerID = peerID;
         client.numInPeerInfo = numInPeerInfo; 
@@ -114,8 +114,14 @@ public class peerProcess{
         client.unchokingInterval = unchokingInterval;
         client.optimisticUnchokingInterval = optimisticUnchokingInterval;
 
+
+
         if(DataChunks!= null){
+            System.out.println("the data chunks is :"+DataChunks);
             client.DataChunks = DataChunks; 
+            for(int j=0; j <  numOfPieces;j++){
+                System.out.println("the data chunks are:"+DataChunks.get(j));
+            }
         }
         
         Thread object = new Thread(client);

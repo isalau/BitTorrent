@@ -46,7 +46,7 @@ public class Connection extends Uploader implements Runnable{
 	private byte[] chokeMessage;
 	private byte[] unChokeMessage;
 	private byte[] pieceMessage;
-	private int PieceIndex;
+	private byte PieceIndex;
 
 	public static  LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
 	public static  LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
@@ -191,12 +191,14 @@ public class Connection extends Uploader implements Runnable{
 		            //got a requestMessage
 		        	System.out.println("Connection: received request message");
 		        	//create piece
-		        	PieceIndex = (int) msg[5];
-		        	sendPiece();
+		        	PieceIndex = msg[5];
+		        	System.out.println("the piece index in checkMessage"+ PieceIndex);
+		        	
+		        	sendPiece(msg);
 		            break;
 		        case 7:
 		        	System.out.println("Connection: received piece message");
-		            receivedPiece();
+		            receivedPiece(msg);
 		            for(int i =0; i < connectionLinkedList.size(); i++){
 		            	if(connectionLinkedList.get(i).preferredNeighbor == true){
 		            		sendHave();
@@ -244,6 +246,7 @@ public class Connection extends Uploader implements Runnable{
 				out = new ObjectOutputStream(connection.getOutputStream());
 				out.flush(); //TODO ::: Do we need this?
 				in = new ObjectInputStream(connection.getInputStream());
+
 			}else{
 				//need to add to peer and connection list
 				addPeers();
@@ -532,7 +535,7 @@ public class Connection extends Uploader implements Runnable{
 			requestMessage[4] = 6; //type six
 
 			int rand = selectRandom(); 
-
+			System.out.println("the rand is :"+ rand);
 			myBitfield[rand] = 2; 
 			requestMessage[5] = (byte) rand;
 			
@@ -554,9 +557,13 @@ public class Connection extends Uploader implements Runnable{
 		return 0; 
 	}
 
-	public void sendPiece(){
+	public void sendPiece(byte[] msg){
 		System.out.println("Connection: Sending Piece Message");
-
+		// for (int i=0; i< myBitfield.length; i++){
+		// 	System.out.println("the bitfield is :"+ myBitfield[i]);
+		// }
+		
+		System.out.println("the PieceIndex from send piece is :"+ PieceIndex);
 		//create new piece message
 		int length = 4 + 1 + pieceSize; //4 for length, 1 for type, rest for piece content
 		pieceMessage = new byte[length];
@@ -566,27 +573,30 @@ public class Connection extends Uploader implements Runnable{
 		pieceMessage[4] = 7; //type seven
 
 		
-		if((DataChunks != null ) && (myBitfield[PieceIndex] !=0)){
-			data = DataChunks.get(PieceIndex);
+		if(myBitfield[msg[5]] == 1){
+			System.out.println("I am in the if statement");
+			data = DataChunks.get(msg[5]);
 		}
-			
-		System.arraycopy(data, 0, pieceMessage,0, data.length);
 		
+		System.arraycopy(data, 0, pieceMessage,5, data.length);
+		System.out.println("We are done with piece");
 		sendMessage(pieceMessage);
 
 		// //start timer 
 		// startDownloadTime = System.currentTimeMillis();
 	}
-	public void receivedPiece(){
+	public void receivedPiece(byte[] msg){
 		//update Peer to reflect that they get the piece 
-		
+		byte[] data = new byte[pieceSize];
 		//just to test
 		for (int i = 0; i < peerLinkedList.size(); i++){
-			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " recieved the piece message : "); 
+			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " recieved the piece message "); 
 		}
 
 		//Peer List 
-		myBitfield[PieceIndex] = 1;
+		myBitfield[msg[5]] = 1;
+		System.arraycopy(msg, 5, data,0, pieceSize);
+		DataChunks.add(msg[5],data);
 	}
 	public void sendHave(){
 		System.out.println("Connection: Sending Have Message");

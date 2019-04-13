@@ -133,7 +133,6 @@ public class Uploader implements Runnable{
       		newConnection.sendersPort = connection.getLocalPort();
       		newConnection.sendersHostName = connection.getLocalAddress().toString();
       		newConnection.sendersHasFile = hasFile;
-      		newConnection.myBitfield = myBitfield;
 			newConnection.hasFile = hasFile;
 			newConnection.fileSize = fileSize;
 			newConnection.pieceSize = pieceSize;
@@ -143,9 +142,19 @@ public class Uploader implements Runnable{
 			newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
 			newConnection.peerLinkedList = peerLinkedList;
 			newConnection.no = this.no;
+			if(DataChunks != null){
+				newConnection.DataChunks = DataChunks;
+			}
 			connectionLinkedList.add(newConnection);
 			newConnection.connectionLinkedList = connectionLinkedList;
-
+			if(newConnection.sendersHasFile == true){
+					for(int j=0; j< myBitfield.length; j++){
+						myBitfield[j] = 1;
+						// System.out.println("the bitfield from uploader is :"+ myBitfield[j]);
+					}
+					
+			}
+			newConnection.myBitfield = myBitfield;
       		Thread object = new Thread(newConnection);
         	object.start();
         	// System.out.println("Thread 2 state: " + object.getState()); 

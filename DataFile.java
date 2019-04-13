@@ -11,9 +11,11 @@ public class DataFile {
     ArrayList<byte[]> DataInChunks;
 
     int PieceSize;
+    int FileSize;
 
-    DataFile(int pSize){
+    DataFile(int pSize, int fSize){
         PieceSize = pSize;
+        FileSize = fSize;
     }
 
     boolean ReadFileIntoChunks(String fileName){
@@ -33,7 +35,13 @@ public class DataFile {
                 }
 
             } while(readBytes != -1);
-
+            int numOfPieces = (int) Math.ceil((double)FileSize/PieceSize);
+            if(numOfPieces > DataInChunks.size()){
+                for (int empties = DataInChunks.size(); empties < numOfPieces; empties++){
+                    byte[] blanks = new byte[PieceSize];
+                    DataInChunks.add(blanks);
+                }
+            }
             return true;
         }
         catch(Exception e)

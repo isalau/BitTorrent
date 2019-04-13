@@ -144,10 +144,22 @@ public class Client implements Runnable{
 		        newConnection.numOfPieces = numOfPieces;
 		        newConnection.unchokingInterval = unchokingInterval;
 		        newConnection.optimisticUnchokingInterval = optimisticUnchokingInterval;
+		        if(DataChunks != null){
+					newConnection.DataChunks = DataChunks;
+				}
+		        
 
 		        newConnection.numInPeerInfo = numInPeerInfo;
-		        newConnection.myBitfield = myBitfield;
+		        
 
+		        if(newConnection.sendersHasFile == true){
+					for(int j=0; j< myBitfield.length; j++){
+						myBitfield[j] = 1;
+						// System.out.println("the bitfield from client is :"+ myBitfield[j]);
+					}
+					
+				}
+				newConnection.myBitfield = myBitfield;
 				connectionLinkedList.add(newConnection);
 
 				newConnection.peerLinkedList = peerLinkedList;
