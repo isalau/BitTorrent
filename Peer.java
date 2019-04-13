@@ -11,7 +11,7 @@ public class Peer{
 
 	//peer info client wants to know
 	public boolean interested;
-	public boolean prefferedNeighbor;
+	public boolean preferredNeighbor;
 	public boolean optimisticNeighbor;
 	public byte[] bitfield;
 }

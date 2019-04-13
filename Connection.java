@@ -21,6 +21,10 @@ public class Connection extends Uploader implements Runnable{
 	public static int sendersPort;
 	public static boolean sendersHasFile;
 
+	public boolean interested;
+	public boolean preferredNeighbor;
+	public boolean optimisticNeighbor;
+
 	public static boolean alone = true; 
 	public static int fileSize;
     public static int pieceSize;
@@ -329,7 +333,7 @@ public class Connection extends Uploader implements Runnable{
         newPeer.port = portNumber;            
         newPeer.hasFile =  false; //assume false until proven wrong by receiving bitfield or have message 
         newPeer.interested = false; 
-		newPeer.prefferedNeighbor = false;
+		newPeer.preferredNeighbor = false;
 		newPeer.optimisticNeighbor = false;
 
 		//assume empyty bitfield until proven wrong by receiving bitfield or have message 
