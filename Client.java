@@ -244,7 +244,6 @@ public class Client implements Runnable{
 			        	oldPreferreds.add(i);
 			        }
 		        }	
-
 		        //pick numOfPreferredNeighbors new preferred neighbors
 		        for(int i = 0; i < numOfPreferredNeighbors; i++){
 		        	//pick rand from range of peers use rand for that
