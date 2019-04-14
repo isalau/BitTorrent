@@ -95,13 +95,14 @@ public class peerProcess{
             DataFile DF = new DataFile(CP.PieceSize, CP.FileSize);
             if(DF.ReadFileIntoChunks(CP.DataFileName)){
                 DataChunks = DF.DataInChunks;
-                // System.out.println("the data chunks size is :"+DF.DataInChunks.size());
+                System.out.println("Peer Process 1: the data chunks size is: "+DF.DataInChunks.size());
                 // System.out.println(DF.DataInChunks.get(DF.DataInChunks.size() - 1).length);
             }
             else{
                 System.out.println("Failed to load the data file!");
             }
         }
+
         int peerID = Integer.parseInt(peerIDString);
         int numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
         Client client = new Client();
@@ -111,18 +112,21 @@ public class peerProcess{
         client.fileSize = fileSize;
         client.pieceSize = pieceSize;
         client.hasFile = hasFile;
+        client.fileName = fileName;
         client.unchokingInterval = unchokingInterval;
         client.optimisticUnchokingInterval = optimisticUnchokingInterval;
 
         if(DataChunks!= null){
             // System.out.println("the data chunks is :"+DataChunks);
             client.DataChunks = DataChunks; 
-            for(int j=0; j <  numOfPieces;j++){
+            for(int j=0; j < numOfPieces; j++){
                 // System.out.println("the data chunks are:"+DataChunks.get(j));
             }
         }else{
             DataFile df = new DataFile(pieceSize,fileSize);
+            df.makeEmpty();
             client.DataChunks = df.DataInChunks;
+            System.out.println("Peer Process 2: the data chunks size is: "+ client.DataChunks.size());
         }
         
         Thread object = new Thread(client);

@@ -30,6 +30,7 @@ public class Client implements Runnable{
   	public int pieceSize;
 	public int unchokingInterval;
 	public int optimisticUnchokingInterval;
+	public static String fileName;
 	
 	public static int numOfPieces;
 	public static byte myBitfield[];
@@ -53,6 +54,7 @@ public class Client implements Runnable{
 		//set bitfield to correct size
 		numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
 		byte[] emptyArray = new byte[numOfPieces];
+		
 		myBitfield = emptyArray;
 
 		System.out.println("Client: Run in client with peerID "+ this.peerID+ " with num in PeerInfo "+ numInPeerInfo);
@@ -73,6 +75,7 @@ public class Client implements Runnable{
 		up.myBitfield = myBitfield;
 		up.fileSize = fileSize;
 		up.pieceSize = pieceSize;
+		up.fileName = fileName;
 		up.unchokingInterval = unchokingInterval;
 		up.optimisticUnchokingInterval = optimisticUnchokingInterval;
 		up.numInPeerInfo = numInPeerInfo;
@@ -127,6 +130,7 @@ public class Client implements Runnable{
             	newConnection.preferredNeighbor = false;
             	newConnection.optimisticNeighbor = false;
 				newConnection.peerBitfield = emptyArray;
+				newConnection.fileName = fileName;
 
             	//my info
             	newConnection.sendersPeerID = peerID;
