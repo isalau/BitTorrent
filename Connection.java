@@ -354,7 +354,6 @@ public class Connection extends Uploader implements Runnable{
 		// 	 }
 		// }
 	
-
 	public void addPeers(){
 		//place all info in a peer object
     	Peer newPeer = new Peer();
@@ -647,15 +646,39 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void checkIfDone(String fName){
-		//check if our bitfield is compleete
+		//check if chunksDownloaded is the number of pieces we want
 		if(chunksDownloaded == numOfPieces){
-			//if so change hasFile to true
+			//if so change sendershasFile to true
 			sendersHasFile = true;
 			DataFile df = new DataFile(pieceSize,fileSize);
 			df.WriteBytes(fName);
 			System.out.println("Connection: FILE COMPLETE!");
-		}
+		
 			//check if all peers hasFile is true
+			boolean allDone = true; 
+			for(int i = 0; i < connectionLinkedList.size(); i++){
+				if(connectionLinkedList.get(i).sendersHasFile == false){
+					allDone = false; 
+				}
+			}
+			
+			//stop program
+			if(allDone = true && connectionLinkedList.size() != 0){
+				try{
+					if(in != null){
+						in.close();
+					}
+					if(out != null){
+						out.close();
+					}
+					if (connection != null){
+						connection.close();
+					}	
+				 }catch(IOException ioException){
+					System.out.println("Connection: Problem in check if done"+ ioException);
+				}
+			}
+		}
 	}
 
 	public void sendHave(int index){
@@ -682,7 +705,7 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public long DetermineRate(){
-		connectionDownloadRate =  connectionDownloadRate /(startDownloadTime - stopDownloadTime);
+		connectionDownloadRate =  pieceSize /(startDownloadTime - stopDownloadTime);
 		return connectionDownloadRate;
 	}
 }		
