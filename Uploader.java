@@ -27,6 +27,7 @@ public class Uploader implements Runnable{
 	public static boolean sentHandshake = false;
 	public static int fileSize;
     public static int pieceSize;
+    public static String fileName;
     public static int numOfPieces; 
     public static int numInPeerInfo;
     public static ArrayList<byte[]> DataChunks;

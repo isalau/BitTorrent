@@ -1,10 +1,11 @@
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-
+import java.io.File;
 import static java.util.Arrays.copyOf;
 
 public class DataFile {
@@ -17,6 +18,7 @@ public class DataFile {
     DataFile(int pSize, int fSize){
         PieceSize = pSize;
         FileSize = fSize;
+        numOfPieces = (int) Math.ceil((double)FileSize/PieceSize);
     }
 
     boolean ReadFileIntoChunks(String fileName){
@@ -30,9 +32,7 @@ public class DataFile {
                 else{
                     if(readBytes != -1)
                         DataInChunks.add(copyOf(b,readBytes));
-
                 }
-
             } while(readBytes != -1);
             if(numOfPieces > DataInChunks.size()){
                 for (int empties = DataInChunks.size(); empties < numOfPieces; empties++){
@@ -40,13 +40,22 @@ public class DataFile {
                     DataInChunks.add(blanks);
                 }
             }
+            System.out.println("DataFile: The size of Data Array is: "+ DataInChunks.size());
             return true;
         }
         catch(Exception e)
         {
             return false;
         }
+    }
 
+    public void makeEmpty(){
+        System.out.println("DataFile: numOfPieces = " + numOfPieces);
+        for (int empties = 0; empties < numOfPieces; empties++){
+            byte[] blanks = new byte[PieceSize];
+            DataInChunks.add(blanks);
+        }
+        System.out.println("DataFile: The size of Data Array is: "+ DataInChunks.size());
     }
 
     public void CombineFiles(String fileName) {
@@ -56,41 +65,44 @@ public class DataFile {
         byte[] ReadBytes;
         int LastReadBytes = 0;
         for (int i = 0; i < numOfPieces; i++) {
-            File tempFile= new File(fileName + i.toString());
-            Filelist.add(tempFile);
+            String newName = fileName + Integer.toString(i); 
+            File tempFile= new File(newName);
+            FileList.add(tempFile);
         }
         try {
-            FOutput = new FileOutputStream(ofile, true);
-            for (File file : Filelist) {
-                fis = new FileInputStream(file);
+            FOutput = new FileOutputStream(object, true);
+            for (File file : FileList) {
+                FInput = new FileInputStream(file);
                 ReadBytes = new byte[(int) file.length()];
                 LastReadBytes = FInput.read(ReadBytes, 0, (int) file.length());
-                FOutput.write(fileBytes);
+                FOutput.write(ReadBytes);
                 FOutput.flush();
-                LastReadBytes = null;
+                LastReadBytes = 0;
                 FInput.close();
                 FInput = null;
             }
-            fos.close();
-            fos = null;
+            FOutput.close();
+            FOutput = null;
         } catch (Exception e) {
             System.out.println("Could not merge the file properly");
         }
     }
 
-    public void WriteBytes(){
+    public void WriteBytes(String fileName){
         try{
             // make the file name 
-            OutputStream output = new FileOutputStream(fileName);
+            String workingDirectory = System.getProperty("user.dir");
+            String absoluteFilePath = workingDirectory + File.separator + "Test";
+            FileOutputStream output = new FileOutputStream(fileName);
 
             //write the bytes into the file
-            for (byte[] bytes in DataInChunks){
+            for (byte[] bytes : DataInChunks){
                 output.write(bytes);
                 System.out.println("Wrote into the file successfully!");
-                ouput.close();
+                output.close();
 
             }
-        }catch(){
+        }catch(Exception e){
              System.out.println("Exception: " + e); 
         }
     }

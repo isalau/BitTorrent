@@ -30,6 +30,7 @@ public class Client implements Runnable{
   	public int pieceSize;
 	public int unchokingInterval;
 	public int optimisticUnchokingInterval;
+	public static String fileName;
 	
 	public static int numOfPieces;
 	public static byte myBitfield[];
@@ -53,6 +54,7 @@ public class Client implements Runnable{
 		//set bitfield to correct size
 		numOfPieces = (int) Math.ceil((double)fileSize/pieceSize);
 		byte[] emptyArray = new byte[numOfPieces];
+		
 		myBitfield = emptyArray;
 
 		System.out.println("Client: Run in client with peerID "+ this.peerID+ " with num in PeerInfo "+ numInPeerInfo);
@@ -73,6 +75,7 @@ public class Client implements Runnable{
 		up.myBitfield = myBitfield;
 		up.fileSize = fileSize;
 		up.pieceSize = pieceSize;
+		up.fileName = fileName;
 		up.unchokingInterval = unchokingInterval;
 		up.optimisticUnchokingInterval = optimisticUnchokingInterval;
 		up.numInPeerInfo = numInPeerInfo;
@@ -127,6 +130,7 @@ public class Client implements Runnable{
             	newConnection.preferredNeighbor = false;
             	newConnection.optimisticNeighbor = false;
 				newConnection.peerBitfield = emptyArray;
+				newConnection.fileName = fileName;
 
             	//my info
             	newConnection.sendersPeerID = peerID;
@@ -365,7 +369,7 @@ public class Client implements Runnable{
 				//get current optimistic neighbor to change later
 				int oldNeighbor = 0;
 				for(int i = 0; i < connectionLinkedList.size(); i++){
-					if(connectionLinkedList.get(i).preferredNeighbor == true){
+					if(connectionLinkedList.get(i).preferredNeighbor == true || connectionLinkedList.get(i).optimisticNeighbor == true){
 						oldNeighbor = i;
 					}
 				}
@@ -395,6 +399,7 @@ public class Client implements Runnable{
 
 					//make old optimistic neighbor false
 					peerLinkedList.get(oldNeighbor).optimisticNeighbor = false;
+					connectionLinkedList.get(oldNeighbor).optimisticNeighbor = false;
 
 					//propogate changes down stream too
 					up.peerLinkedList = peerLinkedList;
@@ -416,6 +421,8 @@ public class Client implements Runnable{
 	        int rand = new Random().nextInt(numOfPeers);
 	        System.out.println("Client: Test random neighbor: " + rand);
 	        //check that not already unchoked & that it is interested
+	        System.out.println("Client: In Pick Opt Peer: " + connectionLinkedList.get(rand).peerID + " is interested: "+ connectionLinkedList.get(rand).interested + " is preferred " + connectionLinkedList.get(rand).preferredNeighbor+ " is optimistic " + connectionLinkedList.get(rand).optimisticNeighbor);
+
 	        if(connectionLinkedList.get(rand).preferredNeighbor == false && connectionLinkedList.get(rand).optimisticNeighbor == false && connectionLinkedList.get(rand).interested == true){
 	        	connectionLinkedList.get(rand).optimisticNeighbor = true;
 	        	return rand;
