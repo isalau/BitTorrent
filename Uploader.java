@@ -5,6 +5,7 @@ import java.nio.channels.*;
 import java.util.*;
 import java.net.InetAddress; //for hostname
 import java.net.UnknownHostException; //for hostname
+import java.util.logging.Logger;
 
 public class Uploader implements Runnable{
 	
@@ -39,7 +40,9 @@ public class Uploader implements Runnable{
 
     public Handler handler;
 
-    public static boolean notDoneWithFiles = true; 
+    public static boolean notDoneWithFiles = true;
+
+    private static Logger logger = Logger.getLogger("");
 
 	@Override
 	public void run() {
@@ -75,6 +78,7 @@ public class Uploader implements Runnable{
     	try {
     		while(true) {
     			Socket peer = listener.accept();
+				logger.info("Accepted connection from peer " + peerID);
     			handler = new Handler(peer,clientNum);
     			handler.start();
     			peerLinkedList = handler.newConnection.peerLinkedList;
