@@ -3,6 +3,7 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.Arrays;
 import java.net.InetAddress; //for hostname
@@ -43,10 +44,15 @@ public class Client implements Runnable{
  	public boolean sentHandshake = false;
  	public boolean theBoolean = false;
 
- 	static volatile boolean done = false; 
+ 	static volatile boolean done = false;
+
+
+ 	private static Logger logger = Logger.getLogger("");
 
 	//constructor
 	public void Client(){}
+
+
 
 	@Override
 	public void run() {
@@ -252,13 +258,23 @@ public class Client implements Runnable{
 		}
 	}
 
-	public void pickKNeighbors(){
+	public void pickKNeighbors() {
 		System.out.println("Client: Picking new preferred neighbors");
 		Connection[] tempConnectionArray = new Connection[connectionLinkedList.size()];
 		tempConnectionArray = connectionLinkedList.toArray(tempConnectionArray);
 
 		//select preferred neighbors --> sort tempConnectionLinkedList by connectionDownloadRate
 		Arrays.sort(tempConnectionArray, new SortByRate());
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < numOfPreferredNeighbors; i++){
+			if (i != 0)
+				sb.append(',');
+			sb.append(tempConnectionArray[i].peerID);
+		}
+		logger.info("Peer " + peerID + " has the preferred neighbors: " + sb.toString());
+
+
 
 		int countOfK = 1;
 		for(int i = 0; i < tempConnectionArray.length; i++){
@@ -398,6 +414,7 @@ public class Client implements Runnable{
 						System.out.println("Client: Opt unchoking peer: "+ optNeighborIndex);
 						System.out.println("Client: Opt choking connection: "+ oldNeighbor);
 
+						logger.info("Peer " + peerID + " has optimistically unchoked peer " + connectionLinkedList.get(optNeighborIndex).peerID);
 						//send unchoke message using connection from connection list
 						connectionLinkedList.get(optNeighborIndex).sendUnchokeMessage();
 

@@ -5,6 +5,7 @@ import java.nio.channels.*;
 import java.util.*;
 import java.net.InetAddress; //for hostname
 import java.net.UnknownHostException; //for hostname
+import java.util.logging.Logger;
 
 public class Connection extends Uploader implements Runnable{
 	/**********************variables***********************/
@@ -72,7 +73,9 @@ public class Connection extends Uploader implements Runnable{
 
 	private int lastRequestedIndex = 0; 
 
-	static volatile boolean done = false; 
+	static volatile boolean done = false;
+
+	private static Logger logger = Logger.getLogger("");
 
 	/********************** constructor ***********************/
 
@@ -166,34 +169,40 @@ public class Connection extends Uploader implements Runnable{
 			switch (messageValue) {
 		        case 0:
 		        	System.out.println("Connection: received choke message received from client: " + peerID);
-		            
+		            logger.info("Peer " + sendersPeerID + " received choke message from peer " + peerID);
 		            break;
 		        case 1:
 		           	//received an unchoke message
 		        	System.out.println("Connection: received unchoke message received from client: " + peerID);
-		        	// create request 
+		        	// create request
+					logger.info("Peer " + sendersPeerID + " received unchoke message from peer " + peerID);
 	        		sendRequest();
 		            break;
 		        case 2:
 		        	System.out.println("Connection: received interested message from peer: "+ peerID);
+					logger.info("Peer " + sendersPeerID + " received interested message from peer " + peerID);
 		        	receivedInterseted();
 		            break;
 		        case 3:
 		            System.out.println("Connection: received not interested message received from client: " + peerID);
+					logger.info("Peer " + sendersPeerID + " received not interested message from peer " + peerID);
 		            receivedNotInterseted();
 		            break;
 		        case 4:
 		            System.out.println("Connection: received have message received from client: " + peerID);
+
 					determineIfInterestedFromHave(msg);
 		            break;
 		        case 5:
 		        	System.out.println("Connection: received bitfield message received from client: " + peerID);
 		        	System.out.println("Connection: bitfield: " +  message + " received from client");
+					logger.info("Peer " + sendersPeerID + " received bitfield message from peer " + peerID);
 		            determineIfInterestedFromBitfield(msg);
 		            break;
 		        case 6:
 		            //got a requestMessage
 		        	System.out.println("Connection: received request message received from client: " + peerID);
+					logger.info("Peer " + sendersPeerID + " received request message from peer " + peerID);
 		        	//create piece
 		        	PieceIndex = msg[5];
 		        	System.out.println("the piece index in checkMessage"+ PieceIndex);
@@ -202,6 +211,7 @@ public class Connection extends Uploader implements Runnable{
 		            break;
 		        case 7:
 		        	System.out.println("Connection: received piece message received from client: " + peerID);
+					logger.info("Peer " + sendersPeerID + " received piece message from peer " + peerID);
 		            receivedPiece(msg);
 		            // for(int i =0; i < connectionLinkedList.size(); i++){
 		            // 	// if(connectionLinkedList.get(i).interested == true){
@@ -212,6 +222,7 @@ public class Connection extends Uploader implements Runnable{
 		            break;
 		       	case 73:
 		           	System.out.println("Connection: received handshake message");
+					logger.info("Peer " + sendersPeerID + " received handshake message from peer " + peerID);
 		           	//getpeerID if needed. 
 		           	//check if we sent our handshake? 
 		           	if (sentHandshake == false){
@@ -251,6 +262,7 @@ public class Connection extends Uploader implements Runnable{
 			try{
 				if (alone == false && receivedHandshake == false){
 					connection = new Socket(hostname, portNumber);
+					logger.info("Conneting to peer " + peerID);
 				}
 			}  catch (IllegalArgumentException exception) {
 	            // Catch expected IllegalArgumentExceptions.
@@ -397,6 +409,7 @@ public class Connection extends Uploader implements Runnable{
     			//send message to B
     		}
     		System.out.println("Connection: Sending Bitfield with " + numOfPieces + " pieces.");
+    		logger.info("Sending bitfield with " + numOfPieces + " pieces to peer " + peerID );
     		sendMessage(bitfieldMessage);
     	}
 	}
@@ -456,6 +469,7 @@ public class Connection extends Uploader implements Runnable{
 		chokeMessage = ByteBuffer.allocate(length).putInt(length).array();
 		chokeMessage[4] = 0;
 
+		logger.info("Sending choke message to peer " + peerID);
 		sendMessage(chokeMessage);
 	}
 
@@ -469,14 +483,20 @@ public class Connection extends Uploader implements Runnable{
 	 	//initalize
 		unChokeMessage = ByteBuffer.allocate(length).putInt(length).array();
 		unChokeMessage[4] = 1;
-
+		logger.info("Sending UNchoke message to peer " + peerID);
 		sendMessage(unChokeMessage);
 	}
 
 	public void determineIfInterestedFromHave(byte[] msg){
 		System.out.println("Connection: Determining If Interested From Have");
 		
-		byte index = msg[5];
+		byte index = msg[5];//TODO: fix this. this must be the first 4 bytes of the body of have message.
+		//TODO: Most likely message bytes[0] through [3] are length, [4] is type and [5] through [9] would be the piece index in case of the have message.
+		//maybe this will work!
+		//byte[] payload = {msg[6],msg[7],msg[8],msg[9]};
+		//Integer index = ByteBuffer.wrap(payload).getInt();
+		logger.info("Peer " + sendersPeerID + " received have  message from peer " + peerID + " for piece " + index);
+
 		peerBitfield[index] = 1; 
 		boolean sendIntMes = false;
 		
@@ -529,7 +549,7 @@ public class Connection extends Uploader implements Runnable{
 	 	//initalize
 		interestedMessage = ByteBuffer.allocate(length).putInt(length).array();
 		interestedMessage[4] = 2;
-
+		logger.info("Sending interested to peer " + peerID);
 		sendMessage(interestedMessage);
 	}
 
@@ -640,12 +660,14 @@ public class Connection extends Uploader implements Runnable{
 
 		System.arraycopy(msg, 5, data,0, pieceSize);
 		System.out.println("Connection: the data is: "+ data);
-		DataChunks.set(lastRequestedIndex,data);
+		DataChunks.set(lastRequestedIndex,data);//TODO: it is not always the last requested piece that we might receive.
+		//TODO: make sure the proper index is extracted from the body of the piece message (the first 4 bytes).
+		logger.info("Peer " + sendersPeerID + " has downloaded the piece " + lastRequestedIndex + " from peer " + peerID);
 
 		for(int i = 0; i < connectionLinkedList.size(); i++){
 			connectionLinkedList.get(i).sendHave(lastRequestedIndex);
 		}
-		String fileName2 = "Final_File.txt";
+		String fileName2 = "Final_File.txt";//TODO: what is this???
 		checkIfDone(fileName2);
 	}
 
@@ -669,6 +691,7 @@ public class Connection extends Uploader implements Runnable{
 			//stop program
 			if(allDone = true && connectionLinkedList.size() != 0){
 				done = true;
+				logger.info("Peer " + sendersPeerID + " has downloaded the complete file.");
 				try{
 					if(in != null){
 						in.close();

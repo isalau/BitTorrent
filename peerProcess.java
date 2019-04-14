@@ -3,6 +3,8 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
+import java.util.logging.*;
+
 
 public class peerProcess{
 	public static int fileSize;
@@ -17,6 +19,24 @@ public class peerProcess{
 
 
 	public static void main(String args[] ){
+        //Setting up logger.
+        Logger rootLogger = Logger.getLogger("");
+        for(var h : rootLogger.getHandlers()){
+            rootLogger.removeHandler(h);
+        }
+        try {
+            FileHandler hndlr = new FileHandler("log_peer_" + args[0] + ".txt");
+            hndlr.setFormatter(new SimpleFormatter());
+            rootLogger.addHandler(hndlr);
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            System.out.println("first argument to peerProcess must be peerID.");
+            System.exit(-1); //exit with error code -1 to indicate missing peerID.
+        }
+        rootLogger.info("Logger Setup.");
         String peerIDString = "";
 
 		System.out.println("Starting Peer Process");
