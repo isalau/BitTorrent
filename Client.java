@@ -81,8 +81,6 @@ public class Client implements Runnable{
 		up.numOfPieces = numOfPieces; 
 		up.DataChunks = DataChunks;
 		// System.out.println("the data chunks size is :"+DataChunks.size());
-		
-
 
 		Thread object = new Thread(up);
 		try{

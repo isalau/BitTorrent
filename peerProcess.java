@@ -114,8 +114,6 @@ public class peerProcess{
         client.unchokingInterval = unchokingInterval;
         client.optimisticUnchokingInterval = optimisticUnchokingInterval;
 
-
-
         if(DataChunks!= null){
             // System.out.println("the data chunks is :"+DataChunks);
             client.DataChunks = DataChunks; 

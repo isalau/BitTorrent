@@ -114,7 +114,6 @@ public class Uploader implements Runnable{
       	public void run() {
       		System.out.println("Uploader: In handler run");
 
-
       		//place all info in a peer object
         	Peer newPeer = new Peer();
             newPeer.peerID = 0; // 0 means unknown 
@@ -164,11 +163,10 @@ public class Uploader implements Runnable{
 			connectionLinkedList.add(newConnection);
 			newConnection.connectionLinkedList = connectionLinkedList;
 			if(newConnection.sendersHasFile == true){
-					for(int j=0; j< myBitfield.length; j++){
-						myBitfield[j] = 1;
-						// System.out.println("the bitfield from uploader is :"+ myBitfield[j]);
-					}
-					
+				for(int j=0; j< myBitfield.length; j++){
+					myBitfield[j] = 1;
+					// System.out.println("the bitfield from uploader is :"+ myBitfield[j]);
+				}					
 			}
 			newConnection.myBitfield = myBitfield;
       		Thread object = new Thread(newConnection);

@@ -207,11 +207,12 @@ public class Connection extends Uploader implements Runnable{
 		            break;
 		       	case 73:
 		           	System.out.println("Connection: received handshake message");
+		           	//getpeerID if needed. 
 		           	//check if we sent our handshake? 
 		           	if (sentHandshake == false){
 		           		receivedHandshake = true;
+		           		getPeerID(msg);
 		           		sendHandShake();
-		           		// listenerSendHandshake();
 		           	}
 		           	
 		            break;
@@ -221,6 +222,18 @@ public class Connection extends Uploader implements Runnable{
 		        }
 				return;
 		}
+	}
+
+	public void getPeerID(byte[] msg){
+		byte[] peerIDArray2 = new byte[4];
+		peerIDArray2 = Arrays.copyOfRange(msg, 28, 32);
+		// System.arraycopy(msg, 28, peerIDArray2, 0, 4);
+		String msgString = new String(msg);
+		String peerIDString = new String(peerIDArray2);
+		System.out.println("Connection: msg: "+ msgString);
+		System.out.println("Connection: PeerID: "+ peerIDString + " " + peerIDArray2.length);
+		
+		peerID = Integer.parseInt(peerIDString.trim());
 	}
 
 	public void sendHandShake(){
@@ -318,6 +331,8 @@ public class Connection extends Uploader implements Runnable{
 			}catch(IOException ioException){
 				System.out.println("Connection: Disconnect with Client " + no);
 			}
+
+		sendUnchokeMessage();
 		// finally{
 		// 	//Close connections
 		// 	try{
@@ -343,9 +358,9 @@ public class Connection extends Uploader implements Runnable{
         newPeer.hostName = hostname; 
         newPeer.port = portNumber;            
         newPeer.hasFile =  false; //assume false until proven wrong by receiving bitfield or have message 
-        newPeer.interested = false; 
-		newPeer.preferredNeighbor = false;
-		newPeer.optimisticNeighbor = false;
+        newPeer.interested = true; 
+		newPeer.preferredNeighbor = true;
+		newPeer.optimisticNeighbor = true;
 
 		//assume empyty bitfield until proven wrong by receiving bitfield or have message 
 		byte[] emptyArray = new byte[numOfPieces];
@@ -395,10 +410,7 @@ public class Connection extends Uploader implements Runnable{
 			}
 		}
 
-		//just to test
-		for (int i =0; i < peerLinkedList.size(); i++){
-				System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " is interested: "+ peerLinkedList.get(i).interested); 
-		}
+		System.out.println("Connection: Peer "+ peerID + " is interested: "+ interested); 
 	}
 
 	public void receivedNotInterseted(){
@@ -478,7 +490,7 @@ public class Connection extends Uploader implements Runnable{
 	public void determineIfInterestedFromBitfield(byte[] msg){
 		System.out.println("Connection: Determining If Interested From Bitfield");
 		//determine if a neighbor has an interesting piece
-		boolean interested = false;
+		boolean checkInterested = false;
 		//compare our bitfields
 		//msg will contain the other peer's bitfield
 		for (int i = 5; i< msg.length; i++){
@@ -487,11 +499,11 @@ public class Connection extends Uploader implements Runnable{
 			int bitIndex=i-5; 
 			peerBitfield[bitIndex] = msg[i];
 			if(myBitfield[bitIndex] == 0 && msg[i] == 1){
-				interested = true;  
+				checkInterested = true;  
 			}
 		}
 			//if B has 1 where I have 0 sendInterestedMessage()
-		if(interested == true){
+		if(checkInterested == true){
 			//if B has 1 where I have 0 sendInterestedMessage()
 			sendInterestedMessage();
 		}else{
