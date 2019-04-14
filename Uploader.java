@@ -39,6 +39,8 @@ public class Uploader implements Runnable{
 
     public Handler handler;
 
+    public static boolean notDoneWithFiles = true; 
+
 	@Override
 	public void run() {
 		try{
@@ -62,17 +64,10 @@ public class Uploader implements Runnable{
 
 				for (int j =0; j < connectionLinkedList.size(); j++){
 					if(connectionLinkedList.get(j).peerID == peerLinkedList.get(i).peerID){
-						// if(DataChunks != null){
-							// connectionLinkedList.get(j).DataChunks = DataChunks;
-							// System.out.println("Uploader: the data chunks size is :"+DataChunks.size());
-						// }
-						
 		      			Thread object = new Thread(connectionLinkedList.get(j));
 		        		object.start();
-		        		// System.out.println("Thread 1 state: " + object.getState()); 
 					}
 				}
-				
 			}
 			sentHandshake = true;
 		}
@@ -172,7 +167,6 @@ public class Uploader implements Runnable{
 			newConnection.myBitfield = myBitfield;
       		Thread object = new Thread(newConnection);
         	object.start();
-        	// System.out.println("Thread 2 state: " + object.getState()); 
 		}
 	}		
 }
