@@ -11,6 +11,7 @@ import static java.util.Arrays.copyOf;
 public class DataFile {
     ArrayList<byte[]> DataInChunks = new ArrayList<>();
     ArrayList<File> FileList = new ArrayList<>();
+    File file;
 
     int PieceSize;
     int FileSize;
@@ -89,19 +90,19 @@ public class DataFile {
     }
 
     public void WriteBytes(String fileName){
+        int i =0;
         try{
-            // make the file name 
-            String workingDirectory = System.getProperty("user.dir");
-            String absoluteFilePath = workingDirectory + File.separator + "Test";
-            FileOutputStream output = new FileOutputStream(fileName);
+            file = new File("~/Users/kianamac/Documents/GitHub/BitTorrent/");
+            FileOutputStream output = new FileOutputStream(file);
 
             //write the bytes into the file
             for (byte[] bytes : DataInChunks){
                 output.write(bytes);
                 System.out.println("Wrote into the file successfully!");
-                output.close();
+                output.flush();
 
             }
+            i++;
         }catch(Exception e){
              System.out.println("Exception: " + e); 
         }
