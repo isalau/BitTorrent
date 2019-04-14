@@ -407,10 +407,11 @@ public class Connection extends Uploader implements Runnable{
 		for (int i = 0; i < connectionLinkedList.size(); i++){
 			if(peerID == connectionLinkedList.get(i).peerID){
 				connectionLinkedList.get(i).interested = true; 
+				System.out.println("Connection: Peer "+ peerID + " is interested: "+ connectionLinkedList.get(i).interested); 
 			}
 		}
 
-		System.out.println("Connection: Peer "+ peerID + " is interested: "+ interested); 
+		
 	}
 
 	public void receivedNotInterseted(){
@@ -586,8 +587,14 @@ public class Connection extends Uploader implements Runnable{
 		// for (int i=0; i< myBitfield.length; i++){
 		// 	System.out.println("the bitfield is :"+ myBitfield[i]);
 		// }
-		
-		System.out.println("the PieceIndex from send piece is :"+ PieceIndex);
+		int index = msg[5];
+		if(msg[5] < 0){
+			//128* 2 - the negative 
+			index = 256 + msg[5];
+		}
+
+		System.out.println("Connection: the PieceIndex from send piece is :"+ index);
+
 		//create new piece message
 		int length = 4 + 1 + pieceSize; //4 for length, 1 for type, rest for piece content
 		pieceMessage = new byte[length];
@@ -596,14 +603,13 @@ public class Connection extends Uploader implements Runnable{
 		pieceMessage = ByteBuffer.allocate(length).putInt(length).array();
 		pieceMessage[4] = 7; //type seven
 
-		
-		if(myBitfield[msg[5]] == 1){
-			System.out.println("I am in the if statement");
-			data = DataChunks.get(msg[5]);
+		if(myBitfield[index] == 1){
+			System.out.println("Connection: I am in the if statement");
+			data = DataChunks.get(index);
 		}
 		
 		System.arraycopy(data, 0, pieceMessage,5, data.length);
-		System.out.println("We are done with piece");
+		System.out.println("Connection: We are done with piece");
 		sendMessage(pieceMessage);
 
 		// //start timer 

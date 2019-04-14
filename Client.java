@@ -365,7 +365,7 @@ public class Client implements Runnable{
 				//get current optimistic neighbor to change later
 				int oldNeighbor = 0;
 				for(int i = 0; i < connectionLinkedList.size(); i++){
-					if(connectionLinkedList.get(i).preferredNeighbor == true){
+					if(connectionLinkedList.get(i).preferredNeighbor == true || connectionLinkedList.get(i).optimisticNeighbor == true){
 						oldNeighbor = i;
 					}
 				}
@@ -395,6 +395,7 @@ public class Client implements Runnable{
 
 					//make old optimistic neighbor false
 					peerLinkedList.get(oldNeighbor).optimisticNeighbor = false;
+					connectionLinkedList.get(oldNeighbor).optimisticNeighbor = false;
 
 					//propogate changes down stream too
 					up.peerLinkedList = peerLinkedList;
@@ -416,6 +417,8 @@ public class Client implements Runnable{
 	        int rand = new Random().nextInt(numOfPeers);
 	        System.out.println("Client: Test random neighbor: " + rand);
 	        //check that not already unchoked & that it is interested
+	        System.out.println("Client: In Pick Opt Peer: " + connectionLinkedList.get(rand).peerID + " is interested: "+ connectionLinkedList.get(rand).interested + " is preferred " + connectionLinkedList.get(rand).preferredNeighbor+ " is optimistic " + connectionLinkedList.get(rand).optimisticNeighbor);
+
 	        if(connectionLinkedList.get(rand).preferredNeighbor == false && connectionLinkedList.get(rand).optimisticNeighbor == false && connectionLinkedList.get(rand).interested == true){
 	        	connectionLinkedList.get(rand).optimisticNeighbor = true;
 	        	return rand;
