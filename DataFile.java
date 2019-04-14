@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import static java.util.Arrays.copyOf;
 
 public class DataFile {
@@ -106,7 +108,12 @@ public class DataFile {
 
             }
             i++;
-            System.out.println("I am in write bytes after the loop");
+            BufferedReader br = new BufferedReader(new FileReader("/Users/kianamac/Documents/GitHub/BitTorrent/Test/Final_File.txt"));     
+            if (br.readLine() == null) {
+                System.out.println("No errors, and file empty");
+            }else{
+                System.out.println("Not empty file");
+            }
         }catch(Exception e){
              System.out.println("Exception: " + e); 
         }
