@@ -49,7 +49,7 @@ public class Connection extends Uploader implements Runnable{
 	private byte[] unChokeMessage;
 	private byte[] pieceMessage;
 	private byte PieceIndex;
-
+	private int chunksDownloaded = 0;
 	public static  LinkedList<Connection> connectionLinkedList = new LinkedList<Connection>();
 	public static  LinkedList<Peer> peerLinkedList = new LinkedList<Peer>();
 
@@ -57,12 +57,12 @@ public class Connection extends Uploader implements Runnable{
     private ObjectInputStream in;	//stream read from the socket
     private ObjectOutputStream out;    //stream write to the socket
 
-	private int chunksDownloaded = 0; 
+    //for download rate
+	private int chunksSinceUnchoked = 0; 
 	public long connectionDownloadRate;
-	public long startDownloadTime;
-	public long stopDownloadTime;
+	private long startTimeSinceUnchoked;
+	private long stopTimeSinceUnchoked;
 
-	
 	//handshake variables
 	public static final int zerobits_size = 10;
 	public static final int peerID_size = 4;
@@ -170,10 +170,13 @@ public class Connection extends Uploader implements Runnable{
 		        case 0:
 		        	System.out.println("Connection: received choke message received from client: " + peerID);
 		            logger.info("Peer " + sendersPeerID + " received choke message from peer " + peerID);
+		            stopTimeSinceUnchoked = System.currentTimeMillis();
 		            break;
 		        case 1:
 		           	//received an unchoke message
 		        	System.out.println("Connection: received unchoke message received from client: " + peerID);
+		        	chunksSinceUnchoked = 0; 
+		        	startTimeSinceUnchoked = System.currentTimeMillis();
 		        	// create request
 					logger.info("Peer " + sendersPeerID + " received unchoke message from peer " + peerID);
 	        		sendRequest();
@@ -218,7 +221,7 @@ public class Connection extends Uploader implements Runnable{
 			           //  // sendHave(msg);
 		            // 	// }
 		            // }
-					stopDownloadTime = System.currentTimeMillis();
+					stopTimeSinceUnchoked = System.currentTimeMillis();
 		            break;
 		       	case 73:
 		           	System.out.println("Connection: received handshake message");
@@ -587,7 +590,7 @@ public class Connection extends Uploader implements Runnable{
 			sendMessage(requestMessage);
 
 			//start timer 
-			startDownloadTime = System.currentTimeMillis();
+			startTimeSinceUnchoked = System.currentTimeMillis();
 		}
 	}
 
@@ -639,7 +642,7 @@ public class Connection extends Uploader implements Runnable{
 		sendMessage(pieceMessage);
 
 		// //start timer 
-		// startDownloadTime = System.currentTimeMillis();
+		// startTimeSinceUnchoked = System.currentTimeMillis();
 	}
 
 	public void receivedPiece(byte[] msg){
@@ -733,7 +736,7 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public long DetermineRate(){
-		connectionDownloadRate =  pieceSize /(startDownloadTime - stopDownloadTime);
+		connectionDownloadRate =  chunksSinceUnchoked /(startTimeSinceUnchoked - stopTimeSinceUnchoked);
 		return connectionDownloadRate;
 	}
 }		

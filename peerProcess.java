@@ -21,7 +21,7 @@ public class peerProcess{
 	public static void main(String args[] ){
         //Setting up logger.
         Logger rootLogger = Logger.getLogger("");
-        for(var h : rootLogger.getHandlers()){
+        for(Handler h : rootLogger.getHandlers()){
             rootLogger.removeHandler(h);
         }
         try {
