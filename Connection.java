@@ -36,7 +36,7 @@ public class Connection extends Uploader implements Runnable{
     public static int unchokingInterval;
     public static int optimisticUnchokingInterval;
     public static ArrayList<byte[]> DataChunks;
-    
+    public static DataFile dataFile;
 
 	private byte[] message; 
 	private byte[] bitfieldMessage; 
@@ -337,22 +337,24 @@ public class Connection extends Uploader implements Runnable{
 
 		sendUnchokeMessage();
 	}
-		// finally{
-		// 	//Close connections
-		// 	try{
-		// 		if(in != null){
-		// 			 in.close();
-		// 		}
-		// 		if(out != null){
-		// 			 out.close();
-		// 		}
-		// 		if (connection != null){
-		// 			 connection.close();
-		// 		}	
-		//  }catch(IOException ioException){
-		// 	System.out.println("Could not send handshake 2:"+ ioException);
-		// 	 }
-		// }
+
+
+	// finally{
+	// 	//Close connections
+	// 	try{
+	// 		if(in != null){
+	// 			 in.close();
+	// 		}
+	// 		if(out != null){
+	// 			 out.close();
+	// 		}
+	// 		if (connection != null){
+	// 			 connection.close();
+	// 		}	
+	//  }catch(IOException ioException){
+	// 	System.out.println("Could not send handshake 2:"+ ioException);
+	// 	 }
+	// }
 	
 	public void addPeers(){
 		//place all info in a peer object
@@ -641,8 +643,8 @@ public class Connection extends Uploader implements Runnable{
 		for(int i = 0; i < connectionLinkedList.size(); i++){
 			connectionLinkedList.get(i).sendHave(lastRequestedIndex);
 		}
-
-		checkIfDone(fileName);
+		String fileName2 = "Final_File.txt";
+		checkIfDone(fileName2);
 	}
 
 	public void checkIfDone(String fName){
@@ -650,8 +652,8 @@ public class Connection extends Uploader implements Runnable{
 		if(chunksDownloaded == numOfPieces){
 			//if so change sendershasFile to true
 			sendersHasFile = true;
-			DataFile df = new DataFile(pieceSize,fileSize);
-			df.WriteBytes(fName);
+			// DataFile df = new DataFile(pieceSize,fileSize);
+			dataFile.WriteBytes(fName);
 			System.out.println("Connection: FILE COMPLETE!");
 		
 			//check if all peers hasFile is true

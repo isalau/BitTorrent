@@ -34,7 +34,7 @@ public class Client implements Runnable{
 	
 	public static int numOfPieces;
 	public static byte myBitfield[];
-
+	public DataFile dataFile ;
 	public ArrayList<byte[]> DataChunks;
 
 	public int numOfPreferredNeighbors;
@@ -83,6 +83,7 @@ public class Client implements Runnable{
 		up.connectionLinkedList = connectionLinkedList;
 		up.numOfPieces = numOfPieces; 
 		up.DataChunks = DataChunks;
+		up.df = dataFile; 
 		// System.out.println("the data chunks size is :"+DataChunks.size());
 
 		Thread object = new Thread(up);
@@ -146,6 +147,7 @@ public class Client implements Runnable{
 		        newConnection.optimisticUnchokingInterval = optimisticUnchokingInterval;
 		  
 				newConnection.DataChunks = DataChunks;
+				newConnection.dataFile = dataFile; 
 
 
 		        newConnection.numInPeerInfo = numInPeerInfo;

@@ -9,6 +9,7 @@
 *.exe
 *.o
 *.so
+*.cfg
 
 *.so
 
@@ -24,3 +25,7 @@
 *.rar
 *.tar
 *.zip
+*.cfg
+
+
+/config.local
