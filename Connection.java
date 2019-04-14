@@ -72,6 +72,8 @@ public class Connection extends Uploader implements Runnable{
 
 	private int lastRequestedIndex = 0; 
 
+	static volatile boolean done = false; 
+
 	/********************** constructor ***********************/
 
 	public void Connection (){}
@@ -666,6 +668,7 @@ public class Connection extends Uploader implements Runnable{
 			
 			//stop program
 			if(allDone = true && connectionLinkedList.size() != 0){
+				done = true;
 				try{
 					if(in != null){
 						in.close();
