@@ -55,8 +55,8 @@ public class Connection extends Uploader implements Runnable{
     public Socket connection;
     private ObjectInputStream in;	//stream read from the socket
     private ObjectOutputStream out;    //stream write to the socket
-	// public int no;		//The index number of the client
-	public int chunksDownloaded = 0; 
+
+	private int chunksDownloaded = 0; 
 	public long connectionDownloadRate;
 	public long startDownloadTime;
 	public long stopDownloadTime;
@@ -137,9 +137,9 @@ public class Connection extends Uploader implements Runnable{
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
 		System.out.println("Connection: sending message: " + msg + " to Client " + peerID + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString());
- 		if(DataChunks != null){
- 			System.out.println("Connection: I have: "+ chunksDownloaded + " chunks downloaded");
- 		}
+ 		// if(DataChunks != null){
+ 			
+ 		// }
  		
 		try{
 			//initialize Input and Output streams
@@ -621,6 +621,7 @@ public class Connection extends Uploader implements Runnable{
 
 	public void receivedPiece(byte[] msg){
 		chunksDownloaded++;
+		System.out.println("Connection: I have: "+ chunksDownloaded + " chunks downloaded");
 		//update Peer to reflect that they get the piece 
 		byte[] data = new byte[pieceSize];
 		// //just to test
@@ -649,9 +650,10 @@ public class Connection extends Uploader implements Runnable{
 		//check if our bitfield is compleete
 		if(chunksDownloaded == numOfPieces){
 			//if so change hasFile to true
-			hasFile = true;
+			sendersHasFile = true;
 			DataFile df = new DataFile(pieceSize,fileSize);
 			df.WriteBytes(fName);
+			System.out.println("Connection: FILE COMPLETE!");
 		}
 			//check if all peers hasFile is true
 	}
