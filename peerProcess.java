@@ -90,9 +90,8 @@ public class peerProcess{
         else{
             System.out.println("Could not read PeerInfo.cfg!");
         }
-
+        DataFile DF = new DataFile(CP.PieceSize, CP.FileSize);
         if(readFile){
-            DataFile DF = new DataFile(CP.PieceSize, CP.FileSize);
             if(DF.ReadFileIntoChunks(CP.DataFileName)){
                 DataChunks = DF.DataInChunks;
                 System.out.println("Peer Process 1: the data chunks size is: "+DF.DataInChunks.size());
@@ -123,12 +122,12 @@ public class peerProcess{
                 // System.out.println("the data chunks are:"+DataChunks.get(j));
             }
         }else{
-            DataFile df = new DataFile(pieceSize,fileSize);
-            df.makeEmpty();
-            client.DataChunks = df.DataInChunks;
+            // DataFile df = new DataFile(pieceSize,fileSize);
+            DF.makeEmpty();
+            client.DataChunks = DF.DataInChunks;
             System.out.println("Peer Process 2: the data chunks size is: "+ client.DataChunks.size());
         }
-        
+        client.dataFile = DF;
         Thread object = new Thread(client);
         object.start();
     }

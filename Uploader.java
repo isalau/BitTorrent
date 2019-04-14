@@ -31,7 +31,7 @@ public class Uploader implements Runnable{
     public static int numOfPieces; 
     public static int numInPeerInfo;
     public static ArrayList<byte[]> DataChunks;
-   
+   	public static DataFile df; 
 
     public static int clientNum;
     public static int unchokingInterval;
@@ -160,6 +160,7 @@ public class Uploader implements Runnable{
 			newConnection.optimisticUnchokingInterval= optimisticUnchokingInterval;
 			newConnection.peerLinkedList = peerLinkedList;
 			newConnection.DataChunks = DataChunks;
+			newConnection.dataFile = df; 
 			connectionLinkedList.add(newConnection);
 			newConnection.connectionLinkedList = connectionLinkedList;
 			if(newConnection.sendersHasFile == true){

@@ -92,17 +92,21 @@ public class DataFile {
     public void WriteBytes(String fileName){
         int i =0;
         try{
-            file = new File("~/Users/kianamac/Documents/GitHub/BitTorrent/");
+            String path = "/Users/kianamac/Documents/GitHub/BitTorrent/Test/" + fileName;
+            file = new File(path);
             FileOutputStream output = new FileOutputStream(file);
-
+            System.out.println("I am in write bytes before the loop");
             //write the bytes into the file
-            for (byte[] bytes : DataInChunks){
-                output.write(bytes);
+            System.out.println("the data chunks size is :"+ DataInChunks.size());
+            for (int j = 0; j < DataInChunks.size();j++){
+                output.write(DataInChunks.get(j));
                 System.out.println("Wrote into the file successfully!");
+                System.out.println("I am in write bytes in the loop");
                 output.flush();
 
             }
             i++;
+            System.out.println("I am in write bytes after the loop");
         }catch(Exception e){
              System.out.println("Exception: " + e); 
         }
