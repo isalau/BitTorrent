@@ -2,5 +2,5 @@ NumberOfPreferredNeighbors 2
 UnchokingInterval 1
 OptimisticUnchokingInterval 3
 FileName TheFile.dat
-FileSize 8500 
-PieceSize 800
+FileSize 10000232 
+PieceSize 32768
