@@ -54,7 +54,7 @@ public class Connection extends Uploader implements Runnable{
     public Socket connection;
     private ObjectInputStream in;	//stream read from the socket
     private ObjectOutputStream out;    //stream write to the socket
-	public int no;		//The index number of the client
+	// public int no;		//The index number of the client
 	public int chunksDownloaded; 
 	public long connectionDownloadRate;
 	public long startDownloadTime;
@@ -109,7 +109,7 @@ public class Connection extends Uploader implements Runnable{
 				System.err.println("Data received in unknown format");
 			}
 			}catch(IOException ioException){
-				System.out.println("Disconnect with Client " + no);
+				System.out.println("Disconnect with Client " + peerID);
 			}
 		}
 
@@ -133,7 +133,7 @@ public class Connection extends Uploader implements Runnable{
 
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
-		System.out.println("Connection: sending message: " + msg + " to Client " +no + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString() );
+		System.out.println("Connection: sending message: " + msg + " to Client " + peerID + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString());
  		if(DataChunks != null){
  			System.out.println("Connection: My data chunks are of size: "+ DataChunks.size());
  		}
@@ -160,12 +160,12 @@ public class Connection extends Uploader implements Runnable{
 		while(true){
 			switch (messageValue) {
 		        case 0:
-		        	System.out.println("Connection: received choke message");
+		        	System.out.println("Connection: received choke message received from client: " + peerID);
 		            
 		            break;
 		        case 1:
 		           	//received an unchoke message
-		        	System.out.println("Connection: received unchoke message");
+		        	System.out.println("Connection: received unchoke message received from client: " + peerID);
 		        	// create request 
 	        		sendRequest();
 		            break;
@@ -174,21 +174,21 @@ public class Connection extends Uploader implements Runnable{
 		        	receivedInterseted();
 		            break;
 		        case 3:
-		            System.out.println("Connection: received not interested message");
+		            System.out.println("Connection: received not interested message received from client: " + peerID);
 		            receivedNotInterseted();
 		            break;
 		        case 4:
-		            System.out.println("Connection: received have message");
+		            System.out.println("Connection: received have message received from client: " + peerID);
 					determineIfInterestedFromHave(msg);
 		            break;
 		        case 5:
-		        	System.out.println("Connection: received bitfield message");
+		        	System.out.println("Connection: received bitfield message received from client: " + peerID);
 		        	System.out.println("Connection: bitfield: " +  message + " received from client");
 		            determineIfInterestedFromBitfield(msg);
 		            break;
 		        case 6:
 		            //got a requestMessage
-		        	System.out.println("Connection: received request message");
+		        	System.out.println("Connection: received request message received from client: " + peerID);
 		        	//create piece
 		        	PieceIndex = msg[5];
 		        	System.out.println("the piece index in checkMessage"+ PieceIndex);
@@ -196,13 +196,13 @@ public class Connection extends Uploader implements Runnable{
 		        	sendPiece(msg);
 		            break;
 		        case 7:
-		        	System.out.println("Connection: received piece message");
+		        	System.out.println("Connection: received piece message received from client: " + peerID);
 		            receivedPiece(msg);
-		            for(int i =0; i < connectionLinkedList.size(); i++){
-		            	if(connectionLinkedList.get(i).interested == true){
-		            		sendHave();
-		            	}
-		            }
+		            // for(int i =0; i < connectionLinkedList.size(); i++){
+		            // 	// if(connectionLinkedList.get(i).interested == true){
+			           //  // sendHave(msg);
+		            // 	// }
+		            // }
 					stopDownloadTime = System.currentTimeMillis();
 		            break;
 		       	case 73:
@@ -329,7 +329,7 @@ public class Connection extends Uploader implements Runnable{
 		}catch(ClassNotFoundException classnot){
 				System.err.println("Connection: Data received in unknown format");
 			}catch(IOException ioException){
-				System.out.println("Connection: Disconnect with Client " + no);
+				System.out.println("Connection: Disconnect with Client " + peerID);
 			}
 
 		sendUnchokeMessage();
@@ -471,6 +471,7 @@ public class Connection extends Uploader implements Runnable{
 		System.out.println("Connection: Determining If Interested From Have");
 		
 		byte index = msg[5];
+		peerBitfield[index] = 1; 
 		boolean sendIntMes = false;
 		
 		//my bitfield 
@@ -565,12 +566,19 @@ public class Connection extends Uploader implements Runnable{
 
 	public int selectRandom(){
 		// System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
-		int r = new Random().nextInt(numOfPieces-1);
+		int r;
+		do{
+			r = new Random().nextInt(numOfPieces-1);
+		}while(myBitfield[r] != 0 && peerBitfield[r] != 1);
+
+		return r;
+		/*
 		if(myBitfield[r] == 0 && peerBitfield[r] == 1){
 			return r;
 		}else{
 			return selectRandom(); //keep calling until you find one you don't have 
 		}
+		*/
 	}
 
 	public void sendPiece(byte[] msg){
@@ -605,21 +613,32 @@ public class Connection extends Uploader implements Runnable{
 	public void receivedPiece(byte[] msg){
 		//update Peer to reflect that they get the piece 
 		byte[] data = new byte[pieceSize];
-		//just to test
-		for (int i = 0; i < peerLinkedList.size(); i++){
-			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " recieved the piece message"); 
-		}
+		// //just to test
+		// for (int i = 0; i < peerLinkedList.size(); i++){
+		// 	System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " recieved the piece message"); 
+		// }
 
 		//Peer List 
 		myBitfield[msg[5]] = 1;
-		System.out.println("the msg is: "+ msg);
+		System.out.println("Connection: the msg is: "+ msg);
 
 		System.arraycopy(msg, 5, data,0, pieceSize);
-		System.out.println("the data is :"+ data);
+		System.out.println("Connection: the data is: "+ data);
 		DataChunks.add(msg[5],data);
+
+		for(int i = 0; i < connectionLinkedList.size(); i++){
+			connectionLinkedList.get(i).sendHave(msg[5]);
+		}
+
+		checkIfDone();
 	}
 
-	public void sendHave(){
+	public void checkIfDone(){
+		//check if our bitfield is compleete
+			//if so change hasFile to true
+			//check if all peers hasFile is true
+	}
+	public void sendHave(int index){
 		System.out.println("Connection: Sending Have Message");
 
 		//create new bitfield message
@@ -630,8 +649,8 @@ public class Connection extends Uploader implements Runnable{
 		haveMessage = ByteBuffer.allocate(length).putInt(length).array();
 		haveMessage[4] = 4;
 
-		haveMessage[5] = (byte) PieceIndex;
-		System.out.println("I have the piece at index "+ PieceIndex );
+		haveMessage[5] = (byte)index;
+		System.out.println("Connection: I have the piece at index "+ haveMessage[5]);
 
 		sendMessage(haveMessage);
 	}
