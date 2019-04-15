@@ -199,7 +199,7 @@ public class Connection extends Uploader implements Runnable{
 					logger.info("Peer " + sendersPeerID + " received request message from peer " + peerID);
 		        	//create piece
 		        	PieceIndex = msg[5];
-		        	System.out.println("the piece index in checkMessage"+ PieceIndex);
+		        	System.out.println("Connection: the piece index in checkMessage"+ PieceIndex);
 		        	
 		        	sendPiece(msg);
 		            break;
@@ -471,7 +471,6 @@ public class Connection extends Uploader implements Runnable{
 		if(myBitfield[index] != 1){
 			sendIntMes = true;  
 		}
-		//if B has 1 where I have 0 sendInterestedMessage()
 		if(sendIntMes == true){
 			//if B has 1 where I have 0 sendInterestedMessage()
 			sendInterestedMessage();
@@ -479,30 +478,50 @@ public class Connection extends Uploader implements Runnable{
 			//else send sendNotInterestedMessage()
 			sendNotInterestedMessage();
 		}
+
+		//check if peer's bitfield is complete
+		boolean peerIsComplete = true;
+		for(int i = 0; i < peerBitfield.length; i++){
+			if(peerBitfield[i] == 0){
+				peerIsComplete = false;
+			}
+		}
+		//update hasFile if necessary
+		if(peerIsComplete == true){
+			hasFile = true;
+		}
 	}
 
 	public void determineIfInterestedFromBitfield(byte[] msg){
 		System.out.println("Connection: Determining If Interested From Bitfield");
+	
 		//determine if a neighbor has an interesting piece
-		boolean checkInterested = false;
-		//compare our bitfields
-		//msg will contain the other peer's bitfield
+		boolean sendIntMes = false;
+		boolean peerIsComplete = true;
+
 		for (int i = 5; i< msg.length; i++){
-			// System.out.println("Bitfield: " + msg[i] + " from client " + no);
-			//if my bitfield index == 0 && msg == 1
 			int bitIndex=i-5; 
+			//update peer's bitfield
 			peerBitfield[bitIndex] = msg[i];
+
+			//compare our bitfields
 			if(myBitfield[bitIndex] == 0 && msg[i] == 1){
-				checkInterested = true;  
+				sendIntMes = true;  
+			}
+			if(msg[i] == 0){
+				peerIsComplete = false;
 			}
 		}
-			//if B has 1 where I have 0 sendInterestedMessage()
-		if(checkInterested == true){
+		if(sendIntMes == true){
 			//if B has 1 where I have 0 sendInterestedMessage()
 			sendInterestedMessage();
 		}else{
 			//else send sendNotInterestedMessage()
 			sendNotInterestedMessage();
+		}
+		//update hasFile if necessary
+		if(peerIsComplete == true){
+			hasFile = true;
 		}
 	}
 
@@ -635,12 +654,14 @@ public class Connection extends Uploader implements Runnable{
 	public void checkIfDone(String fName){
 		//check if chunksDownloaded is the number of pieces we want
 		// or if we started with the file and chuncksDownloaded is zero check if hasFile is true
-		if((chunksDownloaded == numOfPieces || sendersHasFile == true) && done == false) {
-			//if so change sendershasFile  (my has file) to true
+		if(chunksDownloaded == numOfPieces){
 			sendersHasFile = true;
+		}
+
+		if(sendersHasFile == true && done == false) {
 			// DataFile df = new DataFile(pieceSize,fileSize);
 			dataFile.WriteBytes(fName);
-			System.out.println("Connection: FILE COMPLETE!");
+			System.out.println("Connection: File complete at time: " + System.currentTimeMillis());
 		
 			//check if all peers hasFile is true
 			boolean allDone = true; 
@@ -648,7 +669,7 @@ public class Connection extends Uploader implements Runnable{
 				System.out.println("Connection: Has peers "+ connectionLinkedList.get(i).peerID);
 				if(connectionLinkedList.get(i).hasFile == false){
 					allDone = false; 
-					System.out.println("Connection:Peer "+ connectionLinkedList.get(i).peerID + " still has not finished.");
+					System.out.println("Connection: Peer "+ connectionLinkedList.get(i).peerID + " still has not finished.");
 				}
 			}
 			
@@ -668,7 +689,7 @@ public class Connection extends Uploader implements Runnable{
 						connection.close();
 					}	
 				 }catch(IOException ioException){
-					System.out.println("Connection: Problem in check if done"+ ioException);
+					System.err.println("Connection: Problem in check if done"+ ioException);
 				}
 			}
 		}

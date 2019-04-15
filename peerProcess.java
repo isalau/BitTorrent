@@ -34,43 +34,43 @@ public class peerProcess{
             System.out.println(e.getMessage());
         }
         catch (ArrayIndexOutOfBoundsException e){
-            System.out.println("first argument to peerProcess must be peerID.");
+            System.out.println("Peer Process: first argument to peerProcess must be peerID.");
             System.exit(-1); //exit with error code -1 to indicate missing peerID.
         }
         rootLogger.info("Logger Setup.");
         String peerIDString = "";
 
-		System.out.println("Starting Peer Process");
+		System.out.println("Peer Process: Starting Peer Process");
 
 		// check for peerID 
         if (args.length > 0) { 
             for (String val:args) {
-                System.out.println("PeerID: " + val);
+                System.out.println("Peer Process: PeerID " + val);
                 peerIDString = val; 
             }
         } 
         else
-            System.out.println("No peerID provided"); 
+            System.out.println("Peer Process: No peerID provided"); 
             boolean readFile = false;
             //read in files
             CommonParser CP = new CommonParser();
         if(CP.Parse("Common.cfg")){
-            System.out.println(CP.NumberOfPreferredNeighbors);
+            System.out.println("Peer Process: numOfPreferredNeighbors "+ CP.NumberOfPreferredNeighbors);
             numOfPreferredNeighbors = CP.NumberOfPreferredNeighbors;
-            System.out.println(CP.UnchokingInterval);
+            System.out.println("Peer Process: unchokingInterval "+CP.UnchokingInterval);
             unchokingInterval = CP.UnchokingInterval;
-            System.out.println(CP.OptimisticUnchokingInterval);
+            System.out.println("Peer Process:  optimisticUnchokingInterval"+CP.OptimisticUnchokingInterval);
             optimisticUnchokingInterval = CP.OptimisticUnchokingInterval;
-            System.out.println(CP.DataFileName);
+            System.out.println("Peer Process: fileName "+CP.DataFileName);
             fileName = CP.DataFileName;
-            System.out.println(CP.FileSize);
+            System.out.println("Peer Process: fileSize "+CP.FileSize);
             fileSize = CP.FileSize;
-            System.out.println(CP.PieceSize);
+            System.out.println("Peer Process: pieceSize "+CP.PieceSize);
             pieceSize = CP.PieceSize;
         }
         else
         {
-            System.out.println("Could not read Common.cfg file!");
+            System.out.println("Peer Process: Could not read Common.cfg file!");
         }
 
 
@@ -95,10 +95,10 @@ public class peerProcess{
         int i = 0; 
         if(PP.Parse("PeerInfo.cfg")){
             for(PeerParser.PeerInfo PI : PP.PeerInfos){
-                System.out.print(PI.PeerID + " ");
+                System.out.print("Peer Process: " + PI.PeerID + " ");
                 System.out.print(PI.HostName + " ");
                 System.out.print(PI.Port + " ");
-                System.out.println(PI.HasFile);
+                System.out.println("Peer Process: " + PI.HasFile);
                 
                 if (PI.PeerID == Integer.parseInt(args[0])) {
                     readFile = PI.HasFile;
@@ -110,7 +110,7 @@ public class peerProcess{
             }
         }
         else{
-            System.out.println("Could not read PeerInfo.cfg!");
+            System.out.println("Peer Process: Could not read PeerInfo.cfg!");
         }
         DataFile DF = new DataFile(CP.PieceSize, CP.FileSize);
         if(readFile){
@@ -120,7 +120,7 @@ public class peerProcess{
                 // System.out.println(DF.DataInChunks.get(DF.DataInChunks.size() - 1).length);
             }
             else{
-                System.out.println("Failed to load the data file!");
+                System.out.println("Peer Process: Failed to load the data file!");
             }
         }
 
