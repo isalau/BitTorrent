@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import static java.util.Arrays.copyOf;
+import java.util.Properties;
+import java.io.*;
 
 public class DataFile {
     ArrayList<byte[]> DataInChunks = new ArrayList<>();
@@ -61,35 +63,40 @@ public class DataFile {
         System.out.println("DataFile: The size of Data Array is: "+ DataInChunks.size());
     }
 
+    public void makeDir(String peerID){
+        String path = System.getProperty("user.dir");
+        System.out.println("DataFile: Directory is "+ path);
+        
+        // boolean created = true; 
+       
+    
+        String absolutePath = "";
+        // String workingDirectory = System.getProperty("user.dir");
+        
+        //String peerIDString = Integer.toString(peerID);
+        // System.out.println("the peerID is"+ peerIDString);
+        absolutePath = path + File.separator + peerID;
+        System.out.println("DataFile: Absolute directory is:"+ absolutePath);
+        // System.out.println("the absolute path is : "+ absolutePath);
+        try{
+            Files.createDirectories(Paths.get(peerID));
+        }catch(IOException ioE){
+            System.err.println("DataFile: Could not make directory");
+        }
+       
+    }
+
     public void WriteBytes(String fileName, int peerID){
         int i =0;
         try{
-            Path path = Paths.get(System.getProperty("user.dir"));
-            Files.createDirectories(path);
-            // boolean created = true; 
-            // File newFolder = new File(newFolder.getParentFile().getAbsolutePath());
-            // created = newFolder.mkdir();
-            
-
-            String absolutePath = "";
-            // String workingDirectory = System.getProperty("user.dir");
-            // System.out.println("Working directory is:"+ workingDirectory);
-            String peerIDString = Integer.toString(peerID);
-            // System.out.println("the peerID is"+ peerIDString);
-            // absolutePath = workingDirectory + File.separator + peerIDString;
-            // System.out.println("the absolute path is : "+ absolutePath);
-           
-
-            // String filepath = absolutePath +File.separator + fileName;
-            // System.out.println("file path is :" + path);
-            File file = new File(fileName);
+            String absolutePath = System.getProperty("user.dir") + File.separator + peerID;
+            File file = new File(absolutePath, fileName);
             FileOutputStream output = new FileOutputStream(file);
             
             //write the bytes into the file
             System.out.println("the data chunks size is :"+ DataInChunks.size());
             for (int j = 0; j < DataInChunks.size();j++){
                 output.write(DataInChunks.get(j));
-                
                 output.flush();
             }
             i++;

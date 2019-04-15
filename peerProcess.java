@@ -113,6 +113,11 @@ public class peerProcess{
             System.out.println("Peer Process: Could not read PeerInfo.cfg!");
         }
         DataFile DF = new DataFile(CP.PieceSize, CP.FileSize);
+        //make directories
+        
+        DF.makeDir(peerIDString);
+
+        
         if(readFile){
             if(DF.ReadFileIntoChunks(CP.DataFileName)){
                 DataChunks = DF.DataInChunks;

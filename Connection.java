@@ -615,7 +615,7 @@ public class Connection extends Uploader implements Runnable{
 			index = 256 + msg[5];
 		}
 
-		System.out.println("Connection: the PieceIndex from send piece is :"+ index);
+		System.out.println("Connection: the PieceIndex from send piece is: "+ index);
 
 		//create new piece message
 		int length = 4 + 1 + pieceSize; //4 for length, 1 for type, rest for piece content
