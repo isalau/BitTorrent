@@ -90,13 +90,12 @@ public class Client implements Runnable{
 		up.numOfPieces = numOfPieces; 
 		up.DataChunks = DataChunks;
 		up.df = dataFile; 
-		// up.done = done; 
 
 		Thread object = new Thread(up);
 		try{
 			object.start();
 		}catch(Exception e){
-			System.out.println("Client: Exception: "+ e);
+			System.err.println("Client: Exception: "+ e);
 			done = true;
 		}
 	}

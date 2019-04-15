@@ -62,18 +62,16 @@ public class Uploader implements Runnable{
 		//check if you need to send a handshake and I have peers before me
 		if(sentHandshake == false && numInPeerInfo != 0 ){
 			for (int i = 0; i < peerLinkedList.size(); i++){
-				System.out.println("Uploader: Trying to connect to peerID " + peerLinkedList.get(i).peerID);
-				System.out.println("Uploader: Trying to connect to hostName " + peerLinkedList.get(i).hostName);
+				System.out.println("Uploader: Trying to connect to peerID " + peerLinkedList.get(i).peerID+ " At port " + peerLinkedList.get(i).port+ " At host:  " + peerLinkedList.get(i).hostName);
 
 				for (int j =0; j < connectionLinkedList.size(); j++){
 					if(connectionLinkedList.get(j).peerID == peerLinkedList.get(i).peerID){
+						connectionLinkedList.get(j).sendHandshake = true;
 		      			Thread object = new Thread(connectionLinkedList.get(j));
 		        		try{
 							object.start();
 						}catch(Exception e){
-							System.out.println("Uploader: Exception: "+ e);
-							done = true;
-							Thread.currentThread().interrupt();
+							System.err.println("Uploader: Exception: "+ e);
 						}
 					}
 				}

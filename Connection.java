@@ -88,21 +88,22 @@ public class Connection extends Uploader implements Runnable{
 	@Override
   	public void run() {
   		System.out.println("Connection: I am running");
-
   		initializeStreams();
-
+  		
   		//either send out a handshake or check what message I got
-  		try{
-  			if(sendHandshake == true){
-  				sendHandShake();
-  			}
-  			
-			if (peerLinkedList.size() == 0){
+		if(sendHandshake == true){
+			System.out.println("Connection: I will send the handshake");
+			sendHandShake();
+		}
+
+		try{	
+			if (receivedHandshake == true){
 	  			System.out.println("Connection: I am not alone");
 	  			byte[] myObjects = (byte[])in.readObject();
 	  			getPeerID(myObjects);
 	  			addPeers();
 	  		}
+
 			while(true){
 				//receive the message sent from the client
 				byte[] myObjects = (byte[])in.readObject();
@@ -118,11 +119,12 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void initializeStreams(){
+		System.out.println("Connection: I'm initializing streams");
 		try{
 			if (receivedHandshake == false && sendHandshake == true){ 
-				//I'm setting up the connection
 				connection = new Socket(hostname, portNumber);
-				logger.info("Conneting to peer " + peerID);
+				System.out.println("Connection: I'm setting up the connection");
+				//logger.info("Conneting to peer " + peerID);
 			}
 			out = new ObjectOutputStream(connection.getOutputStream());
 			out.flush(); //TODO ::: Do we need this?
@@ -141,7 +143,7 @@ public class Connection extends Uploader implements Runnable{
 		String msgString = new String(msg);
 		String peerIDString = new String(peerIDArray2);
 		System.out.println("Connection: msg: "+ msgString);
-		System.out.println("Connection: PeerID: "+ peerIDString + " " + peerIDArray2.length);
+		System.out.println("Connection: PeerID: "+ peerIDString);
 		
 		peerID = Integer.parseInt(peerIDString.trim());
 	}
@@ -232,7 +234,7 @@ public class Connection extends Uploader implements Runnable{
 
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
-		System.out.println("Connection: Done Value " + done+ " in sendMessage");
+		//System.out.println("Connection: Done Value " + done+ " in sendMessage");
 
  		if(done == false){
  			System.out.println("Connection: sending message: " + msg + " to Client " + peerID + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString());
@@ -256,7 +258,7 @@ public class Connection extends Uploader implements Runnable{
 		String handshake_zerobits = "0000000000";
 		String handshake_header = "P2PFILESHARINGPROJ";
 
-		try{
+		// try{
 	        //if (alone == false){
 				// out = new ObjectOutputStream(connection.getOutputStream());
 				// out.flush(); //TODO ::: Do we need this?
@@ -312,11 +314,13 @@ public class Connection extends Uploader implements Runnable{
 		    }
 
 		    //send our messages
-		    out.writeObject(message);
-			out.flush();
-		}catch(IOException ioException){
-			System.err.println("Could not send handshake 1: "+ ioException);
-		}
+			sendMessage(message);
+
+		    //out.writeObject(message);
+			//out.flush();
+		// }catch(IOException ioException){
+		// 	System.err.println("Could not send handshake 1: "+ ioException);
+		// }
 
 		sendBitfield();
 
@@ -357,7 +361,8 @@ public class Connection extends Uploader implements Runnable{
         
         peerLinkedList.add(newPeer);
 
-     	System.out.println("Connection: Adding Peers " + peerLinkedList);
+     	System.out.println("Connection: Adding Peers Peers Linked List  " + peerLinkedList);
+     	System.out.println("Connection: Adding Peers Connections Linked List " + connectionLinkedList);
 	}
 
 	public void sendBitfield(){
