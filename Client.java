@@ -504,7 +504,7 @@ public class Client implements Runnable{
 			}
 			if(allDone == true){
 				System.out.println("Client: All Done "+ connectionLinkedList.size());
-				Thread.sleep(4000);
+				Thread.sleep(10000);
 				System.exit(1);
 			}
 		}
