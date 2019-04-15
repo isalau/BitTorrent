@@ -1,0 +1,230 @@
+Apr 15, 2019 7:03:57 PM java.util.logging.LogManager$RootLogger log
+INFO: Logger Setup.
+Apr 15, 2019 7:03:59 PM java.util.logging.LogManager$RootLogger log
+INFO: Accepted connection from peer 1001
+Apr 15, 2019 7:03:59 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending bitfield with 11 pieces to peer 0
+Apr 15, 2019 7:03:59 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 0
+Apr 15, 2019 7:03:59 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:03:59 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received interested message from peer 1002
+Apr 15, 2019 7:03:59 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:03:59 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 1
+Apr 15, 2019 7:04:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 6
+Apr 15, 2019 7:04:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 3
+Apr 15, 2019 7:04:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 7
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Accepted connection from peer 1001
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending bitfield with 11 pieces to peer 0
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 0
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received interested message from peer 1003
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 0
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1003
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 8
+Apr 15, 2019 7:04:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 7
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1003
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1003
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 5
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 3
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received choke message from peer 1002
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 4
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 7
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 has optimistically unchoked peer 1002
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending choke message to peer 1003
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 8
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1003
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1003
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 2
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 0
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 1
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 3
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1003
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1003
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 0
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 4
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 5
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 0
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1003
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1003
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 9
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 2
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 9
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 4
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 has optimistically unchoked peer 1002
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending choke message to peer 1003
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 0
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1003
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1003
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 10
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 0
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 4
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 2
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1003
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1003
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 0
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 6
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 7
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 1
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1002
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending Unchoke message to peer 1003
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1002
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received request message from peer 1003
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 0
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 10
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1002
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1003 for piece 4
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received unchoke message from peer 1003
+Apr 15, 2019 7:04:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 received have  message from peer 1002 for piece 6
+Apr 15, 2019 7:04:11 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1001 has downloaded the complete file.

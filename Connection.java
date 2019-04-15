@@ -100,8 +100,8 @@ public class Connection extends Uploader implements Runnable{
 			if (receivedHandshake == true){
 	  			System.out.println("Connection: I am not alone");
 	  			byte[] myObjects = (byte[])in.readObject();
-	  			getPeerID(myObjects);
-	  			addPeers();
+  				getPeerID(myObjects);
+  				addPeers();
 	  		}
 
 			while(true){
@@ -137,17 +137,16 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void getPeerID(byte[] msg){
-		byte[] peerIDArray2 = new byte[4];
-		peerIDArray2 = Arrays.copyOfRange(msg, 28, 32);
-		// System.arraycopy(msg, 28, peerIDArray2, 0, 4);
-		String msgString = new String(msg);
-		String peerIDString = new String(peerIDArray2);
-		System.out.println("Connection: msg: "+ msgString);
-		System.out.println("Connection: PeerID: "+ peerIDString);
-		
-		peerID = Integer.parseInt(peerIDString.trim());
-	}
+		//index of piece
+		byte[] peerIDArray = new byte[4];
+		System.arraycopy(msg, 28, peerIDArray, 0, 4);
+		peerID = java.nio.ByteBuffer.wrap(peerIDArray).getInt();
 
+		String msgString = new String(msg);
+		System.out.println("Connection: msg: "+ msgString);
+		System.out.println("Connection: PeerID: "+ peerID);
+		
+	}
 
 	//check message type
 	public void checkMessage(byte[] msg){
@@ -161,7 +160,7 @@ public class Connection extends Uploader implements Runnable{
 
 		String message = new String (msg);
 		
-		while(done == false){
+		while(true){
 			switch (messageValue) {
 		        case 0:
 		        	System.out.println("Connection: received choke message received from client: " + peerID);
@@ -236,14 +235,9 @@ public class Connection extends Uploader implements Runnable{
 
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
-		//System.out.println("Connection: Done Value " + done+ " in sendMessage");
-
  		if(done == false){
  			System.out.println("Connection: sending message: " + msg + " to Client " + peerID + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString());
-			try{
-				//initialize Input and Output streams
-					// out = new ObjectOutputStream(connection.getOutputStream());
-					// out.flush();				
+			try{				
 				out.writeObject(msg);
 				out.flush();
 				System.out.println("Connection: message sent");
@@ -253,7 +247,9 @@ public class Connection extends Uploader implements Runnable{
 			}
 		}
 	}
+
 	public boolean CheckHandshake(byte[] message){
+		System.out.println("Connection: Check Handshake");
         byte[] msgHeader = new byte[header_size];
         byte[] msgID = new byte[peerID_size];
         byte[] msgZeroBits = new byte[zerobits_size];
@@ -264,104 +260,76 @@ public class Connection extends Uploader implements Runnable{
             msgZeroBits = Arrays.copyOfRange(message, header_size, header_size+zerobits_size);
             msgID = Arrays.copyOfRange(message, header_size +zerobits_size, total_length);
             int msgPeerID = java.nio.ByteBuffer.wrap(msgID).getInt();
-            if(msgHeader != "P2PFILESHARINGPROJ".getBytes()){
-                System.out.println("Connection: The header is not correct");
+            System.out.println("Connection: Check Handshake sent "+peerID+" and received "+ msgPeerID);
+
+            if(msgPeerID != peerID){
+            	System.out.println("Connection: The peerID from handshake is not correct");
                 flag = false;
-            }
-            if(msgPeerID == peerID){
-                System.out.println("Connection: The peerID from handshake is not correct sent "+peerID+" and received "+ msgPeerID);
-                //flag = false;
             }
         }catch(Exception e){
             e.printStackTrace();
         }
         return flag;
     }
+    
 	public void sendHandShake(){
 		sentHandshake = true;	
 
 		String handshake_zerobits = "0000000000";
 		String handshake_header = "P2PFILESHARINGPROJ";
-
-		// try{
-	        //if (alone == false){
-				// out = new ObjectOutputStream(connection.getOutputStream());
-				// out.flush(); //TODO ::: Do we need this?
-				// in = new ObjectInputStream(connection.getInputStream());
-			//}else{
-				//need to add to peer and connection list
-				//addPeers();
-			//}
 			
-			sendersPort = connection.getLocalPort();
-			sendersHostName = connection.getLocalAddress().toString();
-			System.out.println("Connection: Sending Handshake from Connection to : " + hostname + " with port number "+ portNumber);
-			System.out.println("Connection: My peerID is: " + sendersPeerID);
-			System.out.println("Connection: My port number is: " + sendersPort);
-			System.out.println("Connection: My hostname is: " + sendersHostName);
+		sendersPort = connection.getLocalPort();
+		sendersHostName = connection.getLocalAddress().toString();
+		System.out.println("Connection: Sending Handshake from Connection to : " + hostname + " with port number "+ portNumber);
+		System.out.println("Connection: My peerID is: " + sendersPeerID);
+		System.out.println("Connection: My port number is: " + sendersPort);
+		System.out.println("Connection: My hostname is: " + sendersHostName);
+	
+		//handshake
+		message = new byte[32];
 		
-			//handshake
-			message = new byte[32];
-			byte[] peerIDArray = ByteBuffer.allocate(4).putInt(sendersPeerID).array();
-			
-			System.arraycopy(handshake_header.getBytes(), 0, message,0, header_size);
-			// System.out.println("handshake_header: "+ handshake_header);
-			try {
-		         String Str2 = new String(handshake_header.getBytes( "UTF-8" ));
-		         // System.out.println("handshake_header Value: " + Str2 );
-		         Str2 = new String (message);
-		         // System.out.println("Message: " + Str2 );
-		    } catch ( UnsupportedEncodingException e) {
-		        System.err.println("Unsupported character set");
-		    }
+		System.arraycopy(handshake_header.getBytes(), 0, message,0, header_size);
+		// System.out.println("handshake_header: "+ handshake_header);
+		try {
+	         String Str2 = new String(handshake_header.getBytes( "UTF-8" ));
+	         // System.out.println("handshake_header Value: " + Str2 );
+	         Str2 = new String (message);
+	         // System.out.println("Message: " + Str2 );
+	    } catch ( UnsupportedEncodingException e) {
+	        System.err.println("Unsupported character set");
+	    }
 
-			
-			System.arraycopy(handshake_zerobits.getBytes(), 0, message,header_size, zerobits_size);
-			// System.out.println("handshake_zerobits: "+ handshake_zerobits);
-			try {
-		         String Str3 = new String(handshake_zerobits.getBytes( "UTF-8" ));
-		         // System.out.println("handshake_zerobits Value: " + Str3 );
-		         Str3 = new String (message);
-		         // System.out.println("Message " + Str3 );
-		    } catch ( UnsupportedEncodingException e) {
-		         System.err.println("Unsupported character set");
-		    }
-			
-			String peerIDString = Integer.toString(sendersPeerID); 
-			System.arraycopy(peerIDString.getBytes(), 0, message, header_size+zerobits_size, peerID_size);
-			try {
-		         String Str4 = new String(peerIDString.getBytes( "UTF-8" ));
-		         // System.out.println("peerIDString Value: " + Str4 );
-		         Str4 = new String (message);
-		         // System.out.println("Message: " + Str4 );
-		    } catch ( UnsupportedEncodingException e) {
-		        System.err.println("Unsupported character set");
-		    }
+		
+		System.arraycopy(handshake_zerobits.getBytes(), 0, message,header_size, zerobits_size);
+		// System.out.println("handshake_zerobits: "+ handshake_zerobits);
+		try {
+	         String Str3 = new String(handshake_zerobits.getBytes( "UTF-8" ));
+	         // System.out.println("handshake_zerobits Value: " + Str3 );
+	         Str3 = new String (message);
+	         // System.out.println("Message " + Str3 );
+	    } catch ( UnsupportedEncodingException e) {
+	         System.err.println("Unsupported character set");
+	    }
+		
+		String peerIDString = Integer.toString(sendersPeerID); 
 
-		    //send our messages
-			sendMessage(message);
+		byte[] peerIDByte = new byte[4];
+		peerIDByte = ByteBuffer.allocate(4).putInt(sendersPeerID).array();
 
-		    //out.writeObject(message);
-			//out.flush();
-		// }catch(IOException ioException){
-		// 	System.err.println("Could not send handshake 1: "+ ioException);
-		// }
+		System.arraycopy(peerIDByte, 0, message, header_size+zerobits_size, peerID_size);
+		try {
+	         String Str4 = new String(peerIDString.getBytes( "UTF-8" ));
+	         // System.out.println("peerIDString Value: " + Str4 );
+	         Str4 = new String (message);
+	         // System.out.println("Message: " + Str4 );
+	    } catch ( UnsupportedEncodingException e) {
+	        System.err.println("Unsupported character set");
+	    }
+
+	    //send our messages
+		sendMessage(message);
 
 		sendBitfield();
-
-		// try{
-		// 	while(true){
-		// 		//receive the message sent from the client
-		// 		byte[] myObjects = (byte[])in.readObject();
-				
-		// 		//check what message you got
-		// 		checkMessage(myObjects);
-		// 	}
-		// }catch(ClassNotFoundException classnot){
-		// 	System.err.println("Connection: Data received in unknown format");
-		// }catch(IOException ioException){
-		// 	System.err.println("Connection: Data received in unknown format "+ ioException);
-		// }
 
 		if(done == false){
 			System.out.println("Connection: Sending unchoke message from handshake");
@@ -467,26 +435,25 @@ public class Connection extends Uploader implements Runnable{
 	public void sendUnchokeMessage(){
 		System.out.println("Connection: Sending UnChoke Message");
 
-
-		//create new bitfield message
+		//create new unchoke message
 		int length = 5;
 		unChokeMessage = new byte[length];
 	
 	 	//initalize
 		unChokeMessage = ByteBuffer.allocate(length).putInt(length).array();
 		unChokeMessage[4] = 1;
-		logger.info("Sending UNchoke message to peer " + peerID);
+		logger.info("Sending Unchoke message to peer " + peerID);
 		sendMessage(unChokeMessage);
 	}
 
 	public void determineIfInterestedFromHave(byte[] msg){
 		System.out.println("Connection: Determining If Interested From Have");
 		
-		byte index = msg[5];//TODO: fix this. this must be the first 4 bytes of the body of have message.
-		//TODO: Most likely message bytes[0] through [3] are length, [4] is type and [5] through [9] would be the piece index in case of the have message.
-		//maybe this will work!
-		//byte[] payload = {msg[6],msg[7],msg[8],msg[9]};
-		//Integer index = ByteBuffer.wrap(payload).getInt();
+		//index of piece
+		byte[] indexByte = new byte[4];
+		System.arraycopy(msg, 5, indexByte, 0, 4);
+		int index = java.nio.ByteBuffer.wrap(indexByte).getInt();
+
 		logger.info("Peer " + sendersPeerID + " received have  message from peer " + peerID + " for piece " + index);
 
 		peerBitfield[index] = 1; 
@@ -609,20 +576,12 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public int selectRandom(){
-		// System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
 		int r;
 		do{
 			r = new Random().nextInt(numOfPieces);
 		}while(myBitfield[r] != 0 && peerBitfield[r] != 1);
 
 		return r;
-		/*
-		if(myBitfield[r] == 0 && peerBitfield[r] == 1){
-			return r;
-		}else{
-			return selectRandom(); //keep calling until you find one you don't have 
-		}
-		*/
 	}
 
 	public void sendPiece(byte[] msg){
@@ -632,7 +591,6 @@ public class Connection extends Uploader implements Runnable{
 		byte[] indexByte = new byte[4];
 		System.arraycopy(msg, 5, indexByte, 0, 4);
 		int index = java.nio.ByteBuffer.wrap(indexByte).getInt();
-
 
 		System.out.println("Connection: The index of piece to send is: "+ index);
 
@@ -651,12 +609,9 @@ public class Connection extends Uploader implements Runnable{
 		
 
 		System.arraycopy(indexByte, 0, pieceMessage,5, indexByte.length);
-
 		System.arraycopy(data, 0, pieceMessage,9, data.length);
-		sendMessage(pieceMessage);
 
-		// //start timer 
-		// startTimeSinceUnchoked = System.currentTimeMillis();
+		sendMessage(pieceMessage);
 	}
 
 	public void receivedPiece(byte[] msg){
@@ -671,7 +626,6 @@ public class Connection extends Uploader implements Runnable{
 		System.arraycopy(msg, 9, data,0, pieceSize);
 		
 		lastRequestedIndex = java.nio.ByteBuffer.wrap(indexByte).getInt();
-
 
 		System.out.println("Connection: the msg is: "+ msg);
 		System.out.println("Connection: the data is: "+ data);	
@@ -759,16 +713,13 @@ public class Connection extends Uploader implements Runnable{
 		haveMessage = ByteBuffer.allocate(length).putInt(length).array();
 		haveMessage[4] = 4;
 
-		haveMessage[5] = (byte)index;
+		byte[] haveByte = new byte[4];
+		haveByte = ByteBuffer.allocate(4).putInt(index).array();
+		System.arraycopy(haveByte, 0, haveMessage,5, 4);
+
 		System.out.println("Connection: I have the piece at index "+ haveMessage[5]);
 
 		sendMessage(haveMessage);
-	}
-
-	public void downloadChunks(){
-		//download somehow....
-		//determine rate
-		DetermineRate();
 	}
 
 	public long DetermineRate(){
