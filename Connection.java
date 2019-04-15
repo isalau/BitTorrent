@@ -110,9 +110,9 @@ public class Connection extends Uploader implements Runnable{
 				checkMessage(myObjects);
 			}
 		}catch(ClassNotFoundException classnot){
-			System.err.println("Data received in unknown format");
+			System.err.println("Connection: Data received in unknown format");
 		}catch(IOException ioException){
-			System.err.println("Disconnect with Client " + peerID);
+			System.err.println("Connection: Disconnect with Client " + peerID);
 			String fileName2 = "Final_File.txt";//TODO: what is this???
 			checkIfDone(fileName2);
 		}
@@ -662,9 +662,7 @@ public class Connection extends Uploader implements Runnable{
 
 	public void checkIfDone(String fName){
 		//check if chunksDownloaded is the number of pieces we want
-		// or if we started with the file and chunksDownloaded is zero check if hasFile is true
-		System.out.println("Connection: chunksDownloaded= " + chunksDownloaded + " numOfPieces= " + numOfPieces);
-		
+		// or if we started with the file and chunksDownloaded is zero check if hasFile is true		
 		boolean bitFieldFull = true;
 		for(int k = 0; k < myBitfield.length; k++){
 			if(myBitfield[k] == 0 || myBitfield[k] == 2){

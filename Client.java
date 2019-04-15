@@ -217,7 +217,12 @@ public class Client implements Runnable{
 	//preferred neighbor choke timer
 	public void updateChokeTimer(){
 		Timer unChokeTimer = new Timer();
-		checkIfDone();
+		try{
+			checkIfDone();
+		}catch(InterruptedException iE){
+			System.err.println("Client: check if done error " + iE);
+		}
+		
 		
 		TimerTask unChoke = new TimerTask(){
 			public void run(){
@@ -376,25 +381,24 @@ public class Client implements Runnable{
 
 	//optimistically picked neighbor timer
 	public void updateOptTimer(){
-		// done = up.done;
 		Timer optUnChokeTimer = new Timer();
-		checkIfDone();
-		if(done == false){
-			
-			TimerTask optUnChoke = new TimerTask(){
-				public void run(){
-					optimisticUnchoke(optimisticUnchokingInterval);
-				}
-			};
-
-			//timer is in miliseconds so we need to multiply by 1000
-			long miliOptUnChoke = optimisticUnchokingInterval *1000;
-			optUnChokeTimer.schedule(optUnChoke,miliOptUnChoke);
-		}else{
-			optUnChokeTimer.cancel();
-			optUnChokeTimer.purge();
-			Thread.currentThread().interrupt();
+		
+		try{
+			checkIfDone();
+		}catch(InterruptedException iE){
+			System.err.println("Client: check if done error " + iE);
 		}
+
+		TimerTask optUnChoke = new TimerTask(){
+			public void run(){
+				optimisticUnchoke(optimisticUnchokingInterval);
+			}
+		};
+
+		//timer is in miliseconds so we need to multiply by 1000
+		long miliOptUnChoke = optimisticUnchokingInterval *1000;
+		optUnChokeTimer.schedule(optUnChoke,miliOptUnChoke);
+
 	}
 
 	public void optimisticUnchoke(int optimisticUnchokingInterval){
@@ -488,7 +492,7 @@ public class Client implements Runnable{
 		return 0;
 	}
 
-	public void checkIfDone(){
+	public void checkIfDone() throws InterruptedException {
 		connectionLinkedList = up.connectionLinkedList;
 		boolean allDone = true;
 		if(connectionLinkedList.size() != 0){
@@ -500,8 +504,10 @@ public class Client implements Runnable{
 			}
 			if(allDone == true){
 				System.out.println("Client: All Done "+ connectionLinkedList.size());
+				Thread.sleep(4000);
 				System.exit(1);
 			}
 		}
+		
 	}
 }
