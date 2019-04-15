@@ -61,53 +61,35 @@ public class DataFile {
         System.out.println("DataFile: The size of Data Array is: "+ DataInChunks.size());
     }
 
-    // public void CombineFiles(String fileName) {
-    //     File object = new File(fileName);
-    //     FileOutputStream FOutput;
-    //     FileInputStream FInput;
-    //     byte[] ReadBytes;
-    //     int LastReadBytes = 0;
-    //     for (int i = 0; i < numOfPieces; i++) {
-    //         String newName = fileName + Integer.toString(i); 
-    //         File tempFile= new File(newName);
-    //         FileList.add(tempFile);
-    //     }
-    //     try {
-    //         FOutput = new FileOutputStream(object, true);
-    //         for (File file : FileList) {
-    //             FInput = new FileInputStream(file);
-    //             ReadBytes = new byte[(int) file.length()];
-    //             LastReadBytes = FInput.read(ReadBytes, 0, (int) file.length());
-    //             FOutput.write(ReadBytes);
-    //             FOutput.flush();
-    //             LastReadBytes = 0;
-    //             FInput.close();
-    //             FInput = null;
-    //         }
-    //         FOutput.close();
-    //         FOutput = null;
-    //     } catch (Exception e) {
-    //         System.out.println("Could not merge the file properly");
-    //     }
-    // }
-
-    public void WriteBytes(String fileName){
+    public void WriteBytes(String fileName, int peerID){
         int i =0;
         try{
-            // String path = "../" + fileName;
-            String workingDirectory = System.getProperty("user.dir");
+            Path path = Paths.get(System.getProperty("user.dir"));
+            Files.createDirectories(path);
+            // boolean created = true; 
+            // File newFolder = new File(newFolder.getParentFile().getAbsolutePath());
+            // created = newFolder.mkdir();
+            
+
             String absolutePath = "";
-            absolutePath = workingDirectory + File.separator + fileName ;
-            System.out.println("file path is :" + absolutePath);
-            file = new File(absolutePath);
+            // String workingDirectory = System.getProperty("user.dir");
+            // System.out.println("Working directory is:"+ workingDirectory);
+            String peerIDString = Integer.toString(peerID);
+            // System.out.println("the peerID is"+ peerIDString);
+            // absolutePath = workingDirectory + File.separator + peerIDString;
+            // System.out.println("the absolute path is : "+ absolutePath);
+           
+
+            // String filepath = absolutePath +File.separator + fileName;
+            // System.out.println("file path is :" + path);
+            File file = new File(fileName);
             FileOutputStream output = new FileOutputStream(file);
             
             //write the bytes into the file
             System.out.println("the data chunks size is :"+ DataInChunks.size());
             for (int j = 0; j < DataInChunks.size();j++){
                 output.write(DataInChunks.get(j));
-                System.out.println("Wrote into the file successfully!");
-                System.out.println("I am in write bytes in the loop");
+                
                 output.flush();
             }
             i++;
