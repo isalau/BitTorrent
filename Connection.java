@@ -69,6 +69,7 @@ public class Connection extends Uploader implements Runnable{
 	public static final int header_size = 18;
 	public static final int total_length = 32;
 	public boolean sentHandshake = false;
+	public boolean sendHandshake = false;
 	public boolean receivedHandshake = false;
 
 	private int lastRequestedIndex = 0; 
@@ -87,54 +88,50 @@ public class Connection extends Uploader implements Runnable{
 	@Override
   	public void run() {
   		System.out.println("Connection: I am running");
-  		if (alone == false){
-  			System.out.println("Connection: I am not alone");
-  			sendHandShake();
-  		}
-  		else{
-			try{
-				InetAddress myID = InetAddress.getLocalHost();
-				String iP = myID.toString();
-            	String myHostname = myID.getHostName();
 
-				//initialize Input and Output streams
-				out = new ObjectOutputStream(connection.getOutputStream());
-				out.flush();
-				in = new ObjectInputStream(connection.getInputStream());
-				try{
-					while(true){
-						//receive the message sent from the client
-						byte[] myObjects = (byte[])in.readObject();
+  		initializeStreams();
 
-						//check what message you got
-						checkMessage(myObjects);
-					}
-				}catch(ClassNotFoundException classnot){
-					System.err.println("Data received in unknown format");
-				}
-			}catch(IOException ioException){
-				System.out.println("Disconnect with Client " + peerID);
-				String fileName2 = "Final_File.txt";//TODO: what is this???
-				checkIfDone(fileName2);
+  		//either send out a handshake or check what message I got
+  		try{
+  			if(sendHandshake == true){
+  				sendHandShake();
+  			}
+  			
+			if (peerLinkedList.size() == 0){
+	  			System.out.println("Connection: I am not alone");
+	  			byte[] myObjects = (byte[])in.readObject();
+	  			getPeerID(myObjects);
+	  			addPeers();
+	  		}
+			while(true){
+				//receive the message sent from the client
+				byte[] myObjects = (byte[])in.readObject();
+				checkMessage(myObjects);
 			}
+		}catch(ClassNotFoundException classnot){
+			System.err.println("Data received in unknown format");
+		}catch(IOException ioException){
+			System.err.println("Disconnect with Client " + peerID);
+			String fileName2 = "Final_File.txt";//TODO: what is this???
+			checkIfDone(fileName2);
 		}
+	}
 
-		// finally{
-		// 	//Close connections
-		// 	try{
-		// 		if(in != null){
-		// 			 in.close();
-		// 		}
-		// 		if(out != null){
-		// 			 out.close();
-		// 		}
-		// 		if (connection != null){
-		// 			 connection.close();
-		// 		}	
-		// 	}catch(IOException ioException){
-		// 		System.out.println("Disconnect with Client " + no);
-		// 	}
-		// }
+	public void initializeStreams(){
+		try{
+			if (receivedHandshake == false && sendHandshake == true){ 
+				//I'm setting up the connection
+				connection = new Socket(hostname, portNumber);
+				logger.info("Conneting to peer " + peerID);
+			}
+			out = new ObjectOutputStream(connection.getOutputStream());
+			out.flush(); //TODO ::: Do we need this?
+			in = new ObjectInputStream(connection.getInputStream());
+		}catch (IllegalArgumentException exception) {
+            System.err.println("Connection: Could not initalize streams 1: " + exception);
+        }catch(IOException ioException){
+			System.err.println("Connection: Could not initalize streams 2" + ioException);
+		}
 	}
 
 	//send a message to the output stream
@@ -262,27 +259,14 @@ public class Connection extends Uploader implements Runnable{
 		String handshake_header = "P2PFILESHARINGPROJ";
 
 		try{
-			try{
-				if (alone == false && receivedHandshake == false){
-					connection = new Socket(hostname, portNumber);
-					logger.info("Conneting to peer " + peerID);
-				}
-			}  catch (IllegalArgumentException exception) {
-	            // Catch expected IllegalArgumentExceptions.
-	            System.out.println("Connection: Hanshake exception 1: " + exception);
-	        } catch (Exception exception) {
-	            // Catch unexpected Exceptions.
-	            System.out.println("Connection: Hanshake exception 2: " + exception);
-	        }
-	        if (alone == false){
-				out = new ObjectOutputStream(connection.getOutputStream());
-				out.flush(); //TODO ::: Do we need this?
-				in = new ObjectInputStream(connection.getInputStream());
-
-			}else{
+	        //if (alone == false){
+				// out = new ObjectOutputStream(connection.getOutputStream());
+				// out.flush(); //TODO ::: Do we need this?
+				// in = new ObjectInputStream(connection.getInputStream());
+			//}else{
 				//need to add to peer and connection list
-				addPeers();
-			}
+				//addPeers();
+			//}
 			
 			sendersPort = connection.getLocalPort();
 			sendersHostName = connection.getLocalAddress().toString();
@@ -303,7 +287,7 @@ public class Connection extends Uploader implements Runnable{
 		         Str2 = new String (message);
 		         // System.out.println("Message: " + Str2 );
 		    } catch ( UnsupportedEncodingException e) {
-		         System.out.println("Unsupported character set");
+		        System.err.println("Unsupported character set");
 		    }
 
 			
@@ -315,7 +299,7 @@ public class Connection extends Uploader implements Runnable{
 		         Str3 = new String (message);
 		         // System.out.println("Message " + Str3 );
 		    } catch ( UnsupportedEncodingException e) {
-		         System.out.println("Unsupported character set");
+		         System.err.println("Unsupported character set");
 		    }
 			
 			String peerIDString = Integer.toString(sendersPeerID); 
@@ -326,39 +310,38 @@ public class Connection extends Uploader implements Runnable{
 		         Str4 = new String (message);
 		         // System.out.println("Message: " + Str4 );
 		    } catch ( UnsupportedEncodingException e) {
-		        System.out.println("Unsupported character set");
+		        System.err.println("Unsupported character set");
 		    }
 
 		    //send our messages
 		    out.writeObject(message);
 			out.flush();
 		}catch(IOException ioException){
-			System.out.println("Could not send handshake 1: "+ ioException);
+			System.err.println("Could not send handshake 1: "+ ioException);
 		}
 
 		sendBitfield();
 
-		try{
-			while(true){
-				//receive the message sent from the client
-				byte[] myObjects = (byte[])in.readObject();
+		// try{
+		// 	while(true){
+		// 		//receive the message sent from the client
+		// 		byte[] myObjects = (byte[])in.readObject();
 				
-				//check what message you got
-				checkMessage(myObjects);
-			}
-		}catch(ClassNotFoundException classnot){
-				System.err.println("Connection: Data received in unknown format");
-		}catch(IOException ioException){
-				System.out.println("Connection: Disconnect with Client " + peerID);
-				String fileName2 = "Final_File.txt";//TODO: what is this???
-				checkIfDone(fileName2);
-		}
+		// 		//check what message you got
+		// 		checkMessage(myObjects);
+		// 	}
+		// }catch(ClassNotFoundException classnot){
+		// 	System.err.println("Connection: Data received in unknown format");
+		// }catch(IOException ioException){
+		// 	System.err.println("Connection: Data received in unknown format "+ ioException);
+		// }
 
 		if(done == false){
 			System.out.println("Connection: Sending unchoke message from handshake");
 			sendUnchokeMessage();
 		}
 	}
+
 
 
 	// finally{

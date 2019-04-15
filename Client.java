@@ -147,6 +147,8 @@ public class Client implements Runnable{
             	newConnection.sendersHasFile = hasFile;  // this is currently listener will change
 
             	newConnection.alone = false;
+            	newConnection.sendHandshake = true;
+            	newConnection.receivedHandshake = false;
 		        newConnection.fileSize = fileSize;
 		        newConnection.pieceSize = pieceSize;
 		        newConnection.numOfPieces = numOfPieces;
