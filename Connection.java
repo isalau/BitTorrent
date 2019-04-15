@@ -112,6 +112,11 @@ public class Connection extends Uploader implements Runnable{
 		}catch(ClassNotFoundException classnot){
 			System.err.println("Connection: Data received in unknown format");
 		}catch(IOException ioException){
+
+			System.err.println("Disconnect with Client " + peerID);
+			// String fileName2 = "Final_File.txt";//TODO: what is this???
+			checkIfDone(fileName);
+
 			System.err.println("Connection: Disconnect with Client " + peerID);
 			String fileName2 = "Final_File.txt";//TODO: what is this???
 			checkIfDone(fileName2);
@@ -680,6 +685,9 @@ public class Connection extends Uploader implements Runnable{
 
 		if(bitFieldFull == true && done == false) {
 			// DataFile df = new DataFile(pieceSize,fileSize);
+			String path ="";
+			String workingDirectory = System.getProperty("user.dir");
+			path = workingDirectory + fName ; 
 			dataFile.WriteBytes(fName);
 			System.out.println("Connection: File complete at time: " + System.currentTimeMillis());
 			System.out.println("Connection: My bitfield ");
