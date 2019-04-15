@@ -16,6 +16,7 @@ public class peerProcess{
     public static int optimisticUnchokingInterval;
     public static String fileName;
     public static ArrayList<byte[]> DataChunks;
+    public static int numOfPreferredNeighbors; 
 
 
 	public static void main(String args[] ){
@@ -55,6 +56,7 @@ public class peerProcess{
             CommonParser CP = new CommonParser();
         if(CP.Parse("Common.cfg")){
             System.out.println(CP.NumberOfPreferredNeighbors);
+            numOfPreferredNeighbors = CP.NumberOfPreferredNeighbors;
             System.out.println(CP.UnchokingInterval);
             unchokingInterval = CP.UnchokingInterval;
             System.out.println(CP.OptimisticUnchokingInterval);
@@ -133,6 +135,7 @@ public class peerProcess{
         client.hasFile = hasFile;
         client.fileName = fileName;
         client.unchokingInterval = unchokingInterval;
+        client.numOfPreferredNeighbors = numOfPreferredNeighbors;
         client.optimisticUnchokingInterval = optimisticUnchokingInterval;
 
         if(DataChunks!= null){

@@ -204,48 +204,27 @@ public class Client implements Runnable{
 
 	//preferred neighbor choke timer
 	public void updateChokeTimer(){
-		// done = up.done;
-		//System.out.println("Client: Unchoking Done Value "+ done);
 		Timer unChokeTimer = new Timer();
 		checkIfDone();
-		if(done == false){
-			//timer for choke and unchoke
 		
+		TimerTask unChoke = new TimerTask(){
+			public void run(){
+				unChoke(unchokingInterval);
+			}
+		};
 
-			TimerTask unChoke = new TimerTask(){
-				public void run(){
-					unChoke(unchokingInterval);
-				}
-			};
-
-			//timer is in miliseconds so we need to multiply by 1000
-			long miliUnChoke = unchokingInterval *1000;
-			unChokeTimer.schedule(unChoke, miliUnChoke);
-		}else{
-			unChokeTimer.cancel();
-			unChokeTimer.purge();
-			Thread.currentThread().interrupt();
-		}
+		//timer is in miliseconds so we need to multiply by 1000
+		long miliUnChoke = unchokingInterval *1000;
+		unChokeTimer.schedule(unChoke, miliUnChoke);
 	}
 
 	public void unChoke(int unchokingInterval){
-
+		// System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
 		try{
-			if(connectionLinkedList.size() != 0){
-				done = connectionLinkedList.get(0).done;
-			}
-			//System.out.println("Client: Unchoking Done Value "+ done);
-
-			if(done == false){
-				updateChokeTimer();
-				// System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
-				determinePreferredNeighbors();
-			}else{
-				Thread.currentThread().interrupt();
-				System.exit(1);
-			}
+			updateChokeTimer();
+			determinePreferredNeighbors();
 		}catch(Exception e){
-			System.out.print("Client: Unchoke Exception ");
+			System.err.print("Client: Unchoke Exception ");
 			e.printStackTrace();
 		}
 	}
@@ -258,12 +237,14 @@ public class Client implements Runnable{
 		System.out.println("Client: Determining Preferred Neighbors "+ peerLinkedList);
 
 		//check to see if k is greater than size of connection list
-		if(numOfPreferredNeighbors > connectionLinkedList.size()){
+		if(numOfPreferredNeighbors >= connectionLinkedList.size()){
+			System.out.println("Client: k is less than number of neighbors. Make all preferred");
 			//make all neighbors in connection and peer list preffereed neighbors and unchoke
 			for(int i = 0; i < peerLinkedList.size(); i++){
 				peerLinkedList.get(i).preferredNeighbor = true;
 			}
 			for(int i = 0; i < connectionLinkedList.size(); i++){
+				connectionLinkedList.get(i).preferredNeighbor = true;
 				connectionLinkedList.get(i).sendUnchokeMessage();
 			}
 		//take the top k elements based on connectionLinkedList.get(i).connectionDownloadRate
