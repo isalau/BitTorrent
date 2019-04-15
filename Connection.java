@@ -688,9 +688,7 @@ public class Connection extends Uploader implements Runnable{
 		for(int i = 0; i < connectionLinkedList.size(); i++){
 			connectionLinkedList.get(i).sendHave(lastRequestedIndex);
 		}
-
-		String fileName2 = "Final_File.txt";
-		checkIfDone(fileName2);
+		checkIfDone(fileName);
 	}
 
 	public void checkIfDone(String fName){
