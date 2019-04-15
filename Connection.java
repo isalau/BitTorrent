@@ -615,7 +615,11 @@ public class Connection extends Uploader implements Runnable{
 			index = 256 + msg[5];
 		}
 
+<<<<<<< HEAD
 		System.out.println("Connection: the PieceIndex from send piece is: "+ index);
+=======
+		System.out.println("Connection: the PieceIndex from send piece is :"+ index);
+>>>>>>> parent of a35ad7d... Updated how we write piece index
 
 		//create new piece message
 		int length = 4 + 1 + pieceSize; //4 for length, 1 for type, rest for piece content
@@ -662,8 +666,14 @@ public class Connection extends Uploader implements Runnable{
 		for(int i = 0; i < connectionLinkedList.size(); i++){
 			connectionLinkedList.get(i).sendHave(lastRequestedIndex);
 		}
+<<<<<<< HEAD
 		
 		checkIfDone(fileName);
+=======
+
+		String fileName2 = "Final_File.txt";//TODO: what is this???
+		checkIfDone(fileName2);
+>>>>>>> parent of a35ad7d... Updated how we write piece index
 	}
 
 	public void checkIfDone(String fName){
