@@ -74,7 +74,16 @@ public class Client implements Runnable{
 
 	public void runUploader(){
 		System.out.println("Client: Calling run uploader");
-		 
+        if(hasFile == true){
+			for(int j=0; j< myBitfield.length; j++){
+				myBitfield[j] = 1;
+			}
+		}else{
+			for(int j=0; j< myBitfield.length; j++){
+				myBitfield[j] = 0;
+			}
+		}
+
 		up.peerID = peerID;
 		up.portNumber = port;
 		up.hasFile = hasFile;
@@ -163,7 +172,10 @@ public class Client implements Runnable{
 					for(int j=0; j< myBitfield.length; j++){
 						myBitfield[j] = 1;
 					}
-					
+				}else{
+					for(int j=0; j< myBitfield.length; j++){
+						myBitfield[j] = 0;
+					}
 				}
 				newConnection.myBitfield = myBitfield;
 				connectionLinkedList.add(newConnection);

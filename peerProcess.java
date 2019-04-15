@@ -98,7 +98,7 @@ public class peerProcess{
                 System.out.print("Peer Process: " + PI.PeerID + " ");
                 System.out.print(PI.HostName + " ");
                 System.out.print(PI.Port + " ");
-                System.out.println("Peer Process: " + PI.HasFile);
+                System.out.println(PI.HasFile);
                 
                 if (PI.PeerID == Integer.parseInt(args[0])) {
                     readFile = PI.HasFile;

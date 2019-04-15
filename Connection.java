@@ -150,10 +150,14 @@ public class Connection extends Uploader implements Runnable{
 
 	//check message type
 	public void checkMessage(byte[] msg){
-
 		byte messageValue = msg[4];
 		
 		System.out.println("Connection: message type: " + messageValue + " received from client: " + peerID);
+		System.out.println("Connection: My bitfield ");
+		for(int k = 0; k < myBitfield.length; k++){
+			System.out.println(myBitfield[k]);
+		}
+
 		String message = new String (msg);
 		
 		while(done == false){
@@ -206,7 +210,7 @@ public class Connection extends Uploader implements Runnable{
 		        case 7:
 		        	System.out.println("Connection: received piece message received from client: " + peerID);
 					logger.info("Peer " + sendersPeerID + " received piece message from peer " + peerID);
-					chunksDownloaded = chunksDownloaded + 1; 
+					 
 		            receivedPiece(msg);
 
 					stopTimeSinceUnchoked = System.currentTimeMillis();
@@ -582,7 +586,7 @@ public class Connection extends Uploader implements Runnable{
 		// System.out.println("Connection: Number of pieces: " + numOfPieces + " "+ myBitfield.length +" "+  peerBitfield.length);
 		int r;
 		do{
-			r = new Random().nextInt(numOfPieces-1);
+			r = new Random().nextInt(numOfPieces);
 		}while(myBitfield[r] != 0 && peerBitfield[r] != 1);
 
 		return r;
@@ -633,7 +637,12 @@ public class Connection extends Uploader implements Runnable{
 
 		//Peer List 	
 		System.out.println("Connection: The bitfield length is: " + myBitfield.length+ " and the index is: " + lastRequestedIndex);
-		myBitfield[lastRequestedIndex] = 1;
+		
+		//check to make sure i don't already have it 
+		if(myBitfield[lastRequestedIndex] == 0 || myBitfield[lastRequestedIndex] == 2){
+			myBitfield[lastRequestedIndex] = 1;
+			chunksDownloaded = chunksDownloaded + 1;
+		}
 
 		System.out.println("Connection: the msg is: "+ msg);
 
@@ -653,15 +662,24 @@ public class Connection extends Uploader implements Runnable{
 
 	public void checkIfDone(String fName){
 		//check if chunksDownloaded is the number of pieces we want
-		// or if we started with the file and chuncksDownloaded is zero check if hasFile is true
-		if(chunksDownloaded == numOfPieces){
-			sendersHasFile = true;
+		// or if we started with the file and chunksDownloaded is zero check if hasFile is true
+		System.out.println("Connection: chunksDownloaded= " + chunksDownloaded + " numOfPieces= " + numOfPieces);
+		
+		boolean bitFieldFull = true;
+		for(int k = 0; k < myBitfield.length; k++){
+			if(myBitfield[k] == 0 || myBitfield[k] == 2){
+				bitFieldFull = false;
+			}
 		}
 
-		if(sendersHasFile == true && done == false) {
+		if(bitFieldFull == true && done == false) {
 			// DataFile df = new DataFile(pieceSize,fileSize);
 			dataFile.WriteBytes(fName);
 			System.out.println("Connection: File complete at time: " + System.currentTimeMillis());
+			System.out.println("Connection: My bitfield ");
+			for(int k = 0; k < myBitfield.length; k++){
+				System.out.println(myBitfield[k]);
+			}
 		
 			//check if all peers hasFile is true
 			boolean allDone = true; 
@@ -670,6 +688,10 @@ public class Connection extends Uploader implements Runnable{
 				if(connectionLinkedList.get(i).hasFile == false){
 					allDone = false; 
 					System.out.println("Connection: Peer "+ connectionLinkedList.get(i).peerID + " still has not finished.");
+					System.out.println("Connection: Peer "+ connectionLinkedList.get(i).peerID + " bitfield: ");
+					for(int k = 0; k < peerBitfield.length; k++){
+						System.out.println(connectionLinkedList.get(i).peerBitfield[k]);
+					}
 				}
 			}
 			
