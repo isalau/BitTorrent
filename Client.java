@@ -426,7 +426,7 @@ public class Client implements Runnable{
 						}
 					}
 
-					if(connectionLinkedList.size() == 1){
+					if(peerLinkedList.size() == 1){
 						//you only have one neighbor and should just keep as preferred unchoked neighbor
 						//send choke message to old opt neighbor
 						peerLinkedList.get(0).preferredNeighbor = true;
@@ -437,7 +437,6 @@ public class Client implements Runnable{
 						//send unchoke message using connection from connection list
 						connectionLinkedList.get(0).sendUnchokeMessage();
 					}else{
-
 						//select my peer to unchoke --> must be currently choked and interested
 						int optNeighborIndex =  pickRandomOptNeighbor();
 						System.out.println("Client: Opt unchoking peer: "+ optNeighborIndex);

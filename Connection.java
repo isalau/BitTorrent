@@ -134,24 +134,16 @@ public class Connection extends Uploader implements Runnable{
 		}
 	}
 
-	//send a message to the output stream
-	public void sendMessage(byte[] msg){
-		System.out.println("Connection: Done Value " + done+ " in sendMessage");
-
- 		if(done == false){
- 			System.out.println("Connection: sending message: " + msg + " to Client " + peerID + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString());
-			try{
-				//initialize Input and Output streams
-					// out = new ObjectOutputStream(connection.getOutputStream());
-					// out.flush();				
-				out.writeObject(msg);
-				out.flush();
-				System.out.println("Connection: message sent");
-			}
-			catch(IOException ioException){
-				ioException.printStackTrace();
-			}
-		}
+	public void getPeerID(byte[] msg){
+		byte[] peerIDArray2 = new byte[4];
+		peerIDArray2 = Arrays.copyOfRange(msg, 28, 32);
+		// System.arraycopy(msg, 28, peerIDArray2, 0, 4);
+		String msgString = new String(msg);
+		String peerIDString = new String(peerIDArray2);
+		System.out.println("Connection: msg: "+ msgString);
+		System.out.println("Connection: PeerID: "+ peerIDString + " " + peerIDArray2.length);
+		
+		peerID = Integer.parseInt(peerIDString.trim());
 	}
 
 	//check message type
@@ -212,12 +204,9 @@ public class Connection extends Uploader implements Runnable{
 		        case 7:
 		        	System.out.println("Connection: received piece message received from client: " + peerID);
 					logger.info("Peer " + sendersPeerID + " received piece message from peer " + peerID);
+					chunksDownloaded = chunksDownloaded + 1; 
 		            receivedPiece(msg);
-		            // for(int i =0; i < connectionLinkedList.size(); i++){
-		            // 	// if(connectionLinkedList.get(i).interested == true){
-			           //  // sendHave(msg);
-		            // 	// }
-		            // }
+
 					stopTimeSinceUnchoked = System.currentTimeMillis();
 		            break;
 		       	case 73:
@@ -228,6 +217,7 @@ public class Connection extends Uploader implements Runnable{
 		           	if (sentHandshake == false){
 		           		receivedHandshake = true;
 		           		getPeerID(msg);
+		           		addPeers();
 		           		sendHandShake();
 		           	}
 		           	
@@ -240,16 +230,24 @@ public class Connection extends Uploader implements Runnable{
 		}
 	}
 
-	public void getPeerID(byte[] msg){
-		byte[] peerIDArray2 = new byte[4];
-		peerIDArray2 = Arrays.copyOfRange(msg, 28, 32);
-		// System.arraycopy(msg, 28, peerIDArray2, 0, 4);
-		String msgString = new String(msg);
-		String peerIDString = new String(peerIDArray2);
-		System.out.println("Connection: msg: "+ msgString);
-		System.out.println("Connection: PeerID: "+ peerIDString + " " + peerIDArray2.length);
-		
-		peerID = Integer.parseInt(peerIDString.trim());
+	//send a message to the output stream
+	public void sendMessage(byte[] msg){
+		System.out.println("Connection: Done Value " + done+ " in sendMessage");
+
+ 		if(done == false){
+ 			System.out.println("Connection: sending message: " + msg + " to Client " + peerID + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString());
+			try{
+				//initialize Input and Output streams
+					// out = new ObjectOutputStream(connection.getOutputStream());
+					// out.flush();				
+				out.writeObject(msg);
+				out.flush();
+				System.out.println("Connection: message sent");
+			}
+			catch(IOException ioException){
+				ioException.printStackTrace();
+			}
+		}
 	}
 
 	public void sendHandShake(){
@@ -342,25 +340,6 @@ public class Connection extends Uploader implements Runnable{
 		}
 	}
 
-
-
-	// finally{
-	// 	//Close connections
-	// 	try{
-	// 		if(in != null){
-	// 			 in.close();
-	// 		}
-	// 		if(out != null){
-	// 			 out.close();
-	// 		}
-	// 		if (connection != null){
-	// 			 connection.close();
-	// 		}	
-	//  }catch(IOException ioException){
-	// 	System.out.println("Could not send handshake 2:"+ ioException);
-	// 	 }
-	// }
-	
 	public void addPeers(){
 		//place all info in a peer object
     	Peer newPeer = new Peer();
@@ -425,12 +404,7 @@ public class Connection extends Uploader implements Runnable{
 
 	public void receivedNotInterseted(){
 		//update Peer to reflect that it is intersted in Peer List and Connection List
-		
-		//just to test
-		for (int i = 0; i < peerLinkedList.size(); i++){
-			System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " is interested: "+ peerLinkedList.get(i).interested); 
-		}
-
+	
 		//Peer List 
 		for (int i = 0; i < peerLinkedList.size(); i++){
 			if(peerID == peerLinkedList.get(i).peerID){
@@ -442,10 +416,6 @@ public class Connection extends Uploader implements Runnable{
 			if(peerID == connectionLinkedList.get(i).peerID){
 				connectionLinkedList.get(i).interested = false; 
 			}
-		}
-		//just to test
-		for (int i =0; i < peerLinkedList.size(); i++){
-				System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " is interested: "+ peerLinkedList.get(i).interested); 
 		}
 	}
 
@@ -560,8 +530,9 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void sendRequest(){
+		System.out.println("Connection: Sending Request Message");
+		//if I do not have the file
 		if(sendersHasFile == false){
-			System.out.println("Connection: Sending Request Message");
 			//create new request message
 			int length = 9; //4 for length, 1 for type, 4 for payload
 			requestMessage = new byte[length];
@@ -632,7 +603,6 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void receivedPiece(byte[] msg){
-		chunksDownloaded++;
 		System.out.println("Connection: I have: "+ chunksDownloaded + " chunks downloaded");
 		//update Peer to reflect that they get the piece 
 		byte[] data = new byte[pieceSize];
@@ -652,6 +622,7 @@ public class Connection extends Uploader implements Runnable{
 		for(int i = 0; i < connectionLinkedList.size(); i++){
 			connectionLinkedList.get(i).sendHave(lastRequestedIndex);
 		}
+		
 		String fileName2 = "Final_File.txt";//TODO: what is this???
 		checkIfDone(fileName2);
 	}
@@ -660,7 +631,7 @@ public class Connection extends Uploader implements Runnable{
 		//check if chunksDownloaded is the number of pieces we want
 		// or if we started with the file and chuncksDownloaded is zero check if hasFile is true
 		if((chunksDownloaded == numOfPieces || sendersHasFile == true) && done == false) {
-			//if so change sendershasFile to true
+			//if so change sendershasFile  (my has file) to true
 			sendersHasFile = true;
 			// DataFile df = new DataFile(pieceSize,fileSize);
 			dataFile.WriteBytes(fName);
