@@ -208,6 +208,7 @@ public class Client implements Runnable{
 		// done = up.done;
 		//System.out.println("Client: Unchoking Done Value "+ done);
 		Timer unChokeTimer = new Timer();
+		checkIfDone();
 		if(done == false){
 			//timer for choke and unchoke
 		
@@ -385,6 +386,7 @@ public class Client implements Runnable{
 	public void updateOptTimer(){
 		// done = up.done;
 		Timer optUnChokeTimer = new Timer();
+		checkIfDone();
 		if(done == false){
 			
 			TimerTask optUnChoke = new TimerTask(){
@@ -411,7 +413,7 @@ public class Client implements Runnable{
 			peerLinkedList = up.peerLinkedList;
 			connectionLinkedList = up.connectionLinkedList;
 			System.out.println("Client: Opt unchoking peer list "+ peerLinkedList);
-			System.out.println("Client: Opt unchoking connection list "+ connectionLinkedList);
+			
 
 			//if I am not alone
 			if(connectionLinkedList.size() != 0){
@@ -492,5 +494,22 @@ public class Client implements Runnable{
 	    	//we have no peers	
 		}
 		return 0;
+	}
+
+	public void checkIfDone(){
+		connectionLinkedList = up.connectionLinkedList;
+		boolean allDone = true;
+		if(connectionLinkedList.size() != 0){
+			for(int i = 0; i < connectionLinkedList.size(); i++){
+				if(connectionLinkedList.get(i).hasFile == false || connectionLinkedList.get(i).sendersHasFile == false ){
+					allDone = false;
+				}
+				System.out.println("Client:Connection list member"+ connectionLinkedList.get(i).peerID == false + " peer has file "+ connectionLinkedList.get(i).hasFile + "I have the file "+ connectionLinkedList.get(i).sendersHasFile);
+			}
+			if(allDone == true){
+				System.out.println("Client: All Done "+ connectionLinkedList.size());
+				System.exit(1);
+			}
+		}
 	}
 }

@@ -157,7 +157,7 @@ public class Uploader implements Runnable{
       		newConnection.sendersPort = connection.getLocalPort();
       		newConnection.sendersHostName = connection.getLocalAddress().toString();
       		newConnection.sendersHasFile = hasFile;
-			newConnection.hasFile = hasFile;
+			newConnection.hasFile = false;
 			newConnection.fileSize = fileSize;
 			newConnection.pieceSize = pieceSize;
 			newConnection.numOfPieces = numOfPieces; 

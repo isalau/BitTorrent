@@ -622,7 +622,7 @@ public class Connection extends Uploader implements Runnable{
 		for(int i = 0; i < connectionLinkedList.size(); i++){
 			connectionLinkedList.get(i).sendHave(lastRequestedIndex);
 		}
-		
+
 		String fileName2 = "Final_File.txt";//TODO: what is this???
 		checkIfDone(fileName2);
 	}
@@ -665,7 +665,6 @@ public class Connection extends Uploader implements Runnable{
 				 }catch(IOException ioException){
 					System.out.println("Connection: Problem in check if done"+ ioException);
 				}
-				Thread.currentThread().interrupt();
 			}
 		}
 	}
