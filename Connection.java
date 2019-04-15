@@ -205,8 +205,12 @@ public class Connection extends Uploader implements Runnable{
 		            determineIfInterestedFromBitfield(msg);
 		            break;
 		        case 6:
+		            //got a requestMessage
 		        	System.out.println("Connection: received request message received from client: " + peerID);
 					logger.info("Peer " + sendersPeerID + " received request message from peer " + peerID);
+		        	//create piece
+		        	PieceIndex = msg[5];
+		        	System.out.println("Connection: the piece index in checkMessage"+ PieceIndex);
 		        	
 		        	sendPiece(msg);
 		            break;
@@ -576,13 +580,8 @@ public class Connection extends Uploader implements Runnable{
 			lastRequestedIndex = rand;
 			System.out.println("Connection: Asking for piece: "+ rand);
 			myBitfield[rand] = 2; 
-			//requestMessage[5] = (byte) rand;
-
-			byte[] indexByte = new byte[4];
-			indexByte = ByteBuffer.allocate(4).putInt(rand).array();
-			int index = java.nio.ByteBuffer.wrap(indexByte).getInt();
-
-			System.arraycopy(indexByte, 0, requestMessage,5, 4);
+			requestMessage[5] = (byte) rand;
+			
 			sendMessage(requestMessage);
 
 			//start timer 
@@ -608,33 +607,30 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void sendPiece(byte[] msg){
-		System.out.println("Connection: Sending Piece Message");		
+		System.out.println("Connection: Sending Piece Message");
 
-		//index of piece
-		byte[] indexByte = new byte[4];
-		System.arraycopy(msg, 5, indexByte, 0, 4);
-		int index = java.nio.ByteBuffer.wrap(indexByte).getInt();
+		int index = msg[5];
+		if(msg[5] < 0){
+			//128* 2 - the negative 
+			index = 256 + msg[5];
+		}
 
-
-		System.out.println("Connection: The index of piece to send is: "+ index);
+		System.out.println("Connection: the PieceIndex from send piece is :"+ index);
 
 		//create new piece message
-		int length = 4 + 1 + 4+ pieceSize; //4 for length, 1 for type, 4 for index,  rest for piece content
+		int length = 4 + 1 + pieceSize; //4 for length, 1 for type, rest for piece content
 		pieceMessage = new byte[length];
 		byte[] data = new byte[pieceSize];
-
 	 	//initalize
 		pieceMessage = ByteBuffer.allocate(length).putInt(length).array();
 		pieceMessage[4] = 7; //type seven
 
 		if(myBitfield[index] == 1){
+			System.out.println("Connection: I am in the if statement");
 			data = DataChunks.get(index);
 		}
 		
-
-		System.arraycopy(indexByte, 0, pieceMessage,5, indexByte.length);
-
-		System.arraycopy(data, 0, pieceMessage,9, data.length);
+		System.arraycopy(data, 0, pieceMessage,5, data.length);
 		sendMessage(pieceMessage);
 
 		// //start timer 
@@ -642,42 +638,32 @@ public class Connection extends Uploader implements Runnable{
 	}
 
 	public void receivedPiece(byte[] msg){
-		System.out.println("Connection: Received Piece Message");
+		System.out.println("Connection: I have: "+ chunksDownloaded + " chunks downloaded");
 		//update Peer to reflect that they get the piece 
-
-		//get info from message		
-		byte[] indexByte = new byte[4];
-		System.arraycopy(msg, 5, indexByte, 0, 4);
-
 		byte[] data = new byte[pieceSize];
-		System.arraycopy(msg, 9, data,0, pieceSize);
-		
-		lastRequestedIndex = java.nio.ByteBuffer.wrap(indexByte).getInt();
 
-
-		System.out.println("Connection: the msg is: "+ msg);
-		System.out.println("Connection: the data is: "+ data);	
+		//Peer List 	
 		System.out.println("Connection: The bitfield length is: " + myBitfield.length+ " and the index is: " + lastRequestedIndex);
 		
 		//check to make sure i don't already have it 
 		if(myBitfield[lastRequestedIndex] == 0 || myBitfield[lastRequestedIndex] == 2){
 			myBitfield[lastRequestedIndex] = 1;
+			chunksDownloaded = chunksDownloaded + 1;
 		}
-		
-		DataChunks.set(lastRequestedIndex,data);
+
+		System.out.println("Connection: the msg is: "+ msg);
+
+		System.arraycopy(msg, 5, data,0, pieceSize);
+		System.out.println("Connection: the data is: "+ data);
+		DataChunks.set(lastRequestedIndex,data);//TODO: it is not always the last requested piece that we might receive.
+		//TODO: make sure the proper index is extracted from the body of the piece message (the first 4 bytes).
 		logger.info("Peer " + sendersPeerID + " has downloaded the piece " + lastRequestedIndex + " from peer " + peerID);
 
 		for(int i = 0; i < connectionLinkedList.size(); i++){
 			connectionLinkedList.get(i).sendHave(lastRequestedIndex);
 		}
-<<<<<<< HEAD
-		// String fileName2 = "Final_File.txt";//TODO: what is this???
+		
 		checkIfDone(fileName);
-=======
-
-		String fileName2 = "Final_File.txt";
-		checkIfDone(fileName2);
->>>>>>> c633f492a371f668cced887f40f39dee9262b22c
 	}
 
 	public void checkIfDone(String fName){
