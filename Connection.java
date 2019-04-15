@@ -73,7 +73,7 @@ public class Connection extends Uploader implements Runnable{
 
 	private int lastRequestedIndex = 0; 
 
-	static volatile boolean done = false;
+	public static volatile boolean done = false;
 
 	private static Logger logger = Logger.getLogger("");
 
@@ -118,6 +118,8 @@ public class Connection extends Uploader implements Runnable{
 			}
 			}catch(IOException ioException){
 				System.out.println("Disconnect with Client " + peerID);
+				String fileName2 = "Final_File.txt";//TODO: what is this???
+				checkIfDone(fileName2);
 			}
 		}
 
@@ -141,31 +143,33 @@ public class Connection extends Uploader implements Runnable{
 
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
+		System.out.println("Connection: Done Value " + done);
 		System.out.println("Connection: sending message: " + msg + " to Client " + peerID + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString());
- 		// if(DataChunks != null){
- 			
- 		// }
- 		
-		try{
-			//initialize Input and Output streams
-				// out = new ObjectOutputStream(connection.getOutputStream());
-				// out.flush();				
-			out.writeObject(msg);
-			out.flush();
-			System.out.println("Connection: message sent");
-		}
-		catch(IOException ioException){
-			ioException.printStackTrace();
+
+ 		if(done == false){
+			try{
+				//initialize Input and Output streams
+					// out = new ObjectOutputStream(connection.getOutputStream());
+					// out.flush();				
+				out.writeObject(msg);
+				out.flush();
+				System.out.println("Connection: message sent");
+			}
+			catch(IOException ioException){
+				ioException.printStackTrace();
+			}
 		}
 	}
 
 	//check message type
 	public void checkMessage(byte[] msg){
+
 		byte messageValue = msg[4];
+		
 		System.out.println("Connection: message type: " + messageValue + " received from client: " + peerID);
 		String message = new String (msg);
 		
-		while(true){
+		while(done == false){
 			switch (messageValue) {
 		        case 0:
 		        	System.out.println("Connection: received choke message received from client: " + peerID);
@@ -348,11 +352,16 @@ public class Connection extends Uploader implements Runnable{
 			}
 		}catch(ClassNotFoundException classnot){
 				System.err.println("Connection: Data received in unknown format");
-			}catch(IOException ioException){
+		}catch(IOException ioException){
 				System.out.println("Connection: Disconnect with Client " + peerID);
-			}
+				String fileName2 = "Final_File.txt";//TODO: what is this???
+				checkIfDone(fileName2);
+		}
 
-		sendUnchokeMessage();
+		if(done == false){
+			System.out.println("Connection: Sending unchoke message from handshake");
+			sendUnchokeMessage();
+		}
 	}
 
 
@@ -478,6 +487,7 @@ public class Connection extends Uploader implements Runnable{
 
 	public void sendUnchokeMessage(){
 		System.out.println("Connection: Sending UnChoke Message");
+
 
 		//create new bitfield message
 		int length = 5;
@@ -676,7 +686,8 @@ public class Connection extends Uploader implements Runnable{
 
 	public void checkIfDone(String fName){
 		//check if chunksDownloaded is the number of pieces we want
-		if(chunksDownloaded == numOfPieces){
+		// or if we started with the file and chuncksDownloaded is zero check if hasFile is true
+		if(chunksDownloaded == numOfPieces || sendersHasFile == true){
 			//if so change sendershasFile to true
 			sendersHasFile = true;
 			// DataFile df = new DataFile(pieceSize,fileSize);
@@ -686,14 +697,17 @@ public class Connection extends Uploader implements Runnable{
 			//check if all peers hasFile is true
 			boolean allDone = true; 
 			for(int i = 0; i < connectionLinkedList.size(); i++){
+				System.out.println("Connection: Has peers "+ connectionLinkedList.get(i).peerID);
 				if(connectionLinkedList.get(i).sendersHasFile == false){
 					allDone = false; 
+					System.out.println("Connection:Peer "+ connectionLinkedList.get(i).peerID + " still has not finished.");
 				}
 			}
 			
 			//stop program
 			if(allDone = true && connectionLinkedList.size() != 0){
 				done = true;
+				System.out.println("Connection: Peer " + sendersPeerID + " has downloaded the complete file.");
 				logger.info("Peer " + sendersPeerID + " has downloaded the complete file.");
 				try{
 					if(in != null){
@@ -738,5 +752,9 @@ public class Connection extends Uploader implements Runnable{
 	public long DetermineRate(){
 		connectionDownloadRate =  chunksSinceUnchoked /(startTimeSinceUnchoked - stopTimeSinceUnchoked);
 		return connectionDownloadRate;
+	}
+
+	public boolean getDone(){
+		return done;
 	}
 }		

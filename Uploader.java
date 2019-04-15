@@ -40,7 +40,7 @@ public class Uploader implements Runnable{
 
     public Handler handler;
 
-    public static boolean notDoneWithFiles = true;
+    public static volatile boolean done = false;
 
     private static Logger logger = Logger.getLogger("");
 
@@ -83,6 +83,7 @@ public class Uploader implements Runnable{
     			handler.start();
     			peerLinkedList = handler.newConnection.peerLinkedList;
     			connectionLinkedList = handler.newConnection.connectionLinkedList;
+    			done = handler.newConnection.done;
     			
     			System.out.println("Uploader: Client "  + clientNum + " is connected!");
     			System.out.println("Uploader: Accepted new connection from " + peer.getInetAddress() + " at port " + peer.getPort());
@@ -169,8 +170,12 @@ public class Uploader implements Runnable{
 				}					
 			}
 			newConnection.myBitfield = myBitfield;
+
       		Thread object = new Thread(newConnection);
         	object.start();
+        	// while(newConnection.getDone() == true){}
+        	// System.out.println("Uploader: Done");
+        	// object.interrupt();
 		}
 	}		
 }

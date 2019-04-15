@@ -1,220 +1,242 @@
-Apr 14, 2019 6:58:12 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:38 PM java.util.logging.LogManager$RootLogger log
 INFO: Logger Setup.
-Apr 14, 2019 6:58:12 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:38 PM java.util.logging.LogManager$RootLogger log
 INFO: Conneting to peer 1001
-Apr 14, 2019 6:58:12 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:38 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received handshake message from peer 1001
-Apr 14, 2019 6:58:12 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:38 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received bitfield message from peer 1001
-Apr 14, 2019 6:58:12 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:38 PM java.util.logging.LogManager$RootLogger log
 INFO: Sending interested to peer 1001
-Apr 14, 2019 6:58:13 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:38 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:13 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:39 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:14 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:14 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:39 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:14 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:15 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has downloaded the piece 3 from peer 1001
-Apr 14, 2019 6:58:15 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:15 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:39 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:15 PM java.util.logging.LogManager$RootLogger log
-INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:15 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:16 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:17 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:17 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:18 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:39 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:18 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has downloaded the piece 1 from peer 1001
-Apr 14, 2019 6:58:18 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:18 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:18 PM java.util.logging.LogManager$RootLogger log
-INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:18 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:19 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:20 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:20 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:21 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:21 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has downloaded the piece 7 from peer 1001
-Apr 14, 2019 6:58:21 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:21 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:21 PM java.util.logging.LogManager$RootLogger log
-INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:21 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:22 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:23 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:24 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:24 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:24 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has downloaded the piece 2 from peer 1001
-Apr 14, 2019 6:58:24 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:24 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:24 PM java.util.logging.LogManager$RootLogger log
-INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:24 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:25 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:26 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:27 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:27 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:27 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has downloaded the piece 8 from peer 1001
-Apr 14, 2019 6:58:27 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:27 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:27 PM java.util.logging.LogManager$RootLogger log
-INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:27 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:28 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:29 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:30 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:30 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:30 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:39 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has downloaded the piece 9 from peer 1001
-Apr 14, 2019 6:58:30 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:39 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:30 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:30 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:40 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:41 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:41 PM java.util.logging.LogManager$RootLogger log
 INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:30 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:42 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:31 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:32 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:33 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:42 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:33 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:42 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received choke message from peer 1001
+Apr 14, 2019 8:16:42 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:33 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has downloaded the piece 6 from peer 1001
-Apr 14, 2019 6:58:33 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:42 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has downloaded the piece 0 from peer 1001
+Apr 14, 2019 8:16:42 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:33 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:33 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:43 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:44 PM java.util.logging.LogManager$RootLogger log
 INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:33 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:44 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:34 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:45 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:35 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:36 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:45 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:36 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:45 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:36 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:45 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has downloaded the piece 0 from peer 1001
+Apr 14, 2019 8:16:45 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received not interested message from peer 1001
+Apr 14, 2019 8:16:45 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received choke message from peer 1001
+Apr 14, 2019 8:16:46 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:47 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending UNchoke message to peer 1001
+Apr 14, 2019 8:16:47 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:48 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:48 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received unchoke message from peer 1001
+Apr 14, 2019 8:16:48 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received piece message from peer 1001
+Apr 14, 2019 8:16:48 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has downloaded the piece 2 from peer 1001
+Apr 14, 2019 8:16:48 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received not interested message from peer 1001
+Apr 14, 2019 8:16:48 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received choke message from peer 1001
+Apr 14, 2019 8:16:49 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:50 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending UNchoke message to peer 1001
+Apr 14, 2019 8:16:50 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:51 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:51 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received unchoke message from peer 1001
+Apr 14, 2019 8:16:51 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received piece message from peer 1001
+Apr 14, 2019 8:16:51 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has downloaded the piece 5 from peer 1001
-Apr 14, 2019 6:58:36 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:51 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:36 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:51 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:36 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:52 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:53 PM java.util.logging.LogManager$RootLogger log
 INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:36 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:53 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:37 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:54 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:38 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:39 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:54 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:39 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:54 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:39 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has downloaded the piece 4 from peer 1001
-Apr 14, 2019 6:58:39 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:39 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:39 PM java.util.logging.LogManager$RootLogger log
-INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:39 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:40 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:41 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:42 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:42 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:42 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:54 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has downloaded the piece 0 from peer 1001
-Apr 14, 2019 6:58:42 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:54 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received not interested message from peer 1001
-Apr 14, 2019 6:58:42 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:54 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received choke message from peer 1001
-Apr 14, 2019 6:58:42 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:55 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:56 PM java.util.logging.LogManager$RootLogger log
 INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:42 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:56 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:43 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:57 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:44 PM java.util.logging.LogManager$RootLogger log
-INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:45 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:57 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received unchoke message from peer 1001
-Apr 14, 2019 6:58:45 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:57 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 received piece message from peer 1001
-Apr 14, 2019 6:58:45 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:16:57 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has downloaded the piece 7 from peer 1001
+Apr 14, 2019 8:16:57 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received not interested message from peer 1001
+Apr 14, 2019 8:16:57 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received choke message from peer 1001
+Apr 14, 2019 8:16:58 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:16:59 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending UNchoke message to peer 1001
+Apr 14, 2019 8:16:59 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received unchoke message from peer 1001
+Apr 14, 2019 8:17:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received piece message from peer 1001
+Apr 14, 2019 8:17:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has downloaded the piece 6 from peer 1001
+Apr 14, 2019 8:17:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received not interested message from peer 1001
+Apr 14, 2019 8:17:00 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received choke message from peer 1001
+Apr 14, 2019 8:17:01 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending UNchoke message to peer 1001
+Apr 14, 2019 8:17:02 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received unchoke message from peer 1001
+Apr 14, 2019 8:17:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received piece message from peer 1001
+Apr 14, 2019 8:17:03 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has downloaded the piece 0 from peer 1001
-Apr 14, 2019 6:58:45 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:17:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received not interested message from peer 1001
+Apr 14, 2019 8:17:03 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received choke message from peer 1001
+Apr 14, 2019 8:17:04 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending UNchoke message to peer 1001
+Apr 14, 2019 8:17:05 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received unchoke message from peer 1001
+Apr 14, 2019 8:17:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received piece message from peer 1001
+Apr 14, 2019 8:17:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has downloaded the piece 1 from peer 1001
+Apr 14, 2019 8:17:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received not interested message from peer 1001
+Apr 14, 2019 8:17:06 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received choke message from peer 1001
+Apr 14, 2019 8:17:07 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending UNchoke message to peer 1001
+Apr 14, 2019 8:17:08 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:09 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:09 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received unchoke message from peer 1001
+Apr 14, 2019 8:17:09 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 received piece message from peer 1001
+Apr 14, 2019 8:17:09 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has downloaded the piece 0 from peer 1001
+Apr 14, 2019 8:17:09 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has downloaded the complete file.
-Apr 14, 2019 6:58:45 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:17:09 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has downloaded the complete file.
+Apr 14, 2019 8:17:10 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:11 PM java.util.logging.LogManager$RootLogger log
 INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:45 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:17:11 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:12 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:13 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:14 PM java.util.logging.LogManager$RootLogger log
 INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:45 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:17:14 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:46 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:17:15 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:47 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:17:16 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:48 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:17:17 PM java.util.logging.LogManager$RootLogger log
 INFO: Sending UNchoke message to peer 1001
-Apr 14, 2019 6:58:48 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:17:17 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 
-Apr 14, 2019 6:58:49 PM java.util.logging.LogManager$RootLogger log
+Apr 14, 2019 8:17:18 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:19 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:20 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending UNchoke message to peer 1001
+Apr 14, 2019 8:17:20 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:21 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:22 PM java.util.logging.LogManager$RootLogger log
+INFO: Peer 1002 has the preferred neighbors: 
+Apr 14, 2019 8:17:23 PM java.util.logging.LogManager$RootLogger log
+INFO: Sending UNchoke message to peer 1001
+Apr 14, 2019 8:17:23 PM java.util.logging.LogManager$RootLogger log
 INFO: Peer 1002 has the preferred neighbors: 

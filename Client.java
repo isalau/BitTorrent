@@ -44,15 +44,13 @@ public class Client implements Runnable{
  	public boolean sentHandshake = false;
  	public boolean theBoolean = false;
 
- 	static volatile boolean done = false;
+ 	public static volatile boolean done = false;
 
 
  	private static Logger logger = Logger.getLogger("");
 
 	//constructor
 	public void Client(){}
-
-
 
 	@Override
 	public void run() {
@@ -100,6 +98,10 @@ public class Client implements Runnable{
 		}catch(Exception e){
 			System.out.println("Exception: "+ e);
 		}
+
+  //       while(done == true){}
+		// object.interrupt();
+		// System.out.println("Client: Done");
 	}
 
 	public void addPeers(){
@@ -207,8 +209,11 @@ public class Client implements Runnable{
 
 	//preferred neighbor choke timer
 	public void updateChokeTimer(){
-		//timer for choke and unchoke
+		done = up.done;
 		Timer unChokeTimer = new Timer();
+		if(done == false){
+			//timer for choke and unchoke
+		
 
 		TimerTask unChoke = new TimerTask(){
 			public void run(){
@@ -219,9 +224,14 @@ public class Client implements Runnable{
 		//timer is in miliseconds so we need to multiply by 1000
 		long miliUnChoke = unchokingInterval *1000;
 		unChokeTimer.schedule(unChoke, miliUnChoke);
+		}else{
+			unChokeTimer.cancel();
+			unChokeTimer.purge();
+		}
 	}
 
 	public void unChoke(int unchokingInterval){
+		done = up.done;
 		if(done == false){
 			updateChokeTimer();
 			// System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
@@ -362,20 +372,27 @@ public class Client implements Runnable{
 
 	//optimistically picked neighbor timer
 	public void updateOptTimer(){
+		done = up.done;
 		Timer optUnChokeTimer = new Timer();
+		if(done == false){
+			
+			TimerTask optUnChoke = new TimerTask(){
+				public void run(){
+					optimisticUnchoke(optimisticUnchokingInterval);
+				}
+			};
 
-		TimerTask optUnChoke = new TimerTask(){
-			public void run(){
-				optimisticUnchoke(optimisticUnchokingInterval);
-			}
-		};
-
-		//timer is in miliseconds so we need to multiply by 1000
-		long miliOptUnChoke = optimisticUnchokingInterval *1000;
-		optUnChokeTimer.schedule(optUnChoke,miliOptUnChoke);
+			//timer is in miliseconds so we need to multiply by 1000
+			long miliOptUnChoke = optimisticUnchokingInterval *1000;
+			optUnChokeTimer.schedule(optUnChoke,miliOptUnChoke);
+		}else{
+			optUnChokeTimer.cancel();
+			optUnChokeTimer.purge();
+		}
 	}
 
 	public void optimisticUnchoke(int optimisticUnchokingInterval){
+		done = up.done;
 		if(done == false){
 			updateOptTimer();
 			// System.out.println("Client: " + optimisticUnchokingInterval + " seconds has passed for optimistic Choke/Unchoke");
