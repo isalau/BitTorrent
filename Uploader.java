@@ -40,7 +40,7 @@ public class Uploader implements Runnable{
 
     public Handler handler;
 
-    public static volatile boolean done = false;
+    public static boolean done;
 
     private static Logger logger = Logger.getLogger("");
 
@@ -68,7 +68,13 @@ public class Uploader implements Runnable{
 				for (int j =0; j < connectionLinkedList.size(); j++){
 					if(connectionLinkedList.get(j).peerID == peerLinkedList.get(i).peerID){
 		      			Thread object = new Thread(connectionLinkedList.get(j));
-		        		object.start();
+		        		try{
+							object.start();
+						}catch(Exception e){
+							System.out.println("Uploader: Exception: "+ e);
+							done = true;
+							Thread.currentThread().interrupt();
+						}
 					}
 				}
 			}
@@ -84,7 +90,7 @@ public class Uploader implements Runnable{
     			peerLinkedList = handler.newConnection.peerLinkedList;
     			connectionLinkedList = handler.newConnection.connectionLinkedList;
     			done = handler.newConnection.done;
-    			
+
     			System.out.println("Uploader: Client "  + clientNum + " is connected!");
     			System.out.println("Uploader: Accepted new connection from " + peer.getInetAddress() + " at port " + peer.getPort());
 				
@@ -114,6 +120,7 @@ public class Uploader implements Runnable{
 
       	public void run() {
       		System.out.println("Uploader: In handler run");
+
 
       		//place all info in a peer object
         	Peer newPeer = new Peer();
@@ -162,6 +169,7 @@ public class Uploader implements Runnable{
 			newConnection.DataChunks = DataChunks;
 			newConnection.dataFile = df; 
 			connectionLinkedList.add(newConnection);
+			newConnection.done = done;
 			newConnection.connectionLinkedList = connectionLinkedList;
 			if(newConnection.sendersHasFile == true){
 				for(int j=0; j< myBitfield.length; j++){
@@ -172,10 +180,13 @@ public class Uploader implements Runnable{
 			newConnection.myBitfield = myBitfield;
 
       		Thread object = new Thread(newConnection);
-        	object.start();
-        	// while(newConnection.getDone() == true){}
-        	// System.out.println("Uploader: Done");
-        	// object.interrupt();
+        	try{
+				object.start();
+			}catch(Exception e){
+				System.out.println("Exception: "+ e);
+				done = true;
+				Thread.currentThread().interrupt();
+			}
 		}
 	}		
 }

@@ -44,7 +44,7 @@ public class Client implements Runnable{
  	public boolean sentHandshake = false;
  	public boolean theBoolean = false;
 
- 	public static volatile boolean done = false;
+ 	public static boolean done;
 
 
  	private static Logger logger = Logger.getLogger("");
@@ -90,18 +90,15 @@ public class Client implements Runnable{
 		up.numOfPieces = numOfPieces; 
 		up.DataChunks = DataChunks;
 		up.df = dataFile; 
-		// System.out.println("the data chunks size is :"+DataChunks.size());
+		// up.done = done; 
 
 		Thread object = new Thread(up);
 		try{
 			object.start();
 		}catch(Exception e){
-			System.out.println("Exception: "+ e);
+			System.out.println("Client: Exception: "+ e);
+			done = true;
 		}
-
-  //       while(done == true){}
-		// object.interrupt();
-		// System.out.println("Client: Done");
 	}
 
 	public void addPeers(){
@@ -157,16 +154,13 @@ public class Client implements Runnable{
 		        newConnection.optimisticUnchokingInterval = optimisticUnchokingInterval;
 		  
 				newConnection.DataChunks = DataChunks;
-				newConnection.dataFile = dataFile; 
-
+				newConnection.dataFile = dataFile;  
 
 		        newConnection.numInPeerInfo = numInPeerInfo;
 		        
-
 		        if(newConnection.sendersHasFile == true){
 					for(int j=0; j< myBitfield.length; j++){
 						myBitfield[j] = 1;
-						// System.out.println("the bitfield from client is :"+ myBitfield[j]);
 					}
 					
 				}
@@ -209,33 +203,48 @@ public class Client implements Runnable{
 
 	//preferred neighbor choke timer
 	public void updateChokeTimer(){
-		done = up.done;
+		// done = up.done;
+		System.out.println("Client: Unchoking Done Value "+ done);
 		Timer unChokeTimer = new Timer();
 		if(done == false){
 			//timer for choke and unchoke
 		
 
-		TimerTask unChoke = new TimerTask(){
-			public void run(){
-				unChoke(unchokingInterval);
-			}
-		};
+			TimerTask unChoke = new TimerTask(){
+				public void run(){
+					unChoke(unchokingInterval);
+				}
+			};
 
-		//timer is in miliseconds so we need to multiply by 1000
-		long miliUnChoke = unchokingInterval *1000;
-		unChokeTimer.schedule(unChoke, miliUnChoke);
+			//timer is in miliseconds so we need to multiply by 1000
+			long miliUnChoke = unchokingInterval *1000;
+			unChokeTimer.schedule(unChoke, miliUnChoke);
 		}else{
 			unChokeTimer.cancel();
 			unChokeTimer.purge();
+			Thread.currentThread().interrupt();
 		}
 	}
 
 	public void unChoke(int unchokingInterval){
-		done = up.done;
-		if(done == false){
-			updateChokeTimer();
-			// System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
-			determinePreferredNeighbors();
+
+		try{
+			if(connectionLinkedList.size() != 0){
+				done = connectionLinkedList.get(0).done;
+			}
+			System.out.println("Client: Unchoking Done Value "+ done);
+
+			if(done == false){
+				updateChokeTimer();
+				// System.out.println(unchokingInterval + " seconds has passed normal unchoke/choke");
+				determinePreferredNeighbors();
+			}else{
+				Thread.currentThread().interrupt();
+				System.exit(1);
+			}
+		}catch(Exception e){
+			System.out.print("Client: Unchoke Exception ");
+			e.printStackTrace();
 		}
 	}
 
@@ -372,7 +381,7 @@ public class Client implements Runnable{
 
 	//optimistically picked neighbor timer
 	public void updateOptTimer(){
-		done = up.done;
+		// done = up.done;
 		Timer optUnChokeTimer = new Timer();
 		if(done == false){
 			
@@ -388,24 +397,25 @@ public class Client implements Runnable{
 		}else{
 			optUnChokeTimer.cancel();
 			optUnChokeTimer.purge();
+			Thread.currentThread().interrupt();
 		}
 	}
 
 	public void optimisticUnchoke(int optimisticUnchokingInterval){
-		done = up.done;
-		if(done == false){
-			updateOptTimer();
-			// System.out.println("Client: " + optimisticUnchokingInterval + " seconds has passed for optimistic Choke/Unchoke");
+		updateOptTimer();
+		// System.out.println("Client: " + optimisticUnchokingInterval + " seconds has passed for optimistic Choke/Unchoke");
+		try{
+			//update my peer Linked List
+			peerLinkedList = up.peerLinkedList;
+			connectionLinkedList = up.connectionLinkedList;
+			System.out.println("Client: Opt unchoking peer list "+ peerLinkedList);
+			System.out.println("Client: Opt unchoking connection list "+ connectionLinkedList);
 
-			try{
-				//update my peer Linked List
-				peerLinkedList = up.peerLinkedList;
-				connectionLinkedList = up.connectionLinkedList;
-				System.out.println("Client: Opt unchoking peer list "+ peerLinkedList);
-				System.out.println("Client: Opt unchoking connection list "+ connectionLinkedList);
-
-				//if I am not alone
-				if(connectionLinkedList.size() != 0){
+			//if I am not alone
+			if(connectionLinkedList.size() != 0){
+				done = connectionLinkedList.get(0).done;
+				System.out.println("Client: Opt unchoking Done Value "+ done);
+				if(done == false){
 					//get current optimistic neighbor to change later
 					int oldNeighbor = 0;
 					for(int i = 0; i < connectionLinkedList.size(); i++){
@@ -446,11 +456,14 @@ public class Client implements Runnable{
 						up.peerLinkedList = peerLinkedList;
 						up.connectionLinkedList = connectionLinkedList;
 					}
+				}else{
+					Thread.currentThread().interrupt();
+					System.exit(1);
 				}
-			}catch(Exception e){
-				System.out.print("optimisticUnchoke: ");
-				e.printStackTrace();
 			}
+		}catch(Exception e){
+			System.out.print("optimisticUnchoke: ");
+			e.printStackTrace();
 		}
 	}
 

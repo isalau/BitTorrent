@@ -73,7 +73,7 @@ public class Connection extends Uploader implements Runnable{
 
 	private int lastRequestedIndex = 0; 
 
-	public static volatile boolean done = false;
+	public static boolean done = false;
 
 	private static Logger logger = Logger.getLogger("");
 
@@ -101,21 +101,17 @@ public class Connection extends Uploader implements Runnable{
 				out = new ObjectOutputStream(connection.getOutputStream());
 				out.flush();
 				in = new ObjectInputStream(connection.getInputStream());
-			try{
-				while(true){
-					//receive the message sent from the client
-					byte[] myObjects = (byte[])in.readObject();
-					
-					//show the message to the user
-				    // String objectMessage = new String (myObjects);
-				    // System.out.println("Message: " + objectMessage);
+				try{
+					while(true){
+						//receive the message sent from the client
+						byte[] myObjects = (byte[])in.readObject();
 
-					//check what message you got
-					checkMessage(myObjects);
+						//check what message you got
+						checkMessage(myObjects);
+					}
+				}catch(ClassNotFoundException classnot){
+					System.err.println("Data received in unknown format");
 				}
-			}catch(ClassNotFoundException classnot){
-				System.err.println("Data received in unknown format");
-			}
 			}catch(IOException ioException){
 				System.out.println("Disconnect with Client " + peerID);
 				String fileName2 = "Final_File.txt";//TODO: what is this???
@@ -143,10 +139,10 @@ public class Connection extends Uploader implements Runnable{
 
 	//send a message to the output stream
 	public void sendMessage(byte[] msg){
-		System.out.println("Connection: Done Value " + done);
-		System.out.println("Connection: sending message: " + msg + " to Client " + peerID + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString());
+		System.out.println("Connection: Done Value " + done+ " in sendMessage");
 
  		if(done == false){
+ 			System.out.println("Connection: sending message: " + msg + " to Client " + peerID + " on port: "+ connection.getPort() + " at addres: "+ connection.getInetAddress().toString());
 			try{
 				//initialize Input and Output streams
 					// out = new ObjectOutputStream(connection.getOutputStream());
@@ -623,9 +619,7 @@ public class Connection extends Uploader implements Runnable{
 
 	public void sendPiece(byte[] msg){
 		System.out.println("Connection: Sending Piece Message");
-		// for (int i=0; i< myBitfield.length; i++){
-		// 	System.out.println("the bitfield is :"+ myBitfield[i]);
-		// }
+
 		int index = msg[5];
 		if(msg[5] < 0){
 			//128* 2 - the negative 
@@ -648,7 +642,6 @@ public class Connection extends Uploader implements Runnable{
 		}
 		
 		System.arraycopy(data, 0, pieceMessage,5, data.length);
-		System.out.println("Connection: We are done with piece");
 		sendMessage(pieceMessage);
 
 		// //start timer 
@@ -660,10 +653,6 @@ public class Connection extends Uploader implements Runnable{
 		System.out.println("Connection: I have: "+ chunksDownloaded + " chunks downloaded");
 		//update Peer to reflect that they get the piece 
 		byte[] data = new byte[pieceSize];
-		// //just to test
-		// for (int i = 0; i < peerLinkedList.size(); i++){
-		// 	System.out.println("Peer "+ peerLinkedList.get(i).peerID+ " recieved the piece message"); 
-		// }
 
 		//Peer List 	
 		System.out.println("Connection: The bitfield length is: " + myBitfield.length+ " and the index is: " + lastRequestedIndex);
@@ -687,7 +676,7 @@ public class Connection extends Uploader implements Runnable{
 	public void checkIfDone(String fName){
 		//check if chunksDownloaded is the number of pieces we want
 		// or if we started with the file and chuncksDownloaded is zero check if hasFile is true
-		if(chunksDownloaded == numOfPieces || sendersHasFile == true){
+		if((chunksDownloaded == numOfPieces || sendersHasFile == true) && done == false) {
 			//if so change sendershasFile to true
 			sendersHasFile = true;
 			// DataFile df = new DataFile(pieceSize,fileSize);
@@ -722,6 +711,7 @@ public class Connection extends Uploader implements Runnable{
 				 }catch(IOException ioException){
 					System.out.println("Connection: Problem in check if done"+ ioException);
 				}
+				Thread.currentThread().interrupt();
 			}
 		}
 	}

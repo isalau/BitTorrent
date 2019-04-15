@@ -150,5 +150,7 @@ public class peerProcess{
         client.dataFile = DF;
         Thread object = new Thread(client);
         object.start();
+
+        
     }
 }
