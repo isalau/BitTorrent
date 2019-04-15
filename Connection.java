@@ -148,6 +148,7 @@ public class Connection extends Uploader implements Runnable{
 		peerID = Integer.parseInt(peerIDString.trim());
 	}
 
+
 	//check message type
 	public void checkMessage(byte[] msg){
 		byte messageValue = msg[4];
@@ -216,7 +217,8 @@ public class Connection extends Uploader implements Runnable{
 					logger.info("Peer " + sendersPeerID + " received handshake message from peer " + peerID);
 		           	//getpeerID if needed. 
 		           	//check if we sent our handshake? 
-		           	if (sentHandshake == false){
+		           	boolean checkHandshake = CheckHandshake(msg); 
+		           	if (sentHandshake == false && checkHandshake== true){
 		           		receivedHandshake = true;
 		           		getPeerID(msg);
 		           		addPeers();
@@ -251,7 +253,30 @@ public class Connection extends Uploader implements Runnable{
 			}
 		}
 	}
-
+	public boolean CheckHandshake(byte[] message){
+        byte[] msgHeader = new byte[header_size];
+        byte[] msgID = new byte[peerID_size];
+        byte[] msgZeroBits = new byte[zerobits_size];
+        boolean flag = true;
+        try{
+            //store the different parts
+            msgHeader = Arrays.copyOfRange(message, 0, header_size);
+            msgZeroBits = Arrays.copyOfRange(message, header_size, header_size+zerobits_size);
+            msgID = Arrays.copyOfRange(message, header_size +zerobits_size, total_length);
+            int msgPeerID = java.nio.ByteBuffer.wrap(msgID).getInt();
+            if(msgHeader != "P2PFILESHARINGPROJ".getBytes()){
+                System.out.println("Connection: The header is not correct");
+                flag = false;
+            }
+            if(msgPeerID == peerID){
+                System.out.println("Connection: The peerID from handshake is not correct sent "+peerID+" and received "+ msgPeerID);
+                //flag = false;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return flag;
+    }
 	public void sendHandShake(){
 		sentHandshake = true;	
 
