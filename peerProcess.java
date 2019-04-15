@@ -26,8 +26,15 @@ public class peerProcess{
             rootLogger.removeHandler(h);
         }
         try {
-            FileHandler hndlr = new FileHandler("log_peer_" + args[0] + ".txt");
-            hndlr.setFormatter(new SimpleFormatter());
+            FileHandler hndlr = new FileHandler(pattern: "log_peer_" + args[0] + ".txt");
+            hndlr.setFormatter(new SimpleFormatter(){
+                private static final String format = "[%1$tF %1$tT] [%2$-7s] %3$s %n";
+
+                @Override
+                public synchronized String format(LogRecord lr) {
+                    return String.format(format, new Date(lr.getMillis()), lr.getLevel().getLocalizedName(),lr.getMessage() );
+                }
+            });
             rootLogger.addHandler(hndlr);
         }
         catch (IOException e){
