@@ -206,7 +206,7 @@ public class Client implements Runnable{
 	//preferred neighbor choke timer
 	public void updateChokeTimer(){
 		// done = up.done;
-		System.out.println("Client: Unchoking Done Value "+ done);
+		//System.out.println("Client: Unchoking Done Value "+ done);
 		Timer unChokeTimer = new Timer();
 		if(done == false){
 			//timer for choke and unchoke
@@ -234,7 +234,7 @@ public class Client implements Runnable{
 			if(connectionLinkedList.size() != 0){
 				done = connectionLinkedList.get(0).done;
 			}
-			System.out.println("Client: Unchoking Done Value "+ done);
+			//System.out.println("Client: Unchoking Done Value "+ done);
 
 			if(done == false){
 				updateChokeTimer();
@@ -416,7 +416,7 @@ public class Client implements Runnable{
 			//if I am not alone
 			if(connectionLinkedList.size() != 0){
 				done = connectionLinkedList.get(0).done;
-				System.out.println("Client: Opt unchoking Done Value "+ done);
+				//System.out.println("Client: Opt unchoking Done Value "+ done);
 				if(done == false){
 					//get current optimistic neighbor to change later
 					int oldNeighbor = 0;

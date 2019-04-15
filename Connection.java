@@ -670,14 +670,14 @@ public class Connection extends Uploader implements Runnable{
 			boolean allDone = true; 
 			for(int i = 0; i < connectionLinkedList.size(); i++){
 				System.out.println("Connection: Has peers "+ connectionLinkedList.get(i).peerID);
-				if(connectionLinkedList.get(i).sendersHasFile == false){
+				if(connectionLinkedList.get(i).hasFile == false){
 					allDone = false; 
 					System.out.println("Connection:Peer "+ connectionLinkedList.get(i).peerID + " still has not finished.");
 				}
 			}
 			
 			//stop program
-			if(allDone = true && connectionLinkedList.size() != 0){
+			if(allDone == true && connectionLinkedList.size() != 0){
 				done = true;
 				System.out.println("Connection: Peer " + sendersPeerID + " has downloaded the complete file.");
 				logger.info("Peer " + sendersPeerID + " has downloaded the complete file.");
