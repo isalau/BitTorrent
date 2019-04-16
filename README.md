@@ -1,16 +1,20 @@
 # To run this code:
-1. first needs to load the configuration files "Common.cfg" and "PeerInfo.cfg" from the remote server using the script. 
-2. "make clean" and "make" would compile all the necessary java classes
-3. java peerprocess [peerID]
+1. Go to folder directory in terminal
+2. Run "make clean" 
+3. Run "make" to compile all the necessary java classes
+3. Run "java peerProcess [peerID]" i.e "java peerProcess 1001"
 
 
 # Architecture 
 The main architecture of this project consists of the following main parts:
-*PeerParser: Parse the information of each paper by reading the peerInfo.cfg file
-*CommonParser: Same thing happens here. CommonParser read the info from common.cfg and save it into proper variables. 
-*DataFile: First, the original file splits into chunks of byte arrays. When the peers are done with downloading all the pieces of data, the data chunks will be merged into a file and stored in the proper directory. 
-PeerProcess: Configuration files will be parsed to extract all the necessary information. Then client object is initialized using the values just parsed. The new client will be made for each peer. 
-*Client: Within the client class all the unchoking/choking timers have been set. Once the uploader class which acts as a          listener in this architecture would be called on a new thread. 
-*Uploader: Uploader would listen on the TCP connection and pass the connection through the whole network.
-*Connection: We need to track all the predefined connections to send the correct information toward the correct peer. All the different messages including piece, request, have, handshake, bitfield, interested and not interested have been implemented. 
-  
+
+The top level is the peerProcess. There is only one thread of peerProcess running per client. PeerProcess extracts all necessary information from Common.cfg and PeerInfo.cfg using helper functions PeerParser and CommonParser. 
+	*PeerParser: Parse the information of each paper by reading the peerInfo.cfg file
+	*CommonParser: Same thing happens here. CommonParser read the info from common.cfg and save it into proper variables. 
+
+
+Next we have Client. There is only one instance and thread of client as well. Client is made of multiple uploader and connection threads. Within the Client class, all the unchoking/choking timers are set. 
+	*Uploader: Uploader listens on the TCP connection and passes the connection through the whole network. It's listener calls a new socket and starts a new thread for each connection. 
+	*Connection: We need to track all the predefined connections to send the correct information toward the correct peer. All the different messages including piece, request, have, handshake, bitfield, interested and not interested have been implemented. 
+	*DataFile: First, the original file splits into chunks of byte arrays. When the peers are done with downloading all the pieces of data, the data chunks will be merged into a file and stored in the proper directory. 
+

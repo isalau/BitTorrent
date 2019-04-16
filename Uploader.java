@@ -67,6 +67,7 @@ public class Uploader implements Runnable{
 				for (int j =0; j < connectionLinkedList.size(); j++){
 					// if(connectionLinkedList.get(j).peerID == peerLinkedList.get(i).peerID){
 						connectionLinkedList.get(j).sendHandshake = true;
+						connectionLinkedList.get(j).receivedHandshake = false;
 		      			Thread object = new Thread(connectionLinkedList.get(j));
 		        		try{
 							object.start();
