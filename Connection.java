@@ -114,8 +114,7 @@ public class Connection extends Uploader implements Runnable{
 			System.err.println("Connection: Data received in unknown format");
 		}catch(IOException ioException){
 			System.err.println("Connection: Disconnect with Client " + peerID);
-			String fileName2 = "Final_File.txt";//TODO: what is this???
-			checkIfDone(fileName2);
+			checkIfDone(fileName);
 		}
 	}
 
