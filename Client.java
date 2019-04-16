@@ -255,7 +255,7 @@ public class Client implements Runnable{
 
 		//check to see if k is greater than size of connection list
 		if(numOfPreferredNeighbors >= connectionLinkedList.size()){
-			System.out.println("Client: k is less than number of neighbors. Make all preferred");
+			System.out.println("Client: k is greater than number of neighbors. Make all preferred");
 			//make all neighbors in connection and peer list preffereed neighbors and unchoke
 			for(int i = 0; i < peerLinkedList.size(); i++){
 				peerLinkedList.get(i).preferredNeighbor = true;

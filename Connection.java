@@ -91,10 +91,10 @@ public class Connection extends Uploader implements Runnable{
   		initializeStreams();
   		
   		//either send out a handshake or check what message I got
-		if(sendHandshake == true){
-			System.out.println("Connection: I will send the handshake");
-			sendHandShake();
-		}
+		// if(sendHandshake == true){
+		// 	System.out.println("Connection: I will send the handshake");
+		// 	sendHandShake();
+		// }
 
 		try{	
 			if (receivedHandshake == true){
@@ -124,10 +124,15 @@ public class Connection extends Uploader implements Runnable{
 			if (receivedHandshake == false && sendHandshake == true){ 
 				connection = new Socket(hostname, portNumber);
 				System.out.println("Connection: I'm setting up the connection");
+
 				//logger.info("Conneting to peer " + peerID);
 			}
 			out = new ObjectOutputStream(connection.getOutputStream());
 			out.flush(); //TODO ::: Do we need this?
+			
+			if (sendHandshake == true){
+				sendHandShake();
+			}
 			in = new ObjectInputStream(connection.getInputStream());
 		}catch (IllegalArgumentException exception) {
             System.err.println("Connection: Could not initalize streams 1: " + exception);
