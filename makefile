@@ -11,9 +11,7 @@ CLASSES = \
 	FileManager.java \
 	DataFile.java \
 	SortByRate.java \
-	RemotePeerInfo.java \
 	Connection.java \
-	StartRemotePeers.java \
 	Uploader.java \
 	Client.java \
 	peerProcess.java
