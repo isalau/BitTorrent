@@ -102,6 +102,7 @@ public class Connection extends Uploader implements Runnable{
 	  			byte[] myObjects = (byte[])in.readObject();
   				getPeerID(myObjects);
   				addPeers();
+  				sendBitfield();
 	  		}
 
 			while(true){
@@ -144,12 +145,12 @@ public class Connection extends Uploader implements Runnable{
 
 		String msgString = new String(msg);
 		System.out.println("Connection: msg: "+ msgString);
-		System.out.println("Connection: PeerID: "+ peerID);
-		
+		System.out.println("Connection: PeerID: "+ peerID);	
 	}
 
 	//check message type
 	public void checkMessage(byte[] msg){
+		checkIfDone(fileName);
 		byte messageValue = msg[4];
 		
 		System.out.println("Connection: message type: " + messageValue + " received from client: " + peerID);
@@ -193,7 +194,9 @@ public class Connection extends Uploader implements Runnable{
 		            break;
 		        case 5:
 		        	System.out.println("Connection: received bitfield message received from client: " + peerID);
-		        	System.out.println("Connection: bitfield: " +  message + " received from client");
+		        		for(int k = 0; k < msg.length; k++){
+							System.out.println(msg[k]);
+						}
 					logger.info("Peer " + sendersPeerID + " received bitfield message from peer " + peerID);
 		            determineIfInterestedFromBitfield(msg);
 		            break;
@@ -329,7 +332,7 @@ public class Connection extends Uploader implements Runnable{
 	    //send our messages
 		sendMessage(message);
 
-		sendBitfield();
+		//sendBitfield();
 
 		if(done == false){
 			System.out.println("Connection: Sending unchoke message from handshake");
@@ -361,25 +364,36 @@ public class Connection extends Uploader implements Runnable{
 	public void sendBitfield(){
 		//create payload
 		//determine number of pieces from common.cfg
-    	System.out.println("Connection: In sendBitfield.");
+    	System.out.println("Connection: In sendBitfield with " + numOfPieces + " pieces to peer " + peerID);
 
 		//determine what parts of the file I have 
-		int length = 4 + 1 + (numOfPieces/8); 
+		int length = 4 + 1 + numOfPieces; 
     	bitfieldMessage = new byte[length];
     	
 		//create new bitfield message
 		bitfieldMessage = ByteBuffer.allocate(length).putInt(length).array();
 		bitfieldMessage[4] = 5;
 
+		boolean sendBitBool = false;
     	if(sendersHasFile == true){
     		for (int i = 5; i< length; i++){
     			bitfieldMessage[i] =  1;
     			//send message to B
     		}
-    		System.out.println("Connection: Sending Bitfield with " + numOfPieces + " pieces.");
-    		logger.info("Sending bitfield with " + numOfPieces + " pieces to peer " + peerID );
-    		sendMessage(bitfieldMessage);
     	}
+
+		for (int i = 0; i< numOfPieces; i++){
+			if(myBitfield[i] == 1){
+				sendBitBool = true;
+			}
+		}
+
+		
+		logger.info("Sending bitfield with " + numOfPieces + " pieces to peer " + peerID );
+		if (sendBitBool){
+			System.out.println("Connection: Sending Bitfield with " + numOfPieces + " pieces.");
+			sendMessage(bitfieldMessage);
+		}
 	}
 
 	public void receivedInterseted(){
@@ -448,12 +462,13 @@ public class Connection extends Uploader implements Runnable{
 
 	public void determineIfInterestedFromHave(byte[] msg){
 		System.out.println("Connection: Determining If Interested From Have");
-		
+
 		//index of piece
 		byte[] indexByte = new byte[4];
 		System.arraycopy(msg, 5, indexByte, 0, 4);
 		int index = java.nio.ByteBuffer.wrap(indexByte).getInt();
 
+		System.out.println("Connection: Peer " + sendersPeerID + " received have  message from peer " + peerID + " for piece " + index);
 		logger.info("Peer " + sendersPeerID + " received have  message from peer " + peerID + " for piece " + index);
 
 		peerBitfield[index] = 1; 
@@ -490,8 +505,9 @@ public class Connection extends Uploader implements Runnable{
 		//determine if a neighbor has an interesting piece
 		boolean sendIntMes = false;
 		boolean peerIsComplete = true;
-
+		System.out.println("peerBitfield");
 		for (int i = 5; i< msg.length; i++){
+			System.out.println(msg[i]);
 			int bitIndex=i-5; 
 			//update peer's bitfield
 			peerBitfield[bitIndex] = msg[i];
@@ -579,7 +595,7 @@ public class Connection extends Uploader implements Runnable{
 		int r;
 		do{
 			r = new Random().nextInt(numOfPieces);
-		}while(myBitfield[r] != 0 && peerBitfield[r] != 1);
+		}while(!((myBitfield[r] == 0 || myBitfield[r] == 2) && peerBitfield[r] == 1));
 
 		return r;
 	}
@@ -606,7 +622,6 @@ public class Connection extends Uploader implements Runnable{
 		if(myBitfield[index] == 1){
 			data = DataChunks.get(index);
 		}
-		
 
 		System.arraycopy(indexByte, 0, pieceMessage,5, indexByte.length);
 		System.arraycopy(data, 0, pieceMessage,9, data.length);
@@ -683,18 +698,21 @@ public class Connection extends Uploader implements Runnable{
 				done = true;
 				System.out.println("Connection: Peer " + sendersPeerID + " has downloaded the complete file.");
 				logger.info("Peer " + sendersPeerID + " has downloaded the complete file.");
-				try{
-					if(in != null){
-						in.close();
+				for(int k = 0; k < peerBitfield.length; k++){
+						
+					try{
+						if(in != null){
+							connectionLinkedList.get(k).in.close();
+						}
+						if(out != null){
+							connectionLinkedList.get(k).out.close();
+						}
+						if (connection != null){
+							connectionLinkedList.get(k).connection.close();
+						}	
+					 }catch(IOException ioException){
+						System.err.println("Connection: Problem in check if done"+ ioException);
 					}
-					if(out != null){
-						out.close();
-					}
-					if (connection != null){
-						connection.close();
-					}	
-				 }catch(IOException ioException){
-					System.err.println("Connection: Problem in check if done"+ ioException);
 				}
 			}
 		}
@@ -715,7 +733,7 @@ public class Connection extends Uploader implements Runnable{
 		haveByte = ByteBuffer.allocate(4).putInt(index).array();
 		System.arraycopy(haveByte, 0, haveMessage,5, 4);
 
-		System.out.println("Connection: I have the piece at index "+ haveMessage[5]);
+		System.out.println("Connection: I have the piece at index "+ index);
 
 		sendMessage(haveMessage);
 	}

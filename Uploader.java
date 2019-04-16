@@ -169,7 +169,7 @@ public class Uploader implements Runnable{
 			newConnection.done = done;
 			newConnection.connectionLinkedList = connectionLinkedList;
 			newConnection.receivedHandshake = true;
-			newConnection.sendHandshake = true;
+			newConnection.sendHandshake = false;
 			
 			if(newConnection.sendersHasFile == true){
 				for(int j=0; j< myBitfield.length; j++){
