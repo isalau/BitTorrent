@@ -9,7 +9,7 @@
 The main architecture of this project consists of the following main parts:
 
 The top level is the peerProcess. There is only one thread of peerProcess running per client. PeerProcess extracts all necessary information from Common.cfg and PeerInfo.cfg using helper functions PeerParser and CommonParser. 
-	*PeerParser: Parse the information of each paper by reading the peerInfo.cfg file
+	*PeerParser: Parse the information of each peer by reading the peerInfo.cfg file
 	*CommonParser: Same thing happens here. CommonParser read the info from common.cfg and save it into proper variables. 
 
 
